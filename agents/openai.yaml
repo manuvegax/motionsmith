@@ -1,0 +1,6 @@
+interface:
+  display_name: "Motionsmith"
+  short_description: "After Effects-level motion design, editing and kinetic type, made by code"
+  default_prompt: "Use $motionsmith to create this motion piece by code: load the taste profiles first, find ten concepts and pick one, build the hardest moment first, run the dense review and the three critics, then render and verify. Deliver the video, the editable sources and what only I can judge on my device."
+policy:
+  allow_implicit_invocation: true

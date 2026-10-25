@@ -1,0 +1,29 @@
+{
+  "what": "Data reveal: a number rolls up on odometer wheels while a teal gauge fills; it lands on its hit and the hold breathes",
+  "title": "of the goal reached this week",
+  "mode": "diagram",
+  "default_seconds": 5,
+  "min_seconds": 3,
+  "intent": "Make one number land and be believed, with its source on screen",
+  "action": "The gauge is drawing on frame 0; the number rolls up on odometer wheels while the arc fills and lights its ticks; it lands on its hit with a punch and a flash ring; a glint, a scan ring, shimmering ticks and a camera breath keep the hold alive; label and source sit below",
+  "hits": [
+    {
+      "role": "count starts",
+      "time": 0.3,
+      "amplitude": 0.4
+    },
+    {
+      "role": "value lands",
+      "time": 1.9,
+      "amplitude": 1
+    },
+    {
+      "role": "exit",
+      "from_end": 0.45,
+      "amplitude": 0.3
+    }
+  ],
+  "look": "Infographic: night navy, one calm teal accent, muted source line (style atlas #15)",
+  "make_it_yours": "Set `VALUE`, `MAX`, `SUFFIX`, the label (`--title`) and `SOURCE`. Whole numbers only. Change `ACCENT` to the colour that means \"good\" in your piece; keep red for warnings.",
+  "craft_note": "The count never overshoots the true value; only the scale punch moves on the hit. Keep the source on screen and readable (48 px or more at 1080). The hold is an ambient budget (glint, scan ring, shimmer, camera breath), not accents: data wants calm."
+}

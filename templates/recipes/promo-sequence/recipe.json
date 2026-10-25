@@ -1,0 +1,39 @@
+{
+  "what": "Promo sequence: a hook word slams in, a whip pan with real motion blur cuts to a statement, an iris opens the end card",
+  "title": "Everything | moves for a reason",
+  "mode": "kinetic",
+  "default_seconds": 8,
+  "min_seconds": 6,
+  "intent": "Show editing, not only animation: three scenes joined by motivated transitions, ending on an action",
+  "action": "A huge condensed word slams in on a spring and boils; the camera whips a whole frame with a 300° shutter and the statement arrives inside the blur; its lines rise from masks and an accent rule sweeps under them; an iris grows from the rule into the end card, where the closing word gains weight and a link types in; a scene counter and a progress bar keep counting",
+  "look": "Bold editorial: paper, ink and an acid-yellow accent, a colour step per scene (style atlas #2 and #22)",
+  "hits": [
+    {
+      "role": "hook slam",
+      "time": 0.15,
+      "amplitude": 1
+    },
+    {
+      "role": "whip",
+      "time": 2.25,
+      "amplitude": 0.9
+    },
+    {
+      "role": "statement",
+      "time": 2.3,
+      "amplitude": 0.5
+    },
+    {
+      "role": "iris",
+      "from_end": 2.55,
+      "amplitude": 0.8
+    },
+    {
+      "role": "end card",
+      "from_end": 2.15,
+      "amplitude": 0.6
+    }
+  ],
+  "make_it_yours": "Write the hook and the statement in the title: `--title \"Everything | moves for a reason\"`. Set `END`, `LINK` and the palette. Move the hits in plan.json to retime the cuts.",
+  "craft_note": "Each transition has a motive: the whip carries the energy of the slam into the next scene, and the iris grows from the end of the rule, the last thing the eye was following. The cut hides inside the blur, so the whip needs its 300–360° shutter."
+}

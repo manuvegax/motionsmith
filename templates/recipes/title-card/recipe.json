@@ -1,0 +1,34 @@
+{
+  "what": "Swiss title card: a grid draws, a rule and a typed eyebrow, the title rises line by line from masks, a marker hops while it holds",
+  "title": "Slow is smooth, smooth is fast",
+  "mode": "editorial",
+  "default_seconds": 4,
+  "min_seconds": 3,
+  "intent": "Open a chapter or a video with a calm, confident title",
+  "action": "The grid is drawing on frame 0; the rule draws across, the eyebrow types, the title's lines rise from their masks in a cascade and the subtitle settles; an accent marker hops along the rule and the cursor blinks while it holds; it all reverses faster to exit",
+  "hits": [
+    {
+      "role": "rule",
+      "time": 0,
+      "amplitude": 0.3
+    },
+    {
+      "role": "eyebrow",
+      "time": 0.12,
+      "amplitude": 0.3
+    },
+    {
+      "role": "title",
+      "time": 0.35,
+      "amplitude": 0.8
+    },
+    {
+      "role": "exit",
+      "from_end": 0.7,
+      "amplitude": 0.4
+    }
+  ],
+  "look": "Swiss / International: paper, black ink, one orange accent, a visible six-column grid, flush left (style atlas #1)",
+  "make_it_yours": "Set `EYEBROW` and `SUBTITLE` (or `''`), the palette and `COLUMNS`. There is no light layer and the tone map is `clip`, so ink and accent keep their colours.",
+  "craft_note": "Every curve is a Timeline track with After Effects influence. Low `outInfluence` leaves sharp, high `inInfluence` lands soft: tune them like the Graph Editor. Swiss means flush left and a grid you can see."
+}

@@ -1,0 +1,11 @@
+/* Motionsmith font kit: three open-source variable families (SIL Open Font License 1.1, see the OFL-*.txt files).
+   new_piece.py copies this folder into <piece>/assets/fonts/ and index.html links this file, so every machine draws
+   the same letters. Variable axes animate from Canvas 2D: any weight in the font string ("537 120px Archivo") and,
+   for Archivo, the width through ctx.fontStretch ('extra-condensed' 62.5 % … 'expanded' 125 %).
+   Archivo: grotesque, weights 100–900, widths 62–125 %. Fraunces: soft display serif, weights 100–900.
+   JetBrains Mono: monospace, weights 100–800. */
+@font-face { font-family: "Archivo"; src: url("Archivo-VF.ttf") format("truetype"); font-weight: 100 900; font-stretch: 62% 125%; font-style: normal; font-display: block; }
+@font-face { font-family: "Archivo"; src: url("Archivo-Italic-VF.ttf") format("truetype"); font-weight: 100 900; font-stretch: 62% 125%; font-style: italic; font-display: block; }
+@font-face { font-family: "Fraunces"; src: url("Fraunces-VF.ttf") format("truetype"); font-weight: 100 900; font-style: normal; font-display: block; }
+@font-face { font-family: "Fraunces"; src: url("Fraunces-Italic-VF.ttf") format("truetype"); font-weight: 100 900; font-style: italic; font-display: block; }
+@font-face { font-family: "JetBrains Mono"; src: url("JetBrainsMono-VF.ttf") format("truetype"); font-weight: 100 800; font-style: normal; font-display: block; }

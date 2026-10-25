@@ -1,0 +1,29 @@
+{
+  "what": "Logo reveal: pieces of a mark fly in on arcs, lock on one hit and settle; a glint crosses it and returns; the wordmark tracks in",
+  "title": "BRAND",
+  "mode": "glow",
+  "default_seconds": 4,
+  "min_seconds": 3,
+  "intent": "Introduce the brand with one strong lock and a clean end card",
+  "action": "Pieces of the mark accelerate into place and lock (punch, flash, shock ring), recoil and settle; a glint crosses the mark and returns every 1.6 s; the wordmark tracks in from wide spacing; a tagline settles; dust drifts and the accent breathes while it holds",
+  "hits": [
+    {
+      "role": "mark locks",
+      "time": 0.85,
+      "amplitude": 1
+    },
+    {
+      "role": "glint",
+      "time": 1.2,
+      "amplitude": 0.35
+    },
+    {
+      "role": "wordmark",
+      "time": 1.45,
+      "amplitude": 0.5
+    }
+  ],
+  "look": "Minimal glow: charcoal, warm white, one red accent, bloom in halo mode (style atlas #8)",
+  "make_it_yours": "Paste your logo's SVG path data into `MARK` (viewBox 0 0 100 100), one entry per piece that should fly. Give each piece its `pivot` (its own centre) so it spins on itself. Put the piece that must keep an exact brand colour on `layer: 'top'`.",
+  "craft_note": "Pieces accelerate into the lock (`power2.in`) so the energy lands on the hit, then recoil and settle: nothing stops dead. If it reads too aggressive, shorten the arcs (`from`) before softening the curve."
+}

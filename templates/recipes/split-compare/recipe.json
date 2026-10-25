@@ -1,0 +1,34 @@
+{
+  "what": "Split compare: a divider whips from BEFORE to AFTER under a headline band, springs to the middle, holds alive and ends on AFTER",
+  "title": "Same frame, two decisions",
+  "mode": "glow",
+  "default_seconds": 6,
+  "min_seconds": 3,
+  "intent": "Show a change by letting the viewer see both states at once",
+  "action": "BEFORE strokes boil on slate; a divider whips across with heavy blur to reveal AFTER (a calm grid with one accent point), springs back to the middle and settles; labels pop in; a wave, a light beam and a pulse keep the hold alive; AFTER takes the frame to end",
+  "hits": [
+    {
+      "role": "whip",
+      "time": 0.6,
+      "amplitude": 1
+    },
+    {
+      "role": "settle",
+      "time": 1.5,
+      "amplitude": 0.8
+    },
+    {
+      "role": "labels",
+      "time": 1.75,
+      "amplitude": 0.4
+    },
+    {
+      "role": "exit",
+      "from_end": 0.6,
+      "amplitude": 0.6
+    }
+  ],
+  "look": "Duotone: slate and paper, ink, one emerald accent (style atlas #19 and #23)",
+  "make_it_yours": "Replace `drawBefore()` and `drawAfter()` with your two states. Set the headline (`--title`) and `LABELS`.",
+  "craft_note": "The headline sits on its own band, so it reads over both halves and the divider never crosses it. The whip uses a 360° shutter for a fuller smear. The piece ends on AFTER: finish on the answer."
+}

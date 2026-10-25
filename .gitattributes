@@ -1,0 +1,10 @@
+# Same line endings on every system: scripts and guides stay LF; fonts and media are binary.
+* text=auto eol=lf
+*.ttf binary
+*.otf binary
+*.woff2 binary
+*.gif binary
+*.png binary
+*.jpg binary
+*.mp4 binary
+*.wav binary

@@ -1,0 +1,29 @@
+{
+  "what": "Lower third: an accent bar grows, name and role panels wipe out from behind it, a progress line fills while it holds, then it wipes back",
+  "title": "Name Surname",
+  "mode": "editorial",
+  "default_seconds": 5,
+  "min_seconds": 3,
+  "intent": "Say who is speaking without covering them or stealing the shot",
+  "action": "The accent bar is already growing on frame 0; the name panel wipes out from behind it with the name rising in its mask, the role panel follows a beat later; while it holds a light runs down the bar and a progress line fills; everything wipes back into the bar",
+  "hits": [
+    {
+      "role": "bar in",
+      "time": 0.12,
+      "amplitude": 0.4
+    },
+    {
+      "role": "name in",
+      "time": 0.4,
+      "amplitude": 0.6
+    },
+    {
+      "role": "out",
+      "from_end": 0.9,
+      "amplitude": 0.4
+    }
+  ],
+  "look": "Clean broadcast: white and ink panels, one signal-yellow accent, over a footage placeholder",
+  "make_it_yours": "Set the name (`--title`) and `ROLE`. `BACKDROP = false` gives a flat background; for real footage see `references/produce/overlays-alpha.md`.",
+  "craft_note": "Lower thirds live on the bottom of the safe area and get an ambient budget while they hold (a light on the bar, a progress line), never accents that pull the eye from the speaker. Check them against the platform's interface (`references/edit/formats-platforms.md`)."
+}

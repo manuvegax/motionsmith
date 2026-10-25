@@ -1,0 +1,22 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Motionsmith piece</title>
+<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#000}
+#root{position:relative;width:100%;height:100%;overflow:hidden}#art{display:block}</style>
+<!-- The font kit (Archivo, Fraunces, JetBrains Mono; SIL OFL) travels with the piece. Add another face with
+     @font-face (a local file in assets/) and check it with determinism_check --font "800 200px Archivo".
+     The canvas takes its size from plan.json. -->
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+</head><body>
+<!-- The root carries the HyperFrames contract (references/produce/hyperframes.md): the piece also opens in HyperFrames
+     Studio and renders with `npx hyperframes render`. scripts/hyperframes.py keeps these numbers equal to plan.json. -->
+<div id="root" data-motionsmith-root data-composition-id="motionsmith" data-start="0" data-width="1080" data-height="1920" data-duration="4" data-fps="60">
+<canvas id="art" width="1080" height="1920"></canvas>
+</div>
+<!-- Motionsmith's own tools (determinism_check, sample_frames, render_stream) serve this folder and read plan.json. -->
+<script src="kit/motion-math.js"></script>
+<script src="kit/postfx-glsl.js"></script>
+<script src="kit/timeline.js"></script>
+<script src="kit/kinetic-type.js"></script>
+<script src="kit/stage.js"></script>
+<script src="piece.js"></script>
+<script src="kit/hyperframes.js"></script>
+</body></html>

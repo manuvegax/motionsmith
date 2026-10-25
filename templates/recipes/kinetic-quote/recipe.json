@@ -1,0 +1,29 @@
+{
+  "what": "Kinetic quote: words cascade in while cycling type faces; the keyword lands last, twice the size, on its own hit",
+  "title": "The eye only sees what the mind is *ready* for",
+  "mode": "kinetic",
+  "default_seconds": 6,
+  "min_seconds": 4,
+  "intent": "Make one sentence land, with the keyword as the payoff",
+  "action": "Words cascade in letter by letter, cycling faces at 12 fps before they settle; a short vacuum; the keyword lands on its own line, about twice the size, in the accent, with a print kick and outline echoes; a giant outline marquee slides behind; lines leave one by one",
+  "hits": [
+    {
+      "role": "first word",
+      "time": 0.06,
+      "amplitude": 0.5
+    },
+    {
+      "role": "keyword lands",
+      "time": 2.6,
+      "amplitude": 1
+    },
+    {
+      "role": "exit",
+      "from_end": 0.62,
+      "amplitude": 0.4
+    }
+  ],
+  "make_it_yours": "Mark the keyword with asterisks in the title: `--title \"the mind is *ready* for\"`. `|` forces a line break. Change `FACES` to the faces you have (the last one is where words settle) and `KEY_SCALE` for the keyword's size.",
+  "craft_note": "The keyword is the hero: its own line, about twice the size, its own hit. The words before it are spread so it lands after a short vacuum (`VACUUM`). Long sentences get a longer `--duration` or a later `keyword lands` hit.",
+  "look": "Typographic poster: warm paper, black ink, one ultramarine word (style atlas #9)"
+}

@@ -1,0 +1,19 @@
+# Personal taste profiles stay on your machine (see profiles/README.md)
+profiles/personal/*
+!profiles/personal/.gitkeep
+
+# Python / Node
+__pycache__/
+*.pyc
+node_modules/
+
+# Render output and inspection frames
+*.mp4
+*.mov
+*.wav
+!examples/**/*.mp4
+preview/
+final/
+.DS_Store
+Thumbs.db
+work/

@@ -1,0 +1,38 @@
+# GitHub Actions workflow for Motionsmith. To turn it on, copy this file to .github/workflows/tests.yml
+# (pushing a workflow needs a token with the `workflow` scope: `gh auth refresh -s workflow`).
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read            # the tests only read the repository
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:                      # the oldest versions the README promises, and current ones
+          - {python: "3.10", node: "18"}
+          - {python: "3.12", node: "20"}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - name: Install Python packages
+        run: python -m pip install "numpy>=1.24,<3" "pillow>=10,<13"
+      - name: Syntax of the kit and the scripts
+        run: |
+          for f in scripts/kit/*.js scripts/kit/*.mjs scripts/*.mjs templates/*/*.js templates/recipes/*/piece.js tests/*.js tests/*.mjs; do node --check "$f"; done
+      - name: Unit tests (browser tests skip themselves without Playwright)
+        run: python -m unittest discover -s tests -v
