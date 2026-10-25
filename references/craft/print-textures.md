@@ -20,6 +20,37 @@ Screen printing and risography print **flat inks** one by one on paper. What giv
 
 A brand built on paper, ink and one accent is already a two-ink palette: screen print suits it naturally.
 
+## 1b. Real textures: paper, fabric, glass
+
+A scanned or photographed texture gives matter that code noise does not: fibres, creases, uneven ink. Keep the file in
+the piece's `assets/` (captures load nothing from outside the folder) at the frame size or a little larger.
+
+```js
+// setup()
+paper = await env.loadImage('assets/paper-crumpled.jpg');
+// draw(), after the picture on base: the texture multiplies, so white stays white and the ink darkens a little
+base.save(); base.globalCompositeOperation = 'multiply'; base.globalAlpha = .3;
+base.drawImage(paper, drift[0], drift[1], W * 1.04, H * 1.04);   // a little larger, so a slow drift never shows an edge
+base.restore();
+```
+
+| Texture | Blend | Opacity | Notes |
+|---|---|---|---|
+| Light paper over a flat colour | `multiply` | 0.2–0.4 | The default layer of matter; keep it off small text if it drops contrast |
+| Dark paper or fabric as the ground | normal (draw first) | 1 | Text in a light ink; check contrast on the real pixels |
+| Glass, light streaks | `screen` on base, or draw on the `light` layer | 0.3–0.8 | On `light` it feeds the bloom: it glows |
+| Any texture that should feel printed | `multiply`, then `Stage.looks.print` | 0.2–0.3 | The halftone of the print pass sits on top of the scan |
+
+- **Move it a little.** A texture that stays perfectly still while everything moves reads as a sticker. Drift it 1–2 %
+  of the frame over the piece, or jump its offset on a 12 fps grid (a "boil" of the paper, see [stepped
+  time](stepped-time.md)). Same offset for the same `t`: compute it from `t`, never from a counter.
+- **Resolution.** Draw at 1:1 or downscale. An image upscaled more than about 1.5× looks soft: use it only blurred or as
+  light.
+- **Tiling.** Only textures with matching edges tile; test by drawing two copies side by side at full size.
+- **The platform's re-encode** eats fine paper grain first: check it ([formats §7b](../edit/formats-platforms.md#7b-survive-the-platform)).
+- **Provenance.** Record where each file came from and its licence next to it; generated or AI-enhanced textures say
+  so in their metadata (`xmp:CreatorTool`). A public repository or a client job needs a licence you can show.
+
 ## 2. The `screenPrint` pass
 
 It runs on the tone-mapped (sRGB) image, so after `finish`:

@@ -21,7 +21,7 @@
    centre, a point on the rim of something that scales). The stage measures how far the fastest one travels in one
    frame and picks the number of samples. Give speed(a, b, env) → px per frame instead for anything track misses.
    env: {W, H, U (short side), FPS, DURATION, HITS, safe, plan, M (MotionMath), hit(role, fallback), fit(...),
-   fitLines(...), base, light, top}. hit('keyword lands', 2.6) reads a time from the plan's hits, so the image and the
+   fitLines(...), loadImage(src), base, light, top}. hit('keyword lands', 2.6) reads a time from the plan's hits, so the image and the
    soundtrack move together when someone retimes plan.json. Options: shutter (270), lightGain (3), layers (['light', 'top']), bloom ({levels, radius}), finish
    (PostFX.finish options), maxSamples (64), post (a last pass on the tone-mapped frame, before the top layer):
      post: Stage.looks.print({inks: 1, strength: .3})   // screen print / riso, misregistration kicks on the hits
@@ -202,6 +202,16 @@
       const ctx = measure(), make = s => `${style ? style + ' ' : ''}${weight} ${s}px ${family}`;
       const result = fitLines(text, (s, size) => { ctx.font = make(size); return ctx.measureText(s).width; }, {width: env.W, ...opts});
       return {...result, font: make(result.size)};
+    };
+    /* Decode an image of the piece's own folder once, in setup(): paper = await env.loadImage('assets/paper.jpg').
+       Draw it with drawImage (a texture as a 'multiply' layer, a photo as a background). Outside a browser (the
+       headless checks) it returns a 1×1 stand-in. */
+    env.loadImage = async src => {
+      if (typeof root.Image !== 'function') return {width: 1, height: 1, src, stub: true};
+      const image = new root.Image();
+      image.src = src;
+      await image.decode();
+      return image;
     };
     Object.defineProperty(env, 'base', {get: measure, enumerable: true});
     return env;

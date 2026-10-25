@@ -1,5 +1,5 @@
 """Deterministic sound design for motion pieces: voices, a seeded score, a stereo room, a high-pass and a loudness target
-measured by FFmpeg. NumPy synthesis only (no samples, no music). The command-line entry point is
+measured by FFmpeg. NumPy synthesis, plus an optional recorded music bed (sfx/music.py). The command-line entry point is
 scripts/build_soundtrack.py; plan and cue formats are documented in sfx/schedule.py.
 """
 from .core import SR, Score

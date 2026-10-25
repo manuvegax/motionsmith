@@ -1,4 +1,4 @@
-"""Build a soundtrack whose impacts sit on a piece's hits: NumPy synthesis, FFmpeg-measured loudness, no music.
+"""Build a soundtrack whose impacts sit on a piece's hits: NumPy synthesis (plus an optional recorded music bed, see sfx/music.py), FFmpeg-measured loudness.
 
   python scripts/build_soundtrack.py --plan plan.json [--cues cues.json] --out assets/soundtrack.wav [--seed 1]
       [--lufs -16] [--tp -1.5] [--tolerance-lu 1.0] [--report preview/soundtrack-report.json] [--replace]
@@ -77,7 +77,8 @@ def main() -> int:
     try:
         plan = read_json(args.plan)
         cues = read_json(args.cues) if args.cues else {}
-        master, placed = render(plan, cues, args.seed, SR)
+        base = (args.cues or args.plan).resolve().parent   # music files in cues.json are relative to it
+        master, placed = render(plan, cues, args.seed, SR, base=base)
     except (ValueError, TypeError, KeyError) as error:
         print(f"error: {error}", file=sys.stderr)
         return 2

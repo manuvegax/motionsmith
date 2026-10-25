@@ -56,6 +56,26 @@ below 0.3) and the mono-fold loss (`mono_fold_loss_db`, warning above 4.5 dB; un
 - **AAC moves the peak**: −1.55 dBTP in a WAV became −1.2 dBFS in the MP4. Measure the final file again.
 - Edges: a 10 ms fade-in and a last sample at zero; `audio_check.py` warns about clicks at the edges.
 
+## 4b. A music bed under the hits
+
+Sound design without music is the default; when a piece wants a recorded bed (an intro, a loop the person chose),
+`build_soundtrack.py` mixes it under the synthesized hits with a `music` cue:
+
+```json
+{"cues": [{"voice": "music", "file": "assets/bed.wav", "gain_db": -6, "start_bar": 4, "bpm": 90,
+           "fade_in": 0.4, "fade_out": 1.2, "duck_db": -8}]}
+```
+
+- **Align it to the bar**: `start_bar` + `bpm` (and `beats_per_bar`, 4 by default) start reading the file on a
+  downbeat; put the piece's first hit on a downbeat of the bed too (`60 / bpm × 4` s per bar).
+- **Duck it on the hits**: `duck_db` dips the bed on every hit of the plan (12 ms attack, 350 ms release by default),
+  so the impact reads first. −6 to −10 dB is a clear dip without pumping.
+- **Level**: the whole mix is mastered to the loudness target, so `gain_db` sets the bed against the effects, not the
+  final level; −6 to −12 dB under the hits is a starting point.
+- It loops to cover the piece (`"loop": false` to stop at the end of the file), fades in and out, and goes in after the
+  room, so it keeps its own space. Same file and settings, same samples; the report records the file's hash.
+- A file the person downloaded carries a licence: check it before publishing (attribution, commercial use).
+
 ## 5. Sync
 
 - `audio_check.py --plan plan.json` looks for an attack between 45 ms before and 125 ms after each `hit` and

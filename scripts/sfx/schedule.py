@@ -9,19 +9,23 @@ cues.json   {"role_voices": {"impact": "hit"},          optional: role → voice
                {"time": 1.28, "voice": "whoosh", "duration": 0.44, "pan_from": 0.75, "pan_to": -0.85},
                {"voice": "bed", "levels": [[0, 0.08], [7, 0.3], [12, 0]]},
                {"voice": "duck", "time": 7.97, "fall": 0.07, "hold": 0.165, "rise": 0.04, "depth": 0.94},
-               {"voice": "room", "seconds": 2.3, "decay": 0.48, "wet": 0.55}
+               {"voice": "room", "seconds": 2.3, "decay": 0.48, "wet": 0.55},
+               {"voice": "music", "file": "assets/bed.wav", "gain_db": -6, "start_bar": 0, "bpm": 90, "duck_db": -8}
              ]}
+"music" puts a recorded bed under the score (sfx/music.py): aligned to the bar, looped, faded, ducked on each hit.
 Every voice parameter is checked against the voice's signature: an unknown name is an error, never silently ignored.
 """
 from __future__ import annotations
 
 import inspect
 import math
+from pathlib import Path
 
 import numpy as np
 
 from .core import SR, Score
 from .master import duck_envelope, high_pass, room
+from .music import bed_from_file
 from .voices import LAYERS, VOICES, bed
 
 DEFAULT_ROLE_VOICES = {"hit": "hit", "impact": "hit", "stamp": "hit", "boom": "boom", "glass": "glass", "slap": "slap",
@@ -83,9 +87,10 @@ def plan_duration(plan: dict, cues: dict | None = None) -> float:
     return _number((cues or {}).get("duration"), "plan.json duration (or duration_frames and fps)")
 
 
-def render(plan: dict, cues: dict | None, seed: int, sr: int = SR):
+def render(plan: dict, cues: dict | None, seed: int, sr: int = SR, base: Path | None = None):
     """Render the score. Returns (master, report): master is float64 (samples, 2) before the loudness search, with
-    fades applied; report lists every hit and cue as it was placed (for the audit)."""
+    fades applied; report lists every hit and cue as it was placed (for the audit). base: the folder that relative
+    music files are read from (build_soundtrack.py passes the cues file's folder)."""
     cues = cues or {}
     duration = plan_duration(plan, cues)
     if not duration > 0:
@@ -119,9 +124,13 @@ def render(plan: dict, cues: dict | None, seed: int, sr: int = SR):
     # Cues in list order: any voice, with its parameters checked against its signature.
     duck_events = []
     room_settings = {"seconds": 2.3, "decay": .48, "wet": .55}
+    music = []
     for entry in entries:
         name = entry.get("voice")
         if name == "bed":
+            continue
+        if name == "music":
+            music.append({k: v for k, v in entry.items() if k != "voice"})
             continue
         if name == "room":
             params = {k: v for k, v in entry.items() if k not in ("voice", "time")}
@@ -157,6 +166,10 @@ def render(plan: dict, cues: dict | None, seed: int, sr: int = SR):
 
     master = score.dry + room(score, **room_settings)
     report["layers"]["room"] = room_settings
+    for params in music:   # after the room: a recorded bed keeps its own space
+        layer, info = bed_from_file(params, duration, sr, normalize_hits(plan.get("hits")), base)
+        master = master + layer[: len(master)]
+        report["layers"].setdefault("music", []).append(info)
     if duck_events:
         master = master * duck_envelope(score.samples, sr, duck_events)[:, None]
     highpass = _number(cues.get("highpass_hz", 35), "highpass_hz")

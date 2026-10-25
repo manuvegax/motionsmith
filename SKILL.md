@@ -152,13 +152,13 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | Tool | What it does (and does not) |
 |---|---|
 | `scripts/new_piece.py` | New piece from the starter or a recipe (`--recipe`), in five formats (`--format`), with its own kit, fonts and a valid plan; `--hyperframes` also makes it a HyperFrames project; never overwrites, never inside the skill |
-| `scripts/kit/stage.js` | The shared render plumbing: capture contract, sub-frame motion blur from tracked points, base/light/top layers, HDR bloom and tone map, `post` looks (`Stage.looks.print`, `crt`), `hit(role)`, `fit`, `fitLines` (balanced, phrase-aware breaks), `FONTS` and `font()` for variable type; `createEnv` runs a piece without a GPU (`tests/recipes_check.js`) |
+| `scripts/kit/stage.js` | The shared render plumbing: capture contract, sub-frame motion blur from tracked points, base/light/top layers, HDR bloom and tone map, `post` looks (`Stage.looks.print`, `crt`), `loadImage` (real textures), `hit(role)`, `fit`, `fitLines` (balanced, phrase-aware breaks), `FONTS` and `font()` for variable type; `createEnv` runs a piece without a GPU (`tests/recipes_check.js`) |
 | `scripts/hyperframes.py` · `scripts/kit/hyperframes.js` | `sync`: the piece as a HyperFrames project (root contract, paused timeline, pinned CLI), `--check` for drift · `clip`: a rendered piece into a HyperFrames film · the bridge that answers HyperFrames' seeks |
 | `templates/fonts/` | Archivo (weights 100–900, widths 62–125 %), Fraunces, JetBrains Mono: SIL OFL, copied into every piece |
 | `scripts/kit/motion-math.js` | AE curves (Easy Ease, influence, cubic-bezier, classic names), springs, followers, wiggle, loops, stagger, speed ramps, stepped time, echo, paths, glyph layout, exposure samples |
 | `scripts/kit/postfx-glsl.js` | Directional, radial and lens blur (bokeh), bloom (halo, physical, thresholded), halation, light wrap, light sweep, tone maps, grade, screen print, CRT |
 | `scripts/kit/timeline.js` · `scripts/kit/kinetic-type.js` | Declarative keyframes with AE eases and hits · kinetic type: cascades, font cycling, glitch, echoes, typewriter, marquee, karaoke captions |
-| `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks…) and a soundtrack built from the plan's hits |
+| `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks…) and a soundtrack built from the plan's hits; an optional recorded music bed under them (`music` cue: bar-aligned, looped, ducked on the hits) |
 | `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type |
 | `scripts/determinism_check.mjs` | Out-of-order seeks, fresh page and fonts; not smoothness |
 | `scripts/sample_frames.mjs` | Chosen instants, exact frames (`--frames`), lossless (`--png`) and alpha (`--alpha`) |
