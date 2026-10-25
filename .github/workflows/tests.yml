@@ -1,5 +1,3 @@
-# GitHub Actions workflow for Motionsmith. To turn it on, copy this file to .github/workflows/tests.yml
-# (pushing a workflow needs a token with the `workflow` scope: `gh auth refresh -s workflow`).
 name: tests
 
 on:

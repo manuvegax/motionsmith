@@ -154,9 +154,8 @@ python -m unittest discover -s tests
 
 Browser tests skip themselves without Playwright and a Chromium that launches. The rest runs anywhere, including a
 headless pass over every recipe in every format with odd titles (`tests/recipes_check.js`: no GPU needed).
-`MOTION_TEST_HYPERFRAMES=1` also runs the HyperFrames CLI. A GitHub Actions workflow for the oldest and newest
-supported Python and Node is in [ci/github-actions-tests.yml](ci/github-actions-tests.yml): copy it to
-`.github/workflows/` to run it on every push.
+`MOTION_TEST_HYPERFRAMES=1` also runs the HyperFrames CLI. GitHub Actions runs the suite on every push and pull
+request, on the oldest and newest supported Python and Node ([workflow](.github/workflows/tests.yml)).
 
 ## Credits and licence
 
