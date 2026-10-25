@@ -59,7 +59,7 @@ def high_pass(signal: np.ndarray, sr: int, hz: float = 35.0) -> np.ndarray:
     return np.fft.irfft(spectrum, n=count, axis=0)
 
 
-def ffmpeg_measure(ffmpeg: str, samples=None, path=None, target_lufs: float = -16.0, target_tp: float = -1.5,
+def ffmpeg_measure(ffmpeg: str, samples=None, path=None, target_lufs: float = -16.0, target_tp: float = -2.0,
                    sr: int = SR) -> dict:
     """Integrated loudness, true peak and loudness range from FFmpeg's loudnorm analysis (input measurement).
     Pass float32 interleaved stereo samples (piped) or a file path."""
@@ -101,7 +101,7 @@ def independent_ebur128(ffmpeg: str, path) -> dict:
     return {"integrated_lufs": float(integrated[1]), "true_peak_dbtp": float(peak[1]), "method": "ffmpeg ebur128=peak=true"}
 
 
-def master_to_target(samples: np.ndarray, ffmpeg: str, target_lufs: float = -16.0, target_tp: float = -1.5,
+def master_to_target(samples: np.ndarray, ffmpeg: str, target_lufs: float = -16.0, target_tp: float = -2.0,
                      sr: int = SR):
     """Find the saturation drive whose output, gained so that its true peak sits just under the ceiling, has the
     integrated loudness closest to the target. Returns (samples, report). The search is bounded: a poor fit is

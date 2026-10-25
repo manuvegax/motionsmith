@@ -1,7 +1,7 @@
 """Build a soundtrack whose impacts sit on a piece's hits: NumPy synthesis (plus an optional recorded music bed, see sfx/music.py), FFmpeg-measured loudness.
 
   python scripts/build_soundtrack.py --plan plan.json [--cues cues.json] --out assets/soundtrack.wav [--seed 1]
-      [--lufs -16] [--tp -1.5] [--tolerance-lu 1.0] [--report preview/soundtrack-report.json] [--replace]
+      [--lufs -16] [--tp -2.0] [--tolerance-lu 1.0] [--report preview/soundtrack-report.json] [--replace]
 
 plan.json and cues.json are described in sfx/schedule.py. The WAV is 16-bit stereo at 48 kHz and identical for the same
 plan, cues and seed. It is written only when its integrated loudness lands within the tolerance of the target and its
@@ -55,7 +55,8 @@ def main() -> int:
     parser.add_argument("--out", type=Path, required=True, help="WAV to write, e.g. assets/soundtrack.wav")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="same seed, same samples (default 1)")
     parser.add_argument("--lufs", type=float, default=-16.0, help="integrated loudness target in LUFS")
-    parser.add_argument("--tp", type=float, default=-1.5, help="true peak ceiling in dBTP")
+    parser.add_argument("--tp", type=float, default=-2.0,
+                        help="true peak ceiling of the WAV in dBTP (AAC adds up to ~1 dB: -2 keeps the MP4 under -1)")
     parser.add_argument("--tolerance-lu", type=float, default=1.0, help="accepted distance from the loudness target")
     parser.add_argument("--report", type=Path, help="JSON with the placed events, mastering and measurements")
     parser.add_argument("--replace", action="store_true", help="overwrite the WAV (and the report) if they exist")

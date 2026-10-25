@@ -49,11 +49,12 @@ below 0.3) and the mono-fold loss (`mono_fold_loss_db`, warning above 4.5 dB; un
 
 ## 4. Loudness and master
 
-- A sensible delivery target for social video: **−16 LUFS integrated and ≤ −1.5 dBTP in the WAV** (a delivery
+- A sensible delivery target for social video: **−16 LUFS integrated and ≤ −2 dBTP in the WAV** (a delivery
   decision, not a platform mandate; see [formats & platforms](../edit/formats-platforms.md)).
 - Master with bus saturation at a drive found by measuring the result, then gain up to the peak ceiling. With little
   peak and lots of noise, gain = min(peak ceiling, LUFS target).
-- **AAC moves the peak**: −1.55 dBTP in a WAV became −1.2 dBFS in the MP4. Measure the final file again.
+- **AAC moves the peak**: −1.55 dBTP in a WAV became −1.2 dBTP in one MP4 and −0.8 dBTP in another (with a dense
+  music bed). The WAV keeps −2 dBTP so the MP4 stays under −1. Measure the final file again (`audio_check.py` on the MP4).
 - Edges: a 10 ms fade-in and a last sample at zero; `audio_check.py` warns about clicks at the edges.
 
 ## 4b. A music bed under the hits

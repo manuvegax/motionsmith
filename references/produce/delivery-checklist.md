@@ -23,7 +23,7 @@ Run before telling anyone a piece is ready. Platform specifics (sizes, safe zone
 | Check | Expected | How |
 |---|---|---|
 | Loudness | The profile's target (default −16 LUFS integrated) | `audio_check.py` on the MP4 |
-| Peak | ≤ −1.5 dBTP in the WAV; ≤ −1.0 dBTP in the AAC file | `audio_check.py --max-true-peak -1.5` on the WAV, default on the MP4 |
+| Peak | ≤ −2 dBTP in the WAV; ≤ −1.0 dBTP in the AAC file | `audio_check.py --max-true-peak -2` on the WAV, default on the MP4 |
 | Sync | An attack within −45/+125 ms of each hit | `audio_check.py --plan plan.json` |
 | Phone | Energy above 120 Hz carries the piece; mono fold loss ≤ 4.5 dB | `audio_check.py` warnings and notes |
 | Edges | Fade-in, last sample at zero | `audio_check.py` |

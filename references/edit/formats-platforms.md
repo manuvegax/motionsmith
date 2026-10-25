@@ -64,7 +64,7 @@ Sizes, durations, safe zones, loudness, codec, colour tags and frame rate for th
 
 | Target | Value | Basis |
 |---|---|---|
-| Motionsmith default | Integrated −16 LUFS; true peak ≤ −1.5 dBTP in the WAV, ≤ −1 dBTP in the MP4 | The default of `build_soundtrack.py`, the sound template and the delivery checklist: AAC raises peaks, so the WAV keeps 0.5 dB more room ([sound design](../craft/sound-design.md)) |
+| Motionsmith default | Integrated −16 LUFS; true peak ≤ −2 dBTP in the WAV, ≤ −1 dBTP in the MP4 | The default of `build_soundtrack.py`, the sound template and the delivery checklist: AAC raises peaks by up to about 1 dB, so the WAV keeps that room ([sound design](../craft/sound-design.md)) |
 | Social short-form, louder | Integrated about −14 LUFS; true peak −1 dBTP | Common target in the guides and in streaming normalisation (verify per platform). Platforms normalise anyway; −16 to −14 is the safe range. Set it in a profile (`build_soundtrack.py --lufs -14`) |
 | Broadcast reference | Integrated −23 LUFS; true peak −1 dBTP | EBU R 128 |
 
@@ -72,7 +72,7 @@ Measure and normalise with FFmpeg:
 
 ```
 ffmpeg -i export.mp4 -af ebur128=peak=true -f null -
-ffmpeg -i mix.wav -af loudnorm=I=-16:TP=-1.5:LRA=11 -ar 48000 mix-norm.wav
+ffmpeg -i mix.wav -af loudnorm=I=-16:TP=-2:LRA=11 -ar 48000 mix-norm.wav
 ```
 
 - Measure the final MP4, not only the WAV: AAC changes the peaks and the loudness. `scripts/audio_check.py` reports loudness and sections for the WAV and for the muxed video (see [music-editing.md](music-editing.md)).

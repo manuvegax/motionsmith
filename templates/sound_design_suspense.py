@@ -28,7 +28,7 @@ N = round(SR * DURATION)
 SEED = 202610220601                  # EDIT: one seed per piece (determinism)
 TITLE = "Reveal example"            # EDIT: name in audio-notes.md
 VACUUM = (7.97, 8.205)               # EDIT: (start, end) of the silence before the reveal, or None
-TARGET_LUFS, TARGET_TP = -16.0, -1.5
+TARGET_LUFS, TARGET_TP = -16.0, -2.0
 rng = np.random.default_rng(SEED)
 dry = np.zeros((N, 2), dtype=np.float64)
 send = np.zeros_like(dry)
