@@ -3,7 +3,9 @@
 
    node render_stream.mjs --root <piece> --out final/pieza.mp4 [--audio assets/soundtrack.wav | --no-audio]
         [--crf 14] [--preset medium] [--start 6.4 --end 8.8] [--min-free-gb 1]
-   --start/--end render a proxy of the hardest stretch with its audio slice, before the full render. */
+   --start/--end render a proxy of the hardest stretch with its audio slice, before the full render.
+   --frames a:b renders exactly frames a..b-1 (render_parallel.mjs uses it for its chunks); --report <file> writes the
+   render report there instead of next to the video. */
 import fs from 'node:fs/promises';
 import {existsSync} from 'node:fs';
 import path from 'node:path';
@@ -11,7 +13,7 @@ import {spawn, spawnSync} from 'node:child_process';
 import {once} from 'node:events';
 import {openComposition, seek, parseArgs} from './kit/runtime.mjs';
 
-const usage = 'Usage: node render_stream.mjs --root <piece> --out <file.mp4> [--audio file | --no-audio] [--crf 14] [--preset medium] [--start s] [--end s] [--min-free-gb 1] [--page sub/index.html] [--node-modules dir] [--chrome exe]';
+const usage = 'Usage: node render_stream.mjs --root <piece> --out <file.mp4> [--audio file | --no-audio] [--crf 14] [--preset medium] [--start s] [--end s | --frames a:b] [--report file] [--min-free-gb 1] [--page sub/index.html] [--node-modules dir] [--chrome exe]';
 let args;
 try { args = parseArgs(process.argv.slice(2), {flags: ['no-audio', 'help']}); }
 catch (error) { console.error(error.message + '\n' + usage); process.exit(2); }
@@ -41,8 +43,15 @@ const session = await openComposition({root, page: args.page, nodeModules: args[
 let ffmpeg, current = null;
 try {
   const {page, config, errors} = session;
-  const start = Number(args.start ?? 0), end = Number(args.end ?? config.duration);
-  const first = Math.round(start * config.fps), last = Math.min(config.frames, Math.round(end * config.fps));
+  let first, last;
+  if (args.frames) {
+    const [a, b] = String(args.frames).split(':').map(Number);
+    if (!Number.isInteger(a) || !Number.isInteger(b) || a < 0) throw new Error(`Bad --frames ${args.frames}; use first:last (last excluded)`);
+    first = a; last = Math.min(config.frames, b);
+  } else {
+    const start = Number(args.start ?? 0), end = Number(args.end ?? config.duration);
+    first = Math.round(start * config.fps); last = Math.min(config.frames, Math.round(end * config.fps));
+  }
   if (!(last > first)) throw new Error(`Empty frame range ${first}..${last}`);
   const count = last - first, seconds = count / config.fps;
   const ffArgs = ['-hide_banner', '-loglevel', 'warning', '-n', '-f', 'image2pipe', '-vcodec', 'png',
@@ -92,7 +101,7 @@ try {
   // other piece the video is written into); a video written anywhere else gets the report next to it.
   const insideRoot = output.startsWith(root + path.sep), outDir = path.dirname(output);
   const reportDir = insideRoot ? path.join(root, 'preview') : path.basename(outDir) === 'final' ? path.join(path.dirname(outDir), 'preview') : outDir;
-  const reportPath = path.join(reportDir, path.basename(output, path.extname(output)) + '.render-report.json');
+  const reportPath = args.report ? path.resolve(args.report) : path.join(reportDir, path.basename(output, path.extname(output)) + '.render-report.json');
   await fs.mkdir(path.dirname(reportPath), {recursive: true});
   await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
   console.log(JSON.stringify({completed: true, output, frames: count, size_mb: report.size_mb, video_mbps: report.video_mbps,

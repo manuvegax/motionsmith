@@ -112,6 +112,30 @@ t_j = c + ((j + 0.5) / M - 0.5) * exposure,   j = 0..M-1     (c = (n + 0.5) / fp
 - **Many cores**: HyperFrames renders the same piece with several capture workers in parallel
   ([HyperFrames](hyperframes.md)).
 
+## 3b. Long pieces: parallel chunks that resume
+
+A 1080×1920 frame with real motion blur costs 1–2 s, so a 20–90 s piece (a voice-over, an explainer) takes long in
+one pass: a 18.7 s voice-over at 30 fps took 13 minutes with `render_stream.mjs`. `render_parallel.mjs` renders the
+same frames in chunks, several browsers at once, and joins them without re-encoding:
+
+```bash
+node <skill>/scripts/render_parallel.mjs --root <piece> --out final/piece.mp4 --workers 3 --crf 20
+```
+
+| Measured (laptop GPU, 18.7 s, 1080×1920, 30 fps) | Wall time |
+|---|---|
+| `render_stream.mjs`, one pass | 13.0 min |
+| `render_parallel.mjs --workers 3` | 6.0 min (2.2× faster) |
+
+- Chunks default to about three per worker (at least 2 s), so no browser idles at the end. More workers share one
+  GPU: 2–4 is the useful range; measure on the machine.
+- A chunk that fails (a browser dying in a long capture) is retried twice. An interrupted render resumes: run the same
+  command again. Finished chunks live in `preview/chunks/<name>-<fingerprint>/`; the fingerprint covers every file
+  of the piece and the encoder settings, so a changed piece never reuses an old chunk.
+- The frames are the same as one pass (every frame is a function of t); only keyframe placement differs. The result
+  is checked frame for frame against `duration_frames`.
+- For HyperFrames projects, `hyperframes render` has its own parallel workers ([HyperFrames](hyperframes.md)).
+
 ## 4. The capture kit
 
 Resolves Playwright and Chromium without user-specific paths (`--node-modules` / `--chrome`, or `MOTION_NODE_MODULES`

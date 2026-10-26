@@ -58,7 +58,7 @@ never holds a dead frame, and reads its key times from the plan's `hits`, the sa
 heartbeats and a mastering chain, built from the plan's hits. No samples, same seed, same WAV.
 
 **Tools that measure instead of guessing**: `determinism_check`, `sample_frames` (also one frame per beat), `contact_sheet`, `render_stream`
-(FFmpeg, BT.709), `verify_export`, `audio_check` (loudness, true peak, onsets against the hits), `motion_curves`
+(FFmpeg, BT.709), `render_parallel` (long pieces in parallel chunks that resume), `verify_export`, `audio_check` (loudness, true peak, onsets against the hits), `motion_curves`
 (value and speed graphs, overshoot, settle), `loop_check` (pose and speed at a loop's seam), `dump_state`, `make_gif`, `captions`, `validate_plan`, `hyperframes`
 (sync a piece, hand a clip to a film), and for studying references `inspect_video`, `watch_reference` and
 `audio_envelope`.

@@ -60,7 +60,7 @@ valida, es determinista, mantiene el texto en 48 px o más, nunca deja un cuadro
 ticks, latidos y una cadena de máster, armados desde los golpes del plan. Sin samples: misma semilla, mismo WAV.
 
 **Herramientas que miden en vez de adivinar**: `determinism_check`, `sample_frames` (también un fotograma por beat), `contact_sheet`, `loop_check` (pose y velocidad en la costura de un bucle),
-`render_stream` (FFmpeg, BT.709), `verify_export`, `audio_check` (sonoridad, pico real, ataques alineados con los
+`render_stream` (FFmpeg, BT.709), `render_parallel` (piezas largas en tramos paralelos que se reanudan), `verify_export`, `audio_check` (sonoridad, pico real, ataques alineados con los
 golpes), `motion_curves` (gráficas de valor y velocidad, rebote, asentamiento), `dump_state`, `make_gif`, `captions`,
 `validate_plan`, `hyperframes` (sincronizar una pieza, pasar un clip a una película) y para estudiar referencias
 `inspect_video`, `watch_reference` y `audio_envelope`.

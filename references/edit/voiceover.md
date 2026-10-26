@@ -93,7 +93,8 @@ list against the script before building: it measures level and timing, it does n
 A voice-led piece runs 20–90 s, and grain at the default CRF 14 makes it huge: a 19 s test came out at 73 Mbit/s
 (170 MB) and at 1.8 Mbit/s with `--crf 20`, which looks the same on a phone after the platform re-encodes it.
 `render_stream.mjs` reports `video_mbps` and warns above 40. Keep CRF 14 for a master you will edit again; upload a
-CRF 18–20 render. Render at 30 fps: a voice does not need 60, and it halves the render time.
+CRF 18–20 render. Render at 30 fps: a voice does not need 60, and it halves the render time; render long pieces with
+`render_parallel.mjs --workers 3` (13 → 6 minutes for the 19 s test).
 
 ## 7. Review per phrase
 

@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.0 · 2026-10-26
+
+Long pieces render in parallel chunks that resume.
+
+- **`scripts/render_parallel.mjs`**: chunks of about three per worker render at once, each in its own browser; a
+  failed chunk is retried twice; an interrupted render resumes from its finished chunks (fingerprinted on every file of
+  the piece and the encoder settings, so a changed piece never reuses them); chunks join without re-encoding, audio
+  over the whole, frame count checked. Measured: a 18.7 s voice-over at 1080×1920 / 30 fps went from 13.0 to 6.0
+  minutes with three workers.
+- `render_stream.mjs --frames a:b` (an exact frame range) and `--report <file>`.
+- Pipeline guide §3b.
+
 ## 1.2.0 · 2026-10-26
 
 The voice is the clock: pieces told by a voice.

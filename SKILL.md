@@ -181,7 +181,8 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/sample_frames.mjs` | Chosen instants, exact frames (`--frames`), one per beat, bar, hit, cut or scene from the plan (`--beats`, `--bars`, `--hits`, `--cuts`, `--scenes`), lossless (`--png`) and alpha (`--alpha`) |
 | `scripts/loop_check.py` | A loop's seam: last frame → first compared with ordinary steps (pose) and the motion pace at both ends (speed); does not watch it |
 | `scripts/contact_sheet.py` | Sheets with times or enlarged crops; helps to look, does not prove rhythm |
-| `scripts/render_stream.mjs` | Direct render to FFmpeg (BT.709), proxies of a range with audio; never overwrites |
+| `scripts/render_stream.mjs` | Direct render to FFmpeg (BT.709), proxies of a range (`--start/--end`, exact `--frames a:b`) with audio, size and bitrate reported; never overwrites |
+| `scripts/render_parallel.mjs` | Long pieces: the same frames in chunks, several browsers at once (2.2× faster with 3 workers on a laptop), failed chunks retried, interrupted renders resumed, joined without re-encoding and checked frame for frame |
 | `scripts/make_gif.py` | Light GIF of a range, for previews and READMEs |
 | `scripts/verify_export.py` | Expectations, constant cadence, colour tags and full decode |
 | `scripts/audio_check.py` | Loudness, true peak, bands, mono and phase, onsets vs `hits` (BT.1359 window), spectrogram; does not listen |
@@ -208,7 +209,8 @@ transitions, light and blur, sound design, any aspect ratio, deterministic offli
 footage editing, talking heads and captions on footage (HyperFrames workflows or an editor; a voice-over without a face is covered: [voice-over](references/edit/voiceover.md)), character animation
 (Lottie), 3D scenes (Three.js, e.g. HyperFrames' adapter), per-letter animation of joined or right-to-left scripts
 (Arabic, Hebrew, Devanagari: animate whole words or lines), long pieces (a 1080×1920 frame with full motion blur takes
-about 1–2 s on a laptop GPU: draft with `MOTION_MAX_SAMPLES`, or render through HyperFrames' parallel workers). Without
+about 1–2 s on a laptop GPU: draft with `MOTION_MAX_SAMPLES`, render with `render_parallel.mjs`, or through HyperFrames'
+parallel workers). Without
 half-float WebGL the piece stops with a clear message; `"render": {"allow_ldr": true}` in plan.json renders in 8 bits
 without motion blur or bloom.
 

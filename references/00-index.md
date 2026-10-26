@@ -46,7 +46,8 @@ Profiles (project and personal) override every default here: read them first ([S
 | A style ("brutalist", "Swiss", "Y2K"…) | [Style atlas](create/style-atlas.md) | Style frames sequence |
 | A HyperFrames project, film or workflow; "put this in my HyperFrames video" | [HyperFrames](produce/hyperframes.md) (HyperFrames owns the film) | `hyperframes.py sync --check`, `npx hyperframes check` |
 | Several scenes with motivated transitions (a promo, an intro) | `templates/recipes/promo-sequence`, [cutting](edit/cutting.md), [transitions atlas](edit/transitions-atlas.md) | Dense window on each cut |
-| Render takes too long | [Pipeline §3](produce/pipeline.md#3-time-and-sub-sampling): `MOTION_MAX_SAMPLES=8` drafts, or HyperFrames' parallel render | The draft flag in `motionConfig` |
+| Render takes too long, a long piece (20–90 s) | [Pipeline §3b](produce/pipeline.md#3b-long-pieces-parallel-chunks-that-resume): `render_parallel.mjs --workers 3`; `MOTION_MAX_SAMPLES=8` for drafts | The report's `speedup_vs_one_worker` |
+| A render died halfway | `render_parallel.mjs`: run the same command again, finished chunks are reused | `reused_chunks` in the report |
 | "Network blocked" in a capture | The piece must load only its own files ([pipeline](produce/pipeline.md)) | `sample_frames` errors list |
 | Study a reference | [Reference study](create/reference-study.md) | `inspect_video.py`, `watch_reference.py` |
 | Another platform or aspect ratio | [Formats & platforms](edit/formats-platforms.md) | `new_piece.py --format …`, `verify_export.py` |
