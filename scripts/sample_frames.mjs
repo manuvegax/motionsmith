@@ -8,14 +8,16 @@
    Per-beat review (one frame per beat before the full render): --beats, --bars (downbeats only) or --hits read
    <piece>/plan.json (or --plan file): bpm, lead and meter for the grid, hits for the beats image and sound share.
    --beat-offset 0.05 looks just after each beat, where the accent has landed.
+   Per-phrase review for a voice-led piece (scripts/voice_plan.py): --cuts takes the last frame before and the first
+   frame after every cut in the plan; --scenes takes the middle of every scene (one frame per phrase).
    Then: python contact_sheet.py <new-folder> --out <sheet.jpg>; look at it; delete the folder. */
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {openComposition, seek, clampTime, parseArgs} from './kit/runtime.mjs';
 
-const usage = 'Usage: node sample_frames.mjs --root <piece> --out <folder> [--every s] [--window a:b:step]... [--times t1,t2] [--frames a:b[:step]] [--beats|--bars|--hits [--beat-offset s] [--plan file]] [--png [--alpha]] [--noblur] [--quality 88] [--page sub/index.html] [--node-modules dir] [--chrome exe]';
+const usage = 'Usage: node sample_frames.mjs --root <piece> --out <folder> [--every s] [--window a:b:step]... [--times t1,t2] [--frames a:b[:step]] [--beats|--bars|--hits|--cuts|--scenes [--beat-offset s] [--plan file]] [--png [--alpha]] [--noblur] [--quality 88] [--page sub/index.html] [--node-modules dir] [--chrome exe]';
 let args;
-try { args = parseArgs(process.argv.slice(2), {flags: ['noblur', 'help', 'png', 'alpha', 'beats', 'bars', 'hits'], repeat: ['window', 'frames']}); }
+try { args = parseArgs(process.argv.slice(2), {flags: ['noblur', 'help', 'png', 'alpha', 'beats', 'bars', 'hits', 'cuts', 'scenes'], repeat: ['window', 'frames']}); }
 catch (error) { console.error(error.message + '\n' + usage); process.exit(2); }
 if (args.help || !args.root || !args.out) { console.log(usage); process.exit(args.help ? 0 : 2); }
 if (args.alpha && !args.png) { console.error('--alpha needs --png (JPEG has no alpha channel)'); process.exit(2); }
@@ -44,7 +46,7 @@ try {
     if (!Number.isInteger(a) || !Number.isInteger(b) || !(step >= 1) || b < a) throw new Error(`Bad --frames ${f}; use first:last[:step]`);
     for (let n = a; n <= b && n < config.frames; n += step) exact.set(n, (n + 0.5) / config.fps);
   }
-  if (args.beats || args.bars || args.hits) {
+  if (args.beats || args.bars || args.hits || args.cuts || args.scenes) {
     const planPath = path.resolve(args.plan || path.join(args.root, 'plan.json'));
     const plan = JSON.parse((await fs.readFile(planPath, 'utf8')).replace(/^﻿/, ''));
     const offset = Number(args['beat-offset'] || 0);
@@ -59,8 +61,20 @@ try {
       if (!Array.isArray(plan.hits) || !plan.hits.length) throw new Error(`--hits needs hits in ${planPath}`);
       for (const hit of plan.hits) add(Number(hit.time) + offset);
     }
+    if (args.cuts) {   // exact frames on both sides of each cut: the outgoing and the incoming picture
+      const cuts = Array.isArray(plan.cuts) && plan.cuts.length ? plan.cuts : (plan.scenes || []).slice(1).map(s => s.start_frame / config.fps);
+      if (!cuts.length) throw new Error(`--cuts needs cuts or several scenes in ${planPath}`);
+      for (const c of cuts) {
+        const n = Math.round(Number(c) * config.fps);
+        for (const f of [n - 1, n]) if (f >= 0 && f < config.frames) exact.set(f, (f + 0.5) / config.fps);
+      }
+    }
+    if (args.scenes) {
+      if (!Array.isArray(plan.scenes) || !plan.scenes.length) throw new Error(`--scenes needs scenes in ${planPath}`);
+      for (const s of plan.scenes) add((s.start_frame + s.end_frame) / 2 / config.fps);
+    }
   }
-  if (!times.size && !exact.size) throw new Error('No instants requested: use --every, --window, --times, --frames, --beats, --bars or --hits');
+  if (!times.size && !exact.size) throw new Error('No instants requested: use --every, --window, --times, --frames, --beats, --bars, --hits, --cuts or --scenes');
   await fs.mkdir(out, {recursive: true});
   const blur = !args.noblur, quality = Number(args.quality || 88), started = Date.now();
   const type = args.png ? 'png' : 'jpeg', ext = args.png ? 'png' : 'jpg';

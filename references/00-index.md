@@ -38,6 +38,9 @@ Profiles (project and personal) override every default here: read them first ([S
 | React to audio | [Rhythm §4](craft/rhythm-sync.md#4-audio-reactive-motion) | `audio_envelope.py` |
 | Out-of-sync hits | [Rhythm §3](craft/rhythm-sync.md#3-one-list-of-hits), [sound design §5](craft/sound-design.md#5-sync) | `audio_check.py --plan` |
 | Cut to music | [Music editing](edit/music-editing.md) | Beat grid in the plan |
+| A piece told by a voice, narration, "voz en off" | [Voice-over](edit/voiceover.md): two-column script, `voice_plan.py`, `--recipe voice-captions` | `sample_frames.mjs --cuts --hits`, `voice_over_bed_db` ≥ 10 |
+| The voice is buried, music over the words | [Voice-over §5](edit/voiceover.md#5-the-mix): the `voiceover` cue ducks the rest | `build_soundtrack.py` report |
+| Captions for a voice: fast, bad breaks, ending on «de» | [Voice-over §3](edit/voiceover.md#3-what-voice_plan-decides-and-why), `captions.py --preset voice` | captions.json warnings |
 | Sound without music | [Sound design](craft/sound-design.md) | `build_soundtrack.py`, `audio_check.py` |
 | A specific scene (logo reveal, lower third, data reveal…) | [Scene recipes](create/scene-recipes.md), `templates/recipes/` | `determinism_check` on the recipe |
 | A style ("brutalist", "Swiss", "Y2K"…) | [Style atlas](create/style-atlas.md) | Style frames sequence |

@@ -1,0 +1,19 @@
+{
+  "what": "Voice captions: each spoken phrase is a scene; words land as they are said, the stressed word in the accent; every cut swaps paper and ink",
+  "title": "Your brain does not want you *happy*. It wants you *alive*.",
+  "mode": "kinetic",
+  "default_seconds": 8,
+  "min_seconds": 4,
+  "intent": "Let a voice drive the picture: what is said lands on screen the moment it is said",
+  "action": "Each phrase is a scene: words rise in as they are spoken, thin to black; the stressed word lands in red with a pop and an underline sweep; on every cut paper and ink swap and the camera punches in; a giant outline of the stressed word slides behind",
+  "hits": [
+    {
+      "role": "emphasis: demo",
+      "time": 1.2,
+      "amplitude": 0.6
+    }
+  ],
+  "make_it_yours": "Record or synthesize the voice, put it in assets/, get word timings (ElevenLabs speech-to-text, Whisper), then run `voice_plan.py --plan plan.json --voice assets/voice.wav --words words.json --script script.md`: it writes voice.json, which this recipe reads. Mark stressed words in the script with *asterisks*. Without voice.json the title is spread as a demo voice.",
+  "craft_note": "The voice is the clock: cuts sit just before each phrase (the eye leads the ear by two frames), one accent per phrase, the accent's sound is a soft tap so it never covers the word. Each phrase is short enough to read at the voice's pace because the viewer hears it.",
+  "look": "Bold editorial on paper and ink, one red accent (style atlas: typographic poster)"
+}

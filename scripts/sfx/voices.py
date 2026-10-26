@@ -102,6 +102,16 @@ def slap(score, at, gain=.30, pan=0.0):
     score.place(at, edge_fade(signal, .0006, .02, sr), gain, pan, .08)
 
 
+def tap(score, at, gain=.10, pan=0.0, pitch=2600):
+    """A soft, high, dry click for a visual accent under a voice: short and above the speech band, so it marks the word
+    without covering it (an impact on a stressed syllable masks the syllable)."""
+    sr = score.sr
+    x = timeline(.06, sr)
+    signal = (np.sin(2 * np.pi * pitch * x) * np.exp(-x / .007)
+              + .5 * noise(score, .06, 4000, 14000) * np.exp(-x / .003))
+    score.place(at, edge_fade(signal, .0004, .015, sr), gain, pan, .04)
+
+
 def heartbeat(score, at, gain=.42):
     """Two muffled beats (lub-dub), lightly saturated so that they read on small speakers."""
     sr = score.sr
@@ -178,7 +188,7 @@ def bed(score, levels, root_hz=36.7, rise=.06, rise_from=3.6, rise_length=3.65, 
 
 VOICES = {
     "hit": hit, "boom": boom, "glass": glass, "whoosh": whoosh, "riser": riser, "reverse_swell": reverse_swell,
-    "slap": slap, "heartbeat": heartbeat, "ticks": ticks, "lid": lid, "shimmer": shimmer, "tension": tension,
+    "slap": slap, "tap": tap, "heartbeat": heartbeat, "ticks": ticks, "lid": lid, "shimmer": shimmer, "tension": tension,
 }
 # Whole-score layers: they do not take a time. The scheduler handles them (see schedule.py).
 LAYERS = ("bed", "room", "duck")

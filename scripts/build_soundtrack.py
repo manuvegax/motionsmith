@@ -111,12 +111,19 @@ def main() -> int:
             return 1
         mono = read_wav_mono(temporary)
         hits = normalize_hits(plan.get("hits"))
-        events = [{"time": h["time"], "role": h["role"], "source": "hits"} for h in hits]
+        # Emphasis accents under a voice carry a soft tap: the word itself is the attack, so they are not checked.
+        events = [{"time": h["time"], "role": h["role"], "source": "hits"} for h in hits
+                  if not str(h["role"]).startswith("emphasis")]
         found = onsets(mono, max(24, 2 * len(events)))
         sync = match_events(found, events, EARLY_S, LATE_S) if events else {"events": [], "unmatched_events": [],
                                                                             "onsets_without_event": found}
         warnings = [f"no attack from {EARLY_S} s before to {LATE_S} s after {row['role']} at {row['time']} s"
                     for row in sync["unmatched_events"]]
+        for layer in placed["layers"].get("voiceover", []):
+            ratio = layer.get("voice_over_bed_db")
+            if ratio is not None and ratio < 10:
+                warnings.append(f"the voice sits only {ratio} dB over the rest while it speaks (aim for 10 dB or "
+                                "more): lower the bed and the hits, or a deeper duck_db")
         os.replace(temporary, args.out)
     finally:
         if temporary.exists():

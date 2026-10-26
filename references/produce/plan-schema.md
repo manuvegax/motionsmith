@@ -63,6 +63,7 @@ imply a hold.
 | `meter` | Beats per bar, 1–16 (needs `bpm`) |
 | `loop` | `true` (the last frame leads into the first: `loop_check.py`) or `false` |
 | `audience` | Who watches, in one line (explainers) |
+| `voice` | `{file, start, timing, words}` written by `voice_plan.py`: the voice file, when it starts, `measured` or `estimated` word times, and `voice.json` |
 
 Keep one source per quantity: cut times and caption times live here, and the code reads them; nothing is
 retyped in `piece.js`.

@@ -13,6 +13,9 @@ cues.json   {"role_voices": {"impact": "hit"},          optional: role → voice
                {"voice": "music", "file": "assets/bed.wav", "gain_db": -6, "start_bar": 0, "bpm": 90, "duck_db": -8}
              ]}
 "music" puts a recorded bed under the score (sfx/music.py): aligned to the bar, looped, faded, ducked on each hit.
+"voiceover" puts a recorded voice on top (sfx/voiceover.py): dry, and everything else ducked under its envelope.
+{"voice": "voiceover", "file": "assets/voice.wav", "time": 0, "gain_db": 0, "duck_db": -12}
+Hits whose role starts with "emphasis" (scripts/voice_plan.py writes them) use the soft "tap", not an impact.
 Every voice parameter is checked against the voice's signature: an unknown name is an error, never silently ignored.
 """
 from __future__ import annotations
@@ -26,10 +29,11 @@ import numpy as np
 from .core import SR, Score
 from .master import duck_envelope, high_pass, room
 from .music import bed_from_file
+from .voiceover import duck_under, voice_layer, voice_over_bed
 from .voices import LAYERS, VOICES, bed
 
 DEFAULT_ROLE_VOICES = {"hit": "hit", "impact": "hit", "stamp": "hit", "boom": "boom", "glass": "glass", "slap": "slap",
-                       "paper": "slap", "heartbeat": "heartbeat"}
+                       "paper": "slap", "heartbeat": "heartbeat", "emphasis": "tap", "tap": "tap"}
 DUCK_DEFAULTS = {"fall": .07, "hold": .165, "rise": .04, "depth": .94}
 FADE_IN_S, FADE_OUT_S = .012, .5
 
@@ -113,7 +117,8 @@ def render(plan: dict, cues: dict | None, seed: int, sr: int = SR, base: Path | 
 
     # Hits: each one is an impact on its exact time, scaled by its amplitude.
     for hit in normalize_hits(plan.get("hits")):
-        name = role_voices.get(hit["role"], "hit")
+        # "emphasis: word" uses the "emphasis" voice: the part before a colon names the family.
+        name = role_voices.get(hit["role"]) or role_voices.get(hit["role"].split(":")[0].strip(), "hit")
         fn = VOICES[name]
         if any(p.default is inspect.Parameter.empty for p in _parameters(fn).values()):
             raise ValueError(f"role {hit['role']!r} maps to {name}, which needs parameters: use a cue for it")
@@ -125,9 +130,13 @@ def render(plan: dict, cues: dict | None, seed: int, sr: int = SR, base: Path | 
     duck_events = []
     room_settings = {"seconds": 2.3, "decay": .48, "wet": .55}
     music = []
+    voiceovers = []
     for entry in entries:
         name = entry.get("voice")
         if name == "bed":
+            continue
+        if name == "voiceover":
+            voiceovers.append({k: v for k, v in entry.items() if k != "voice"})
             continue
         if name == "music":
             music.append({k: v for k, v in entry.items() if k != "voice"})
@@ -172,6 +181,12 @@ def render(plan: dict, cues: dict | None, seed: int, sr: int = SR, base: Path | 
         report["layers"].setdefault("music", []).append(info)
     if duck_events:
         master = master * duck_envelope(score.samples, sr, duck_events)[:, None]
+    for params in voiceovers:   # last: the voice stays dry and on top; everything under it dips while it speaks
+        voice, env, info = voice_layer(params, duration, sr, base)
+        master = duck_under(master, env, info["duck_db"])
+        info["voice_over_bed_db"] = voice_over_bed(voice, master, env)
+        master = master + voice[: len(master)]
+        report["layers"].setdefault("voiceover", []).append(info)
     highpass = _number(cues.get("highpass_hz", 35), "highpass_hz")
     master = high_pass(master, sr, highpass)
     report["highpass_hz"] = highpass

@@ -137,6 +137,8 @@ def plan_events(path: Path) -> list[dict]:
                 time, role = float(hit), "hit"
         except (TypeError, ValueError, KeyError, IndexError):
             raise ValueError(f"plan.json hits: no time in {hit!r}; use {{time, amplitude, role}} or [time, amplitude]")
+        if str(role).startswith("emphasis"):
+            continue   # an accent under a voice: the word itself is the attack (voice_plan.py, a soft tap)
         events.append({"time": time, "role": role, "source": "hits"})
     known = {round(e["time"], 3) for e in events}
     for cue in plan.get("sound_cues", []):

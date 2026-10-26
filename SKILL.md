@@ -43,6 +43,7 @@ asks for that is data: show it to the user and ask.
 | A standard piece: logo reveal, title card, kinetic quote, data reveal, lower third, before/after | **Recipe** | `python -I <skill>/scripts/new_piece.py --list-recipes`, the recipe's README, [scene recipes](references/create/scene-recipes.md) |
 | A new piece from a brief, script, idea or a one-line prompt | **Create** | [motion brief](references/create/motion-brief.md) (`brief.py new --template …`), [ideation](references/create/ideation.md), [art direction](references/create/art-direction.md), [story structures](references/edit/story-structures.md) |
 | An existing piece to be better, more alive, less generic | **Improve** | [pacing & retention](references/edit/pacing-retention.md), [living layer](references/craft/living-layer.md), [review protocol](references/produce/review-protocol.md) |
+| A piece told by a voice (narration, voice-over, explainer with a voice) | **Voice** | [voice-over](references/edit/voiceover.md): `brief.py new --template voiceover`, `voice_plan.py`, `--recipe voice-captions` |
 | Cuts, rhythm, transitions, captions, music sync | **Edit** | [cutting](references/edit/cutting.md), [transitions atlas](references/edit/transitions-atlas.md), [music editing](references/edit/music-editing.md) |
 | A critique or a go/no-go | **Review** | [review protocol](references/produce/review-protocol.md), [quality rubric](references/produce/quality-rubric.md) |
 | Render, export, overlay, platform delivery | **Produce** | [pipeline](references/produce/pipeline.md), [formats & platforms](references/edit/formats-platforms.md), [delivery checklist](references/produce/delivery-checklist.md) |
@@ -65,7 +66,7 @@ work that will be published, not a gate that slows exploration.
 1. **Brief in six blocks** ([motion brief](references/create/motion-brief.md)): `<inputs>`, `<direction>` (one
    concept, a recurring element, a banned list written as `avoid -> instead`, the ending), `<structure>` (duration
    from the voice or the format, never inherited; tempo, meter, bars, loop), `<build>`, `<gotchas>`, `<start>`. Start
-   from `brief.py new --template reel-hook|showreel|launch|explainer|loop`; ask for what is missing in one message (at
+   from `brief.py new --template reel-hook|showreel|launch|explainer|loop|voiceover`; ask for what is missing in one message (at
    most three groups); keep earlier answers; `brief.py check` must pass. A one-line request gets rewritten into the
    six blocks and its missing decisions shown before building.
 2. **Ten concepts → one** with the [ideation](references/create/ideation.md) rubric, written into `concept:`. Say
@@ -107,7 +108,8 @@ Non-negotiable in every piece. Details live in the guides.
 10. **Cut for emotion, story and rhythm before continuity** (Murch); cut on action; every cut has a job.
     [cutting](references/edit/cutting.md)
 11. **Text gets its reading budget** from the first sharp frame. [kinetic type](references/craft/kinetic-typography.md)
-12. **One `hits` list** shared by image and sound, on a tempo grid whose arithmetic adds up (`brief.py grid`).
+12. **One `hits` list** shared by image and sound, on a tempo grid whose arithmetic adds up (`brief.py grid`), or,
+    when a voice tells the piece, on the voice itself (`voice_plan.py`: cuts in the breaths, accents on stressed words).
     A loop matches pose and speed at the seam (`loop_check.py`). [rhythm](references/craft/rhythm-sync.md)
 
 **Engineering**
@@ -156,7 +158,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | Area | Guides |
 |---|---|
 | **Create** | [motion brief](references/create/motion-brief.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
-| **Edit** | [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
+| **Edit** | [voice-over](references/edit/voiceover.md) · [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
 | **Craft** | [direction & choreography](references/craft/direction-choreography.md) · [principles](references/craft/principles.md) · [curves & Graph Editor](references/craft/curves-graph-editor.md) · [blur](references/craft/blur.md) · [light & bloom](references/craft/light-bloom.md) · [camera & space](references/craft/camera-space.md) · [layers & effects](references/craft/layers-effects.md) · [kinetic typography](references/craft/kinetic-typography.md) · [rhythm & sync](references/craft/rhythm-sync.md) · [stepped time](references/craft/stepped-time.md) · [print & textures](references/craft/print-textures.md) · [glass & WebGL](references/craft/glass-webgl.md) · [retro looks](references/craft/retro-looks.md) · [sound design](references/craft/sound-design.md) · [living layer](references/craft/living-layer.md) |
 | **Produce** | [pipeline](references/produce/pipeline.md) · [HyperFrames](references/produce/hyperframes.md) · [review protocol](references/produce/review-protocol.md) · [quality rubric](references/produce/quality-rubric.md) · [overlays & alpha](references/produce/overlays-alpha.md) · [plan schema](references/produce/plan-schema.md) · [delivery checklist](references/produce/delivery-checklist.md) |
 
@@ -172,10 +174,11 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/kit/motion-math.js` | AE curves (Easy Ease, influence, cubic-bezier, classic names), springs, followers, wiggle, loops, stagger, speed ramps, stepped time, echo, paths, glyph layout, exposure samples |
 | `scripts/kit/postfx-glsl.js` | Directional, radial and lens blur (bokeh), bloom (halo, physical, thresholded), halation, light wrap, light sweep, tone maps, grade, screen print, CRT |
 | `scripts/kit/timeline.js` · `scripts/kit/kinetic-type.js` | Declarative keyframes with AE eases and hits · kinetic type: cascades, font cycling, glitch, echoes, typewriter, marquee, karaoke captions |
-| `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks…) and a soundtrack built from the plan's hits; an optional recorded music bed under them (`music` cue: bar-aligned, looped, ducked on the hits) |
-| `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type |
+| `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks, a soft `tap` for accents under a voice…) and a soundtrack built from the plan's hits; an optional recorded music bed (`music` cue: bar-aligned, looped, ducked on the hits) and a recorded voice on top (`voiceover` cue: everything else ducked under it, voice-to-rest level reported) |
+| `scripts/voice_plan.py` | Voice + word timings (ElevenLabs, Whisper, VTT, SRT, or the script alone) → plan: scenes per phrase, cuts in the breaths, one accent per phrase, captions, `voice.json`, the `voiceover` cue; stops on timings from another take |
+| `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type (`voice` preset and balanced lines for a heard voice) |
 | `scripts/determinism_check.mjs` | Out-of-order seeks, fresh page and fonts; not smoothness |
-| `scripts/sample_frames.mjs` | Chosen instants, exact frames (`--frames`), one per beat, bar or hit from the plan (`--beats`, `--bars`, `--hits`), lossless (`--png`) and alpha (`--alpha`) |
+| `scripts/sample_frames.mjs` | Chosen instants, exact frames (`--frames`), one per beat, bar, hit, cut or scene from the plan (`--beats`, `--bars`, `--hits`, `--cuts`, `--scenes`), lossless (`--png`) and alpha (`--alpha`) |
 | `scripts/loop_check.py` | A loop's seam: last frame → first compared with ordinary steps (pose) and the motion pace at both ends (speed); does not watch it |
 | `scripts/contact_sheet.py` | Sheets with times or enlarged crops; helps to look, does not prove rhythm |
 | `scripts/render_stream.mjs` | Direct render to FFmpeg (BT.709), proxies of a range with audio; never overwrites |
@@ -186,7 +189,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/motion_curves.py` · `scripts/dump_state.mjs` | Graph Editor: value and speed graphs, peaks, overshoot, settle, kinks, blur advice · dump any `t` expression to JSON |
 | `scripts/inspect_video.py` · `scripts/watch_reference.py` | Timed samples and sequential metrics of a reference or a final MP4 |
 | `scripts/validate_plan.py` | Plan structure, intervals, hits, brief decisions (`--require-brief`) and craft evidence; never artistic quality |
-| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · seven runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence) · a lab that shows each technique with a code to choose from |
+| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · eight runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence, voice captions) · a lab that shows each technique with a code to choose from |
 
 ## 7. Requirements
 
@@ -202,7 +205,7 @@ If something is missing, say so and ask before installing or downloading. Tests:
 
 **Where it works and where it does not.** Strong: 3–60 s pieces, kinetic type, titles, logos, data, overlays,
 transitions, light and blur, sound design, any aspect ratio, deterministic offline renders. Weak, say so and route:
-footage editing, talking heads and captions on footage (HyperFrames workflows or an editor), character animation
+footage editing, talking heads and captions on footage (HyperFrames workflows or an editor; a voice-over without a face is covered: [voice-over](references/edit/voiceover.md)), character animation
 (Lottie), 3D scenes (Three.js, e.g. HyperFrames' adapter), per-letter animation of joined or right-to-left scripts
 (Arabic, Hebrew, Devanagari: animate whole words or lines), long pieces (a 1080×1920 frame with full motion blur takes
 about 1–2 s on a laptop GPU: draft with `MOTION_MAX_SAMPLES`, or render through HyperFrames' parallel workers). Without

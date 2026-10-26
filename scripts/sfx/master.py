@@ -142,9 +142,15 @@ def master_to_target(samples: np.ndarray, ffmpeg: str, target_lufs: float = -16.
                 high = drive
             if abs(predicted - target_lufs) <= TOLERANCE_LU:
                 break
+    extra_gain_db = 0.0
+    if best[2] > target_lufs + TOLERANCE_LU:
+        # Dense material (a compressed voice, a mastered music bed) is too loud even unsaturated at the ceiling:
+        # lower the gain to the target and let the peak sit under the ceiling instead.
+        extra_gain_db = target_lufs - best[2]
+        best = (best[0] * 10 ** (extra_gain_db / 20), best[1], target_lufs, best[3] + extra_gain_db)
     report = {"target_integrated_lufs": target_lufs, "target_true_peak_dbtp": target_tp, "ceiling_dbtp": ceiling,
               "soft_saturation_drive": round(best[1], 4), "predicted_integrated_lufs": round(best[2], 3),
-              "measurement_attempts": attempts}
+              "gain_below_ceiling_db": round(extra_gain_db, 3), "measurement_attempts": attempts}
     return best[0], report
 
 

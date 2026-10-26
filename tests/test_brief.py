@@ -126,7 +126,7 @@ class BriefCliTests(unittest.TestCase):
 
     def test_every_template_writes_a_brief_that_passes_clean(self):
         names = list(brief.templates())
-        self.assertEqual(set(names), {"reel-hook", "showreel", "launch", "explainer", "loop"})
+        self.assertEqual(set(names), {"reel-hook", "showreel", "launch", "explainer", "loop", "voiceover"})
         for name in names:
             with self.subTest(name=name):
                 dest = self.workspace / f"{name}.md"

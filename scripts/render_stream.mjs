@@ -83,6 +83,11 @@ try {
     samples: config.samples, shutter_degrees: config.shutter_degrees, minutes: Number(((Date.now() - began) / 60000).toFixed(1)),
     color: 'BT.709 matrix and tags, limited range', chrome: session.executablePath, gpu: session.gpu,
     page_errors: [...new Set(errors)], ffmpeg_log: log};
+  // Weight: grain and fine texture at a low CRF make huge files that every platform re-encodes anyway.
+  const bytes = (await fs.stat(output)).size, clipSeconds = count / config.fps;
+  report.size_mb = Number((bytes / 1e6).toFixed(1));
+  report.video_mbps = Number((bytes * 8 / 1e6 / Math.max(clipSeconds, 1e-6)).toFixed(1));
+  if (report.video_mbps > 40) report.warnings = [`${report.video_mbps} Mbit/s (${report.size_mb} MB): grain or texture at CRF ${report.crf}; the platform re-encodes to a few Mbit/s, so for upload render with --crf 18-20 (a fraction of the size, the same on the phone)`];
   // final/ keeps only the delivery: the report goes to the sibling preview/ (of the served piece, or of the
   // other piece the video is written into); a video written anywhere else gets the report next to it.
   const insideRoot = output.startsWith(root + path.sep), outDir = path.dirname(output);
@@ -90,7 +95,8 @@ try {
   const reportPath = path.join(reportDir, path.basename(output, path.extname(output)) + '.render-report.json');
   await fs.mkdir(path.dirname(reportPath), {recursive: true});
   await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
-  console.log(JSON.stringify({completed: true, output, frames: count, report: reportPath, page_errors: report.page_errors}));
+  console.log(JSON.stringify({completed: true, output, frames: count, size_mb: report.size_mb, video_mbps: report.video_mbps,
+    report: reportPath, page_errors: report.page_errors, warnings: report.warnings || []}));
   if (report.page_errors.some(e => e.startsWith('pageerror') || e.startsWith('webgl') || e.startsWith('network blocked'))) process.exitCode = 1;
 } catch (error) {
   console.error(`Render failed${current === null ? '' : ` at frame ${current}`}: ${error.stack || error}`);

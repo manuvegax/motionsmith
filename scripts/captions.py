@@ -7,6 +7,7 @@ Presets are formats with their own line length and reading speed:
   reel      22 characters per line, 15 characters per second (vertical video, large type)
   story     20 characters per line, 14 cps (text laid over an image)
   subtitle  42 characters per line, 17 cps (the conventional subtitle limits)
+  voice     24 characters per line, 22 cps (captions that follow a voice the viewer hears: the ear carries the pace)
 Lines are wrapped on word boundaries and never inside a word; a word longer than the limit keeps a line of its own and
 is reported. Word timings come from the source when it has them (WebVTT <00:01.200> tags, or "words" in JSON such as
 Whisper writes them); otherwise they are estimated from character counts across the cue and marked "estimated".
@@ -29,6 +30,7 @@ PRESETS = {
     "reel": {"max_chars": 22, "cps": 15.0},
     "story": {"max_chars": 20, "cps": 14.0},
     "subtitle": {"max_chars": 42, "cps": 17.0},
+    "voice": {"max_chars": 24, "cps": 22.0},
 }
 MIN_WORDS_BEFORE_SPEED_SPLIT = 2
 TIMESTAMP = re.compile(r"^\s*(?:(\d+):)?(\d{1,2}):(\d{1,2})(?:[,.](\d{1,3}))?\s*$")
@@ -211,11 +213,58 @@ def wrap(words: list[Word], max_chars: int, cps: float, min_seconds: float, warn
     return lines
 
 
-def build(cues: list[Cue], max_chars: int, cps: float, min_seconds: float) -> tuple[list[dict], list[str]]:
+# Words a caption line should not end on (articles, prepositions, conjunctions): the line would hang.
+WEAK_ENDINGS = set("""a al ante con de del el en entre la las le lo los mi mis o para pero por que se sin sobre su sus
+te tu tus un una unos unas y e ni the a an and or but of to in on at by for with from as my your his her our their""".split())
+
+
+def wrap_balanced(words: list[Word], max_chars: int, warnings: list[str]) -> list[Line]:
+    """Lines of even length inside one cue: the fewest lines that fit, then breaks that keep lines alike, never end a
+    line on a weak word (de, que, y, the…) and never leave one short word alone. Dynamic programming over breaks."""
+    n = len(words)
+    for word in words:
+        if len(word.text) > max_chars:
+            warnings.append(f'"{word.text}" is {len(word.text)} characters, over the limit of {max_chars}: it keeps its own line')
+
+    def length(i: int, j: int) -> int:
+        return len(" ".join(w.text for w in words[i:j]))
+
+    def bare(text: str) -> str:
+        return re.sub(r"[^\w]", "", text.lower())
+
+    total = length(0, n)
+    lines_needed = max(1, -(-total // max_chars))
+    target = total / lines_needed
+    best = [0.0] + [float("inf")] * n
+    back = [0] * (n + 1)
+    for j in range(1, n + 1):
+        for i in range(j - 1, -1, -1):
+            size = length(i, j)
+            if size > max_chars and j - i > 1:
+                break
+            cost = (size - target) ** 2 + 400   # 400 per line: fewer lines first
+            if j < n and bare(words[j - 1].text) in WEAK_ENDINGS:
+                cost += 900
+            if j - i == 1 and n > 1 and len(words[i].text) < 9:
+                cost += 700                      # a lone short word
+            if best[i] + cost < best[j]:
+                best[j], back[j] = best[i] + cost, i
+    cuts, j = [], n
+    while j > 0:
+        cuts.append((back[j], j))
+        j = back[j]
+    return [Line(list(words[i:j])) for i, j in reversed(cuts)]
+
+
+def build(cues: list[Cue], max_chars: int, cps: float, min_seconds: float,
+          balanced: bool = False) -> tuple[list[dict], list[str]]:
+    """balanced: break each cue into even lines (wrap_balanced) instead of filling lines greedily; for captions
+    that follow a voice, where each cue is one spoken phrase."""
     warnings: list[str] = []
     lines: list[Line] = []
     for cue in sorted(cues, key=lambda c: c.start):
-        lines += wrap(cue_words(cue), max_chars, cps, min_seconds, warnings)
+        words = cue_words(cue)
+        lines += wrap_balanced(words, max_chars, warnings) if balanced and words else wrap(words, max_chars, cps, min_seconds, warnings)
     result = []
     for index, line in enumerate(lines):
         start = line.words[0].start

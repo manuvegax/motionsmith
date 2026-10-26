@@ -37,6 +37,9 @@ const tooShort = plan.captions.filter(c => (c.end - c.start) < MotionMath.readin
 ```
 
 - A caption that is read faster than it is spoken is a caption the viewer cannot follow. Split it, or shorten it.
+- **Captions of a voice the viewer hears** follow the voice, not the subtitle limit: up to about 22 characters per
+  second, one phrase at a time, even lines that never end on a weak word (`captions.py --preset voice`, which
+  `voice_plan.py` uses). See [voice-over](voiceover.md).
 
 ## 3. Caption styles
 

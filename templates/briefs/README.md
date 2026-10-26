@@ -11,6 +11,7 @@ per kind of piece. Each is also a prompt that runs as is in any agent with Motio
 | `launch` | A product, app, service or event: the promise, three to five moments, brand hex, the ending | 16 s, 120 BPM, 8 bars |
 | `explainer` | A mechanism or process: a sequence with a start and an end, audience, checked facts | 40 s, timed by the voice or the build |
 | `loop` | A seamless loop: background, cover, mood piece | 8 s, 120 BPM, 4 bars |
+| `voiceover` | A piece told by a voice: two-column script (voice \| screen), timed by the voice with `voice_plan.py` | 10 s, timed by the voice |
 
 ```bash
 python -I <skill>/scripts/brief.py list

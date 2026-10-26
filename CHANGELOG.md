@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.2.0 · 2026-10-26
+
+The voice is the clock: pieces told by a voice.
+
+- **`scripts/voice_plan.py`**: a voice and its word timings (ElevenLabs speech-to-text, Whisper, a list of onsets,
+  WebVTT, SRT, or the script alone aligned to the voice's pauses) become the plan: one scene per phrase (split only at
+  a comma or a real pause), cuts two frames before each phrase, one accent per phrase (the last content word unless the
+  voice or a `*mark*` in the script says otherwise), balanced captions, `voice.json` for the piece and the
+  `voiceover` cue. Stops when the timings belong to another take; tightens word ends so pauses come back; restores the
+  script's punctuation; takes each scene's action from the brief's voice | screen table.
+- **Mix**: a `voiceover` cue puts the voice on top, dry, and ducks everything else under its own envelope; the report
+  gives `voice_over_bed_db` and warns under 10 dB. A soft `tap` voice for accents under speech (`emphasis` hits).
+  The master now lowers the gain of dense material that is too loud even unsaturated, instead of failing.
+- **Captions**: `captions.py --preset voice` (22 characters per second, the ear carries the pace) and balanced lines
+  that never end on a weak word or leave one short word alone.
+- **Recipe `voice-captions`**: each phrase a scene, words land as they are said, the stressed word in the accent with
+  an underline sweep, paper and ink swap on every cut; reads `voice.json`, or spreads its title as a demo voice.
+- **Brief `voiceover`**: a two-column script (voice | screen); `brief.py check` estimates the spoken length at 2.5
+  words per second and flags rows with no picture.
+- **Review per phrase**: `sample_frames.mjs --cuts` (both sides of every cut) and `--scenes` (one frame per phrase).
+- **Delivery weight**: `render_stream.mjs` reports `size_mb` and `video_mbps` and warns above 40 Mbit/s (grain at CRF 14
+  ran to 73 Mbit/s in a test; CRF 20 gave 1.8). `audio_check.py` no longer asks for an impact on voice accents.
+- Guide `references/edit/voiceover.md`.
+
 ## 1.1.0 · 2026-10-26
 
 The motion brief: decide the piece before the code.

@@ -138,6 +138,23 @@ def _seconds(value: str | None) -> Fraction | None:
     return _number(value)
 
 
+WORDS_PER_SECOND = 2.5   # a natural Spanish or English voice-over (about 150 words a minute)
+
+
+def script_rows(text: str) -> list[dict]:
+    """The two-column script table (| voice | screen |) of a voice-over brief; the header row is skipped."""
+    rows = []
+    for line in text.splitlines():
+        s = line.strip()
+        if not s.startswith("|") or re.match(r"^\|?\s*:?-{3,}", s):
+            continue
+        cells = [c.strip() for c in s.strip("|").split("|")]
+        if len(cells) < 2 or cells[0].lower() in {"voice", "voz", "vo", "audio", "lo que se oye"}:
+            continue
+        rows.append({"voice": cells[0].replace("*", ""), "screen": cells[1]})
+    return rows
+
+
 # ---------------------------------------------------------------------------------------------------------------
 # Grid
 
@@ -240,12 +257,26 @@ def check(text: str) -> dict:
         warnings.append("no `ending:`: name what the last frame holds (the reveal, a line, a logo, the loop seam)")
 
     kind = (data.get("kind") or "").lower()
+    script = script_rows(text)
+    spoken = None
+    if script or "voice" in kind or "voz" in kind:
+        if not script:
+            errors.append("a voice-over brief needs its script as a two-column table: | voice | screen |")
+        else:
+            words = sum(len(r["voice"].split()) for r in script)
+            spoken = round(words / WORDS_PER_SECOND, 1)
+            empty = [r["voice"][:30] for r in script if not r["screen"].strip()]
+            if empty:
+                warnings.append("rows with no screen column (what is seen while it is said): " + "; ".join(empty[:3]))
+            if duration and not .75 <= float(duration) / max(spoken, .1) <= 1.6:
+                warnings.append(f"the script has {words} words, about {spoken:g} s spoken at {WORDS_PER_SECOND} words per "
+                                f"second, but duration says {float(duration):g} s: cut words or change the duration")
     if "explain" in kind or "explica" in kind:
         if not data.get("audience"):
             errors.append("explainer without `audience:`: one line on who watches sets vocabulary and pace")
         if not data.get("facts"):
             errors.append("explainer without `facts:`: research first, never invent numbers, names, dates or quotes")
-    if "start" in found and not re.search(r"grid|rejilla|storyboard|beat|concept|concepto|period|periodo|step list|steps|pasos", found["start"], re.IGNORECASE):
+    if "start" in found and not re.search(r"grid|rejilla|storyboard|beat|concept|concepto|period|periodo|step list|steps|pasos|script|guion", found["start"], re.IGNORECASE):
         warnings.append("<start> should ask for the concept line and the beat grid or storyboard before any code")
     if "build" in found and not re.search(r"review|revis|per beat|por beat|frame per|fotograma", found["build"], re.IGNORECASE):
         warnings.append("<build> has no review step: one frame per beat before the full render")
@@ -253,6 +284,9 @@ def check(text: str) -> dict:
     summary = {k: data.get(k) for k in ("kind", "concept", "recurring", "duration", "tempo", "meter", "bars", "lead",
                                          "loop", "ending", "audience", "format") if data.get(k)}
     summary["banned"] = banned
+    if spoken is not None:
+        summary["script"] = {"rows": len(script), "words": sum(len(r["voice"].split()) for r in script),
+                             "estimated_seconds": spoken}
     if derived:
         summary["grid"] = {k: derived[k] for k in ("bpm", "meter", "lead", "beat_seconds", "bar_seconds", "bars", "whole_bars")}
     return {"errors": errors, "warnings": warnings, "blocks": [b for b in BLOCKS if b in found], "brief": summary,
