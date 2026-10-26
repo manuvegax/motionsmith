@@ -5,14 +5,17 @@
    node sample_frames.mjs --root <piece> --out <new-folder> [--every 0.5] [--window 7.0:7.6:0.1]... [--times 1.75,3.62] [--noblur]
    --frames 420:432[:1] picks exact frame centres (n + 0.5) / fps, the instants render_stream captures; --png is lossless;
    --png --alpha leaves the page background transparent (straight alpha), for overlays.
+   Per-beat review (one frame per beat before the full render): --beats, --bars (downbeats only) or --hits read
+   <piece>/plan.json (or --plan file): bpm, lead and meter for the grid, hits for the beats image and sound share.
+   --beat-offset 0.05 looks just after each beat, where the accent has landed.
    Then: python contact_sheet.py <new-folder> --out <sheet.jpg>; look at it; delete the folder. */
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {openComposition, seek, clampTime, parseArgs} from './kit/runtime.mjs';
 
-const usage = 'Usage: node sample_frames.mjs --root <piece> --out <folder> [--every s] [--window a:b:step]... [--times t1,t2] [--frames a:b[:step]] [--png [--alpha]] [--noblur] [--quality 88] [--page sub/index.html] [--node-modules dir] [--chrome exe]';
+const usage = 'Usage: node sample_frames.mjs --root <piece> --out <folder> [--every s] [--window a:b:step]... [--times t1,t2] [--frames a:b[:step]] [--beats|--bars|--hits [--beat-offset s] [--plan file]] [--png [--alpha]] [--noblur] [--quality 88] [--page sub/index.html] [--node-modules dir] [--chrome exe]';
 let args;
-try { args = parseArgs(process.argv.slice(2), {flags: ['noblur', 'help', 'png', 'alpha'], repeat: ['window', 'frames']}); }
+try { args = parseArgs(process.argv.slice(2), {flags: ['noblur', 'help', 'png', 'alpha', 'beats', 'bars', 'hits'], repeat: ['window', 'frames']}); }
 catch (error) { console.error(error.message + '\n' + usage); process.exit(2); }
 if (args.help || !args.root || !args.out) { console.log(usage); process.exit(args.help ? 0 : 2); }
 if (args.alpha && !args.png) { console.error('--alpha needs --png (JPEG has no alpha channel)'); process.exit(2); }
@@ -41,7 +44,23 @@ try {
     if (!Number.isInteger(a) || !Number.isInteger(b) || !(step >= 1) || b < a) throw new Error(`Bad --frames ${f}; use first:last[:step]`);
     for (let n = a; n <= b && n < config.frames; n += step) exact.set(n, (n + 0.5) / config.fps);
   }
-  if (!times.size && !exact.size) throw new Error('No instants requested: use --every, --window, --times or --frames');
+  if (args.beats || args.bars || args.hits) {
+    const planPath = path.resolve(args.plan || path.join(args.root, 'plan.json'));
+    const plan = JSON.parse((await fs.readFile(planPath, 'utf8')).replace(/^﻿/, ''));
+    const offset = Number(args['beat-offset'] || 0);
+    if (!Number.isFinite(offset)) throw new Error('Bad --beat-offset');
+    if (args.beats || args.bars) {
+      const bpm = Number(plan.bpm), lead = Number(plan.lead || 0), meter = Number(plan.meter || 4);
+      if (!(bpm > 0)) throw new Error(`--beats/--bars need bpm in ${planPath} (scripts/brief.py plan writes it)`);
+      const beat = 60 / bpm;
+      for (let k = 0; lead + k * beat < config.duration; k++) if (args.beats || k % meter === 0) add(lead + k * beat + offset);
+    }
+    if (args.hits) {
+      if (!Array.isArray(plan.hits) || !plan.hits.length) throw new Error(`--hits needs hits in ${planPath}`);
+      for (const hit of plan.hits) add(Number(hit.time) + offset);
+    }
+  }
+  if (!times.size && !exact.size) throw new Error('No instants requested: use --every, --window, --times, --frames, --beats, --bars or --hits');
   await fs.mkdir(out, {recursive: true});
   const blur = !args.noblur, quality = Number(args.quality || 88), started = Date.now();
   const type = args.png ? 'png' : 'jpeg', ext = args.png ? 'png' : 'jpg';

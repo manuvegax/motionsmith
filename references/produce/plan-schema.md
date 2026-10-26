@@ -51,6 +51,19 @@ imply a hold.
 | `cuts` | Strictly increasing times in seconds inside the duration | [cutting](../edit/cutting.md) |
 | `captions` | A path to the `captions.json` that `scripts/captions.py` writes, or inline lines `{text, start, end}` (seconds, chronological, no overlap; optional `words: [{text, start, end}]`) | [captions & titles](../edit/captions-titles.md), `KineticType.karaoke` |
 
+### 1c. Brief fields (optional; required with `--require-brief`)
+
+`scripts/brief.py plan` copies them from the [motion brief](../create/motion-brief.md).
+
+| Field | Values |
+|---|---|
+| `concept` | The one idea in one line |
+| `recurring_element` | What carries every transition |
+| `banned` | `[{avoid, instead}]`: the defaults ruled out and what to do instead (at least 3 with `--require-brief`) |
+| `meter` | Beats per bar, 1–16 (needs `bpm`) |
+| `loop` | `true` (the last frame leads into the first: `loop_check.py`) or `false` |
+| `audience` | Who watches, in one line (explainers) |
+
 Keep one source per quantity: cut times and caption times live here, and the code reads them; nothing is
 retyped in `piece.js`.
 

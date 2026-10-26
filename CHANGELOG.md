@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.1.0 · 2026-10-26
+
+The motion brief: decide the piece before the code.
+
+- **Brief in six blocks** (`references/create/motion-brief.md`): `<inputs>`, `<direction>`, `<structure>`,
+  `<build>`, `<gotchas>`, `<start>`, the structure of the strongest prompts in the Prompt Motion gallery, mapped to
+  Motionsmith. One concept, a recurring element, a banned list written as `avoid -> instead`, a tempo and a bar count
+  that add up, the ending, the loop decision. SKILL step 1 now writes it; a one-line request gets rewritten into it.
+- **Five brief templates** (`templates/briefs/`): vertical reel with a hook, showreel (15 s, 120 BPM, 7.5 bars),
+  launch, explainer (audience and a facts line: research, never invent) and seamless loop. Each is also a portable
+  prompt.
+- **`scripts/brief.py`**: `list`, `new` (from a template with `--set`), `check` (missing blocks and decisions,
+  unfilled placeholders, bans without alternatives, bar arithmetic, explainer facts), `grid` (every beat's time and
+  frame) and `plan` (concept, bans, tempo, meter, loop into plan.json; bar or beat hits added beside the recipe's
+  named hits, and off-grid hits listed). English and Spanish keys.
+- **AI tells**: the banned list doubles as the art director's checklist (glows without a source, bursts from nowhere,
+  crossfades, bounce on everything, corner text, generic gradients, stock UI, `Math.random`).
+- **Review per beat**: `sample_frames.mjs --beats`, `--bars`, `--hits` and `--beat-offset` read the plan's grid; the
+  review protocol looks at the grid first.
+- **`scripts/loop_check.py`**: a loop's seam measured on the MP4: pose (seam step against ordinary steps) and speed
+  (pace at both ends), and the repeated-first-frame stutter.
+- **Plan**: optional `concept`, `recurring_element`, `banned`, `meter`, `loop`, `audience`; `validate_plan.py
+  --require-brief`.
+- Explainers gain the sequence, audience and facts rules; loops the seam rules.
+
 ## 1.0.0 · 2026-10-24
 
 First public release.

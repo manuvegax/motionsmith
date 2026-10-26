@@ -37,6 +37,14 @@ may not be sold on their own.
 | Fraunces (variable) | `Fraunces-VF.ttf`, `Fraunces-Italic-VF.ttf` | `OFL-Fraunces.txt` | [undercasetype/Fraunces](https://github.com/undercasetype/Fraunces) |
 | JetBrains Mono (variable) | `JetBrainsMono-VF.ttf` | `OFL-JetBrainsMono.txt` | [JetBrains/JetBrainsMono](https://github.com/JetBrains/JetBrainsMono) |
 
+## Prompt Motion
+
+The six-block brief (`<inputs>`, `<direction>`, `<structure>`, `<build>`, `<gotchas>`, `<start>`), the common AI
+tells and the figures quoted in `references/create/motion-brief.md` come from the analyses and templates published at
+[prompt-motion.com](https://prompt-motion.com/) (curated by @p4nthera_), read on 2026-10-26. The templates in
+`templates/briefs/` are written for Motionsmith and paraphrase that structure; no text or video from the site is
+included.
+
 ## HyperFrames
 
 `scripts/kit/hyperframes.js` and `scripts/hyperframes.py` follow the public composition contract of

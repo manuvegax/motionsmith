@@ -154,7 +154,39 @@ def _timed_lists(plan: dict, duration: Fraction | None, errors: list[str]) -> No
                     previous = end
 
 
-def validate(plan: object, *, require_craft: bool = False) -> list[str]:
+def _brief_fields(plan: dict, errors: list[str], *, require: bool) -> None:
+    """Decisions copied from the motion brief (scripts/brief.py plan; references/create/motion-brief.md)."""
+    for key in ("concept", "recurring_element", "audience"):
+        value = plan.get(key)
+        if value is not None and (not isinstance(value, str) or not value.strip()):
+            errors.append(f"{key} must be a nonempty string when present")
+    banned = plan.get("banned")
+    if banned is not None:
+        if not isinstance(banned, list):
+            errors.append("banned must be a list of {avoid, instead}")
+        else:
+            for index, item in enumerate(banned):
+                if not isinstance(item, dict) or not isinstance(item.get("avoid"), str) or not item["avoid"].strip():
+                    errors.append(f"banned[{index}] needs a nonempty avoid (and an instead)")
+                elif not isinstance(item.get("instead", ""), str):
+                    errors.append(f"banned[{index}].instead must be a string")
+    meter = plan.get("meter")
+    if meter is not None and (type(meter) is not int or not 1 <= meter <= 16):
+        errors.append("meter must be an integer number of beats per bar in 1..16")
+    if meter is not None and plan.get("bpm") is None:
+        errors.append("meter needs bpm")
+    if plan.get("loop") is not None and type(plan.get("loop")) is not bool:
+        errors.append("loop must be true or false (true: the last frame matches the first; check with loop_check.py)")
+    if require:
+        if not isinstance(plan.get("concept"), str) or not plan["concept"].strip():
+            errors.append("concept is required with --require-brief: the one idea in one line")
+        if not isinstance(banned, list) or len(banned) < 3:
+            errors.append("banned needs at least 3 {avoid, instead} items with --require-brief")
+        if type(plan.get("loop")) is not bool:
+            errors.append("loop (true or false) is required with --require-brief")
+
+
+def validate(plan: object, *, require_craft: bool = False, require_brief: bool = False) -> list[str]:
     errors = []
     if not isinstance(plan, dict):
         return ["plan must be an object"]
@@ -195,6 +227,7 @@ def validate(plan: object, *, require_craft: bool = False) -> list[str]:
     frames = plan.get("duration_frames")
     duration = Fraction(frames, 1) / fps if type(frames) is int and frames > 0 and fps is not None else None
     _timed_lists(plan, duration, errors)
+    _brief_fields(plan, errors, require=require_brief)
     if require_craft:
         _craft(plan, duration, errors)
     scenes = plan.get("scenes")
@@ -251,10 +284,12 @@ def main() -> int:
     parser.add_argument("plan", type=Path)
     parser.add_argument("--require-craft", action="store_true",
                         help="require reference, composition, motion and blur evidence structure; never certify artistic quality")
+    parser.add_argument("--require-brief", action="store_true",
+                        help="require the brief's decisions in the plan: concept, a banned list and loop (scripts/brief.py plan)")
     args = parser.parse_args()
     try:
         plan = json.loads(args.plan.read_text(encoding="utf-8-sig"))
-        errors = validate(plan, require_craft=args.require_craft)
+        errors = validate(plan, require_craft=args.require_craft, require_brief=args.require_brief)
     except (OSError, ValueError) as error:
         errors = [str(error)]
     print(json.dumps({"errors": errors, "artistic_quality_checked": False}, ensure_ascii=False, indent=2))

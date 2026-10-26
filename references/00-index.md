@@ -7,7 +7,12 @@ Profiles (project and personal) override every default here: read them first ([S
 
 | Request or symptom | Read | Check with |
 |---|---|---|
-| "Make me a piece about X" (from zero) | [Ideation](create/ideation.md) → [art direction](create/art-direction.md) → [story structures](edit/story-structures.md) | Three critics ([review protocol §3](produce/review-protocol.md#3-the-three-critics)) |
+| "Make me a piece about X" (from zero) | [Motion brief](create/motion-brief.md) → [ideation](create/ideation.md) → [art direction](create/art-direction.md) → [story structures](edit/story-structures.md) | `brief.py check`, then the three critics ([review protocol §3](produce/review-protocol.md#3-the-three-critics)) |
+| A one-line prompt ("make a dynamic 15-second motion video"), or a prompt written for another tool | [Motion brief §2 and §7](create/motion-brief.md#2-the-six-blocks): rewrite it into six blocks, show the missing decisions | `brief.py check` |
+| A showreel, a launch film, an explainer, a loop | [Motion brief §6](create/motion-brief.md#6-by-kind-of-piece), `templates/briefs/` | `brief.py new --template …` then `check` |
+| "Looks AI-made": glows, bursts, crossfades, bouncy, corner text | [Motion brief §3](create/motion-brief.md#3-the-banned-list): the banned list with its alternatives | The art director's critic against the list |
+| Cuts off the music, tempo arithmetic, "how many bars fit" | [Motion brief §4](create/motion-brief.md#4-tempo-bars-and-the-arithmetic) | `brief.py grid`, then `sample_frames.mjs --beats` |
+| The loop jumps or stutters at the seam | [Story structures §6](edit/story-structures.md#6-loop), [motion brief §5](create/motion-brief.md#5-review-per-beat-and-the-loop) | `loop_check.py` |
 | "It looks the same / static / needs more dopamine" | [Pacing & retention](edit/pacing-retention.md), [living layer](craft/living-layer.md) | Walk every 0.5 s: no two samples alike |
 | "Looks like a template", generic | [Direction §12](craft/direction-choreography.md#12-frequent-errors-and-the-first-fix), [style atlas](create/style-atlas.md) | Compared direction gate |
 | Robotic, constant speed | [Curves §2](craft/curves-graph-editor.md#2-influence-and-speed-easy-ease-and-snappy-curves) | `motion_curves.py` (peak/mean ≈ 1 gives linear away) |

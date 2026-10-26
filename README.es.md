@@ -19,11 +19,11 @@ de estilos: póster tipográfico, glow mínimo, infografía, editorial audaz, du
 
 ## Qué le da a tu agente
 
-**35 guías en cuatro áreas** (`references/`):
+**36 guías en cuatro áreas** (`references/`):
 
 | Área | Qué trae |
 |---|---|
-| **Crear** | Ideación (diez conceptos y una rúbrica para elegir uno), un atlas de 24 estilos con paleta, letra, textura y gramática de movimiento, 15 planos de escena con tiempos en cuadros, dirección de arte, estudiar referencias sin copiarlas |
+| **Crear** | El brief de motion (seis bloques etiquetados que deciden la pieza antes del código, una lista de prohibidos con las señales de IA y su alternativa, la aritmética del tempo), ideación (diez conceptos y una rúbrica para elegir uno), un atlas de 24 estilos con paleta, letra, textura y gramática de movimiento, 15 planos de escena con tiempos en cuadros, dirección de arte, estudiar referencias sin copiarlas |
 | **Editar** | Corte (la regla de seis de Murch, match cuts, cortes J/L, Kuleshov, Eisenstein), ritmo y retención en video corto, un atlas de 46 transiciones, estructuras de historia, edición con música, gradación de color, subtítulos y títulos, formatos y plataformas (con la recompresión de la plataforma, 60/30 fps y el recorte de la portada) |
 | **Oficio** | Principios, curvas y Graph Editor (influencia y velocidad de AE), motion blur real, luz y bloom en HDR lineal, cámara y espacio, capas y efectos, tipografía cinética (una sola tabla de tamaños, cortes por frase, interlineado, tracking), ritmo y sincronía, tiempo escalonado, serigrafía y texturas, cristal en WebGL, looks retro, diseño de sonido, la capa viva |
 | **Producir** | Pipeline, HyperFrames, un protocolo de revisión densa con tres críticos, una rúbrica de calidad, overlays con alfa, el esquema del plan, una lista de entrega |
@@ -39,6 +39,13 @@ de estilos: póster tipográfico, glow mínimo, infografía, editorial audaz, du
 | `kinetic-type.js` | Cascadas de letras, cambio de fuente a 12 fps, glitch, temblor (boil), ecos de contorno, máquina de escribir, marquesina, cintillo, subtítulos karaoke |
 | `hyperframes.js` | El puente: la pieza responde a las búsquedas de tiempo de HyperFrames, así que se previsualiza en su Studio y se renderiza con `hyperframes render` |
 
+**Briefs de motion** (`templates/briefs/`, `scripts/brief.py`): la estructura de los mejores prompts de la galería
+[Prompt Motion](https://prompt-motion.com/) (`<inputs>`, `<direction>`, `<structure>`, `<build>`, `<gotchas>`,
+`<start>`), con cinco plantillas (reel vertical con gancho, showreel, lanzamiento, explicativo, bucle). `brief.py`
+comprueba que las decisiones estén (un concepto, un elemento recurrente, de cinco a nueve prohibidos con su
+alternativa, un tempo cuyos compases cuadren), imprime la rejilla de beats y la escribe en el plan. Un brief también es
+un prompt: se pega en cualquier agente con Motionsmith instalado.
+
 **Un kit de fuentes** (`templates/fonts/`, licencia SIL Open Font): Archivo con peso variable (100–900) **y ancho
 variable** (62–125 %), Fraunces y JetBrains Mono. Cada pieza las lleva consigo, así que todas las máquinas dibujan las
 mismas letras, y la tipografía puede animar su peso y su ancho como un animador de texto de After Effects.
@@ -52,7 +59,7 @@ valida, es determinista, mantiene el texto en 48 px o más, nunca deja un cuadro
 **Sonido por síntesis** (`scripts/sfx/`, `scripts/build_soundtrack.py`): golpes, booms, risers, whooshes, cristal,
 ticks, latidos y una cadena de máster, armados desde los golpes del plan. Sin samples: misma semilla, mismo WAV.
 
-**Herramientas que miden en vez de adivinar**: `determinism_check`, `sample_frames`, `contact_sheet`,
+**Herramientas que miden en vez de adivinar**: `determinism_check`, `sample_frames` (también un fotograma por beat), `contact_sheet`, `loop_check` (pose y velocidad en la costura de un bucle),
 `render_stream` (FFmpeg, BT.709), `verify_export`, `audio_check` (sonoridad, pico real, ataques alineados con los
 golpes), `motion_curves` (gráficas de valor y velocidad, rebote, asentamiento), `dump_state`, `make_gif`, `captions`,
 `validate_plan`, `hyperframes` (sincronizar una pieza, pasar un clip a una película) y para estudiar referencias
@@ -108,15 +115,19 @@ nada. Para revisar los requisitos: `node scripts/kit/runtime.mjs --probe` y `ffm
 ## Uso
 
 Pídeselo a tu agente con palabras normales, por ejemplo *«hazme una frase cinética de 6 segundos para un reel con
-esta oración»*, *«este título se ve quieto, dale más vida»*, *«agrega un título de Motionsmith a mi película de
+esta oración»*, *«este título se ve quieto, dale más vida»*, *«hazme un showreel de 15 segundos»* (primero escribe el brief completo), *«agrega un título de Motionsmith a mi película de
 HyperFrames»* o *«revisa este MP4 antes de publicarlo»*. La skill elige el modo (receta, crear, mejorar, editar,
 revisar, producir), carga tus perfiles y ajusta su protocolo de «a la primera» al tamaño del pedido.
 
 O empieza a mano:
 
 ```bash
+python -I scripts/brief.py new work/frase/brief.md --template reel-hook --set "concept=la frase se arma sola"
+python -I scripts/brief.py check work/frase/brief.md
 python -I scripts/new_piece.py work/frase --recipe kinetic-quote --format square --title "la mente ve lo que está *lista* para ver"
 node scripts/determinism_check.mjs --root work/frase
+python -I scripts/brief.py plan work/frase/brief.md --plan work/frase/plan.json
+node scripts/sample_frames.mjs --root work/frase --out work/frase/preview/beats --beats
 node scripts/sample_frames.mjs --root work/frase --out work/frase/preview/walk --every 0.5
 MOTION_MAX_SAMPLES=8 node scripts/render_stream.mjs --root work/frase --out final/borrador.mp4 --no-audio   # borrador rápido
 node scripts/render_stream.mjs --root work/frase --out final/frase.mp4 --no-audio

@@ -101,6 +101,9 @@ The last frame matches the first. The viewer watches again without noticing the 
 - Choose the loop period first: 6 s, 9 s or 12 s, for example. Every beat is then a fraction of that period.
 - `MotionMath.loop` and `MotionMath.loopValue` give the seam-safe time. See [pacing-retention.md](pacing-retention.md), section 6, for modes.
 - A loop without a payoff is a mood piece. Name the intent in the plan before you draw it.
+- The seam needs pose **and** speed to match, and the first frame must not appear twice: sample t in `[0, period)`.
+  Mark `"loop": true` in the plan and check the MP4 with `loop_check.py` (seam ratio and speed ratio near 1).
+  Brief: `templates/briefs/loop.md`.
 
 ## 7. Question, then answer
 
@@ -143,6 +146,11 @@ For concepts that need a mechanism. Typical length 30–60 s.
 
 - Each diagram step lasts at least its reading time: `MotionMath.readingTime(words, {wordsPerSecond: 3.5, floor: 0.8})`. A step with ten words needs about 3 s.
 - Build the diagram with `MotionMath.stagger` over its parts, so the build order is one line of code and the timing is in one place.
+- Give a **sequence with a start and an end**, not a topic ("a recipe from start to finish", "a request moving through
+  a system"); topic-only briefs are where explainers turn generic. About five seconds per idea is a starting length.
+- Name the **audience** in one line: it sets vocabulary and pace.
+- **Facts**: research first; check every number, name, date and quote against a source and list them in the plan;
+  never invent one. Brief: `templates/briefs/explainer.md` ([motion brief §6](../create/motion-brief.md#6-by-kind-of-piece)).
 
 ## 10. Ads, neutral frameworks
 

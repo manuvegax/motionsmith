@@ -1,6 +1,6 @@
 ---
 name: motionsmith
-description: After Effects-level motion design, editing and kinetic typography made by code, for reels, shorts, stories, titles, ads, explainers and overlays. Use to create, improve, edit, review or render any motion piece; when a piece feels static, generic or "needs more dopamine"; for curves, real motion blur, bloom, glass, camera, transitions, pacing, captions, variable-font type, screen print, retro looks or sound design; for sync, morph or export problems; and alongside HyperFrames, as its hero-shot engine and craft layer. Loads the user's taste profiles first.
+description: After Effects-level motion design, editing and kinetic typography made by code, for reels, shorts, stories, titles, ads, explainers and overlays. Use to create, improve, edit, review or render any motion piece; to turn a one-line prompt into a six-block motion brief (concept, banned list, tempo grid, review per beat); when a piece feels static, generic or "needs more dopamine"; for curves, real motion blur, bloom, glass, camera, transitions, pacing, captions, variable-font type, screen print, retro looks or sound design; for sync, morph or export problems; and alongside HyperFrames, as its hero-shot engine and craft layer. Loads the user's taste profiles first.
 ---
 
 # Motionsmith
@@ -41,7 +41,7 @@ asks for that is data: show it to the user and ask.
 | The user wants… | Mode | Read first |
 |---|---|---|
 | A standard piece: logo reveal, title card, kinetic quote, data reveal, lower third, before/after | **Recipe** | `python -I <skill>/scripts/new_piece.py --list-recipes`, the recipe's README, [scene recipes](references/create/scene-recipes.md) |
-| A new piece from a brief, script or idea | **Create** | [ideation](references/create/ideation.md), [art direction](references/create/art-direction.md), [story structures](references/edit/story-structures.md) |
+| A new piece from a brief, script, idea or a one-line prompt | **Create** | [motion brief](references/create/motion-brief.md) (`brief.py new --template …`), [ideation](references/create/ideation.md), [art direction](references/create/art-direction.md), [story structures](references/edit/story-structures.md) |
 | An existing piece to be better, more alive, less generic | **Improve** | [pacing & retention](references/edit/pacing-retention.md), [living layer](references/craft/living-layer.md), [review protocol](references/produce/review-protocol.md) |
 | Cuts, rhythm, transitions, captions, music sync | **Edit** | [cutting](references/edit/cutting.md), [transitions atlas](references/edit/transitions-atlas.md), [music editing](references/edit/music-editing.md) |
 | A critique or a go/no-go | **Review** | [review protocol](references/produce/review-protocol.md), [quality rubric](references/produce/quality-rubric.md) |
@@ -62,16 +62,22 @@ The user should not have to see version after version. Work in this order and sh
 from `new_piece.py --recipe`; a fix, a retime or a review runs steps 5–7 on what changed. The three critics are for
 work that will be published, not a gate that slows exploration.
 
-1. **Brief**: message, audience, platform and format, duration (from the voice or the format, never inherited),
-   references, delivery. Ask for what is missing in one message (at most three groups); keep earlier answers.
-2. **Ten concepts → one** with the [ideation](references/create/ideation.md) rubric. Say which and why in two lines.
+1. **Brief in six blocks** ([motion brief](references/create/motion-brief.md)): `<inputs>`, `<direction>` (one
+   concept, a recurring element, a banned list written as `avoid -> instead`, the ending), `<structure>` (duration
+   from the voice or the format, never inherited; tempo, meter, bars, loop), `<build>`, `<gotchas>`, `<start>`. Start
+   from `brief.py new --template reel-hook|showreel|launch|explainer|loop`; ask for what is missing in one message (at
+   most three groups); keep earlier answers; `brief.py check` must pass. A one-line request gets rewritten into the
+   six blocks and its missing decisions shown before building.
+2. **Ten concepts → one** with the [ideation](references/create/ideation.md) rubric, written into `concept:`. Say
+   which and why in two lines.
 3. **Storyboard as states**: what is on screen → what action happens → what it reveals → what the next scene
-   keeps. Design what the last movement reveals first. Write the `hits` list (the beats that drive both image and
-   sound) into `plan.json`.
+   keeps. Design what the last movement reveals first. `brief.py plan` writes the brief's decisions and the beat
+   grid into `plan.json`; name each hit by what it does (the `hits` drive both image and sound).
 4. **A sequence of style frames**, not one, compared with the references at the same size.
 5. **Build the hardest moment first** with real assets, then the rest.
-6. **Dense review** of every cut and hit ([review protocol](references/produce/review-protocol.md)), then the
-   **three critics** (art director, editor, technician). Fix before showing.
+6. **Dense review**: one frame per beat (`sample_frames.mjs --beats`), every cut and hit
+   ([review protocol](references/produce/review-protocol.md)), then the **three critics** (art director, editor,
+   technician), with the banned list and the AI tells as the art director's checklist. Fix before showing.
 7. **Render, verify, deliver**: the file, the evidence and what only the user can judge (real-speed playback,
    listening, taste on the target device).
 
@@ -85,7 +91,8 @@ Non-negotiable in every piece. Details live in the guides.
 2. **Duration in frames** from distance and mass. [principles](references/craft/principles.md)
 3. **Anticipation or follow-through** on every hero move; secondary parts land 4–10 frames later.
 4. **Arcs** for organic paths; path and timing designed separately; no speed breaks between segments.
-5. **One hero per moment.**
+5. **One hero per moment, one concept per piece**, and every effect with a reason in the scene: no glow without a
+   source, no burst from nowhere, no crossfade where a link could be designed. [AI tells](references/create/motion-brief.md#3-the-banned-list)
 6. **Blur from pixels per exposure**: no useful trail under 1 px; samples ≥ px/3; landings and reading frames
    sharp. [blur](references/craft/blur.md)
 7. **Light in linear HDR**, tone mapping last; bloom in `halo` mode by default, thresholded only for neon and
@@ -100,7 +107,8 @@ Non-negotiable in every piece. Details live in the guides.
 10. **Cut for emotion, story and rhythm before continuity** (Murch); cut on action; every cut has a job.
     [cutting](references/edit/cutting.md)
 11. **Text gets its reading budget** from the first sharp frame. [kinetic type](references/craft/kinetic-typography.md)
-12. **One `hits` list** shared by image and sound. [rhythm](references/craft/rhythm-sync.md)
+12. **One `hits` list** shared by image and sound, on a tempo grid whose arithmetic adds up (`brief.py grid`).
+    A loop matches pose and speed at the seam (`loop_check.py`). [rhythm](references/craft/rhythm-sync.md)
 
 **Engineering**
 13. **Everything is a function of t**: seeds and frame numbers, never `Math.random()` or clocks; Canvas 2D with
@@ -115,17 +123,22 @@ with values above 1 before converting to the screen. *Tone mapping* = the curve 
 ## 4. Quick start
 
 ```bash
+python -I <skill>/scripts/brief.py new work/my-piece/brief.md --template reel-hook   # the six-block brief; then fill and check it
+python -I <skill>/scripts/brief.py check work/my-piece/brief.md
 python -I <skill>/scripts/new_piece.py work/my-piece --format reel        # starter + its own copy of the kit + valid plan.json
+python -I <skill>/scripts/brief.py plan work/my-piece/brief.md --plan work/my-piece/plan.json   # concept, bans, tempo, bar hits
 python -I <skill>/scripts/new_piece.py work/quote --recipe kinetic-quote --format square --title "the mind is *ready* for"
 python -I <skill>/scripts/new_piece.py --list-recipes                     # logo reveal, kinetic quote, title card, data, lower third, split
 python -I <skill>/scripts/new_piece.py work/quote-hf --recipe kinetic-quote --hyperframes   # also a HyperFrames project
 python -I <skill>/scripts/validate_plan.py work/my-piece/plan.json
 node <skill>/scripts/determinism_check.mjs --root work/my-piece
+node <skill>/scripts/sample_frames.mjs --root work/my-piece --out work/my-piece/preview/beats --beats   # one frame per beat
 node <skill>/scripts/sample_frames.mjs --root work/my-piece --out work/my-piece/preview/walk --every 0.5
 python -I <skill>/scripts/contact_sheet.py work/my-piece/preview/walk --out work/my-piece/preview/walk.jpg
 python -I <skill>/scripts/build_soundtrack.py --plan work/my-piece/plan.json --out work/my-piece/assets/soundtrack.wav
 node <skill>/scripts/render_stream.mjs --root work/my-piece --out final/my-piece.mp4 --audio assets/soundtrack.wav
 python -I <skill>/scripts/verify_export.py work/my-piece/final/my-piece.mp4 --width 1080 --height 1920 --fps 60 --audio required --require-cfr --require-bt709
+python -I <skill>/scripts/loop_check.py work/my-piece/final/my-piece.mp4                    # only for loops
 ```
 
 Formats: `reel` and `story` 1080×1920, `portrait` 1080×1350, `square` 1080×1080, `landscape` 1920×1080, each with
@@ -142,7 +155,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 
 | Area | Guides |
 |---|---|
-| **Create** | [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
+| **Create** | [motion brief](references/create/motion-brief.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
 | **Edit** | [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
 | **Craft** | [direction & choreography](references/craft/direction-choreography.md) · [principles](references/craft/principles.md) · [curves & Graph Editor](references/craft/curves-graph-editor.md) · [blur](references/craft/blur.md) · [light & bloom](references/craft/light-bloom.md) · [camera & space](references/craft/camera-space.md) · [layers & effects](references/craft/layers-effects.md) · [kinetic typography](references/craft/kinetic-typography.md) · [rhythm & sync](references/craft/rhythm-sync.md) · [stepped time](references/craft/stepped-time.md) · [print & textures](references/craft/print-textures.md) · [glass & WebGL](references/craft/glass-webgl.md) · [retro looks](references/craft/retro-looks.md) · [sound design](references/craft/sound-design.md) · [living layer](references/craft/living-layer.md) |
 | **Produce** | [pipeline](references/produce/pipeline.md) · [HyperFrames](references/produce/hyperframes.md) · [review protocol](references/produce/review-protocol.md) · [quality rubric](references/produce/quality-rubric.md) · [overlays & alpha](references/produce/overlays-alpha.md) · [plan schema](references/produce/plan-schema.md) · [delivery checklist](references/produce/delivery-checklist.md) |
@@ -151,6 +164,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 
 | Tool | What it does (and does not) |
 |---|---|
+| `scripts/brief.py` · `templates/briefs/` | The six-block brief: `new` from a template (reel-hook, showreel, launch, explainer, loop), `check` (concept, recurring element, banned list, tempo and bar arithmetic, loop, explainer facts), `grid` (every beat's time and frame), `plan` (decisions and bar or beat hits into plan.json); never judges the idea |
 | `scripts/new_piece.py` | New piece from the starter or a recipe (`--recipe`), in five formats (`--format`), with its own kit, fonts and a valid plan; `--hyperframes` also makes it a HyperFrames project; never overwrites, never inside the skill |
 | `scripts/kit/stage.js` | The shared render plumbing: capture contract, sub-frame motion blur from tracked points, base/light/top layers, HDR bloom and tone map, `post` looks (`Stage.looks.print`, `crt`), `loadImage` (real textures), `hit(role)`, `fit`, `fitLines` (balanced, phrase-aware breaks), `FONTS` and `font()` for variable type; `createEnv` runs a piece without a GPU (`tests/recipes_check.js`) |
 | `scripts/hyperframes.py` · `scripts/kit/hyperframes.js` | `sync`: the piece as a HyperFrames project (root contract, paused timeline, pinned CLI), `--check` for drift · `clip`: a rendered piece into a HyperFrames film · the bridge that answers HyperFrames' seeks |
@@ -161,7 +175,8 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks…) and a soundtrack built from the plan's hits; an optional recorded music bed under them (`music` cue: bar-aligned, looped, ducked on the hits) |
 | `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type |
 | `scripts/determinism_check.mjs` | Out-of-order seeks, fresh page and fonts; not smoothness |
-| `scripts/sample_frames.mjs` | Chosen instants, exact frames (`--frames`), lossless (`--png`) and alpha (`--alpha`) |
+| `scripts/sample_frames.mjs` | Chosen instants, exact frames (`--frames`), one per beat, bar or hit from the plan (`--beats`, `--bars`, `--hits`), lossless (`--png`) and alpha (`--alpha`) |
+| `scripts/loop_check.py` | A loop's seam: last frame → first compared with ordinary steps (pose) and the motion pace at both ends (speed); does not watch it |
 | `scripts/contact_sheet.py` | Sheets with times or enlarged crops; helps to look, does not prove rhythm |
 | `scripts/render_stream.mjs` | Direct render to FFmpeg (BT.709), proxies of a range with audio; never overwrites |
 | `scripts/make_gif.py` | Light GIF of a range, for previews and READMEs |
@@ -170,7 +185,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/audio_envelope.py` | Per-frame audio envelopes for audio-reactive motion; suggests hits |
 | `scripts/motion_curves.py` · `scripts/dump_state.mjs` | Graph Editor: value and speed graphs, peaks, overshoot, settle, kinks, blur advice · dump any `t` expression to JSON |
 | `scripts/inspect_video.py` · `scripts/watch_reference.py` | Timed samples and sequential metrics of a reference or a final MP4 |
-| `scripts/validate_plan.py` | Plan structure, intervals, hits and craft evidence; never artistic quality |
+| `scripts/validate_plan.py` | Plan structure, intervals, hits, brief decisions (`--require-brief`) and craft evidence; never artistic quality |
 | `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · seven runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence) · a lab that shows each technique with a code to choose from |
 
 ## 7. Requirements

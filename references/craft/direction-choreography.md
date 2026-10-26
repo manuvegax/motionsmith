@@ -145,6 +145,8 @@ replace them, and 60 fps plus a correct codec never proved craft.
 | Symptom | First fix |
 |---|---|
 | Looks like a template | Change the relation between image and phrase, the link or the composition; do not add effects |
+| Looks AI-made (glows, bursts, crossfades, bounce, corner text) | Write the banned list with its alternatives ([motion brief §3](../create/motion-brief.md#3-the-banned-list)); give every effect a reason in the scene |
+| A tour of effects, no idea | One `concept:` line and one recurring element that carries every transition ([motion brief](../create/motion-brief.md)) |
 | Pretty but not understood | Choose the instant of meaning; reduce competition; give reading time |
 | Everything floats | Anchor pivots, give contact and mass, decide what is still relative to what |
 | Text trembles | Check scaling, hinting, fractional positions and reflow; compare frames without blur |

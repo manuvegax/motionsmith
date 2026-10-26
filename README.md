@@ -18,11 +18,11 @@ atlas: typographic poster, minimal glow, infographic, bold editorial, duotone, S
 
 ## What it gives your agent
 
-**35 guides in four areas** (`references/`):
+**36 guides in four areas** (`references/`):
 
 | Area | What is inside |
 |---|---|
-| **Create** | Ideation (ten concepts and a rubric to pick one), a style atlas of 24 looks with palette, type, texture and motion grammar, 15 scene blueprints with frame timings, art direction, studying references without copying them |
+| **Create** | The motion brief (six tagged blocks that decide a piece before the code, a banned list of AI tells with their alternatives, tempo arithmetic), ideation (ten concepts and a rubric to pick one), a style atlas of 24 looks with palette, type, texture and motion grammar, 15 scene blueprints with frame timings, art direction, studying references without copying them |
 | **Edit** | Cutting (Murch's rule of six, match cuts, J/L cuts, Kuleshov, Eisenstein), pacing and retention for short-form, an atlas of 46 transitions, story structures, music editing, colour grade, captions and titles, formats and platforms (with the platform re-encode, 60/30 fps and the cover crop) |
 | **Craft** | Principles, curves and the Graph Editor (AE influence and speed), real motion blur, light and bloom in linear HDR, camera and space, layers and effects, kinetic typography (one size table, phrase breaks, leading, tracking), rhythm and sync, stepped time, screen print and textures, glass in WebGL, retro looks, sound design, the living layer |
 | **Produce** | Pipeline, HyperFrames, a dense review protocol with three critics, a quality rubric, overlays with alpha, the plan schema, a delivery checklist |
@@ -38,6 +38,13 @@ atlas: typographic poster, minimal glow, infographic, bold editorial, duotone, S
 | `kinetic-type.js` | Letter cascades, face cycling on a 12 fps grid, glitch, boil, outline echoes, typewriter, marquee, ticker, karaoke captions |
 | `hyperframes.js` | The bridge: a piece answers HyperFrames' seeks, so it previews in HyperFrames Studio and renders with `hyperframes render` |
 
+**Motion briefs** (`templates/briefs/`, `scripts/brief.py`): the structure of the strongest prompts in the
+[Prompt Motion](https://prompt-motion.com/) gallery (`<inputs>`, `<direction>`, `<structure>`, `<build>`,
+`<gotchas>`, `<start>`), with five templates (vertical reel with a hook, showreel, launch, explainer, loop). `brief.py`
+checks that the decisions are there (one concept, a recurring element, five to nine bans each with its alternative,
+a tempo whose bars add up), prints the beat grid and writes it into the plan. A brief is also a prompt: paste it into
+any agent with Motionsmith installed.
+
 **A font kit** (`templates/fonts/`, SIL Open Font License): Archivo with variable weight (100–900) **and width**
 (62–125 %), Fraunces, JetBrains Mono. Every piece carries it, so every machine draws the same letters, and type can
 animate its weight and width like an After Effects text animator.
@@ -50,9 +57,9 @@ never holds a dead frame, and reads its key times from the plan's `hits`, the sa
 **Sound by synthesis** (`scripts/sfx/`, `scripts/build_soundtrack.py`): hits, booms, risers, whooshes, glass, ticks,
 heartbeats and a mastering chain, built from the plan's hits. No samples, same seed, same WAV.
 
-**Tools that measure instead of guessing**: `determinism_check`, `sample_frames`, `contact_sheet`, `render_stream`
+**Tools that measure instead of guessing**: `determinism_check`, `sample_frames` (also one frame per beat), `contact_sheet`, `render_stream`
 (FFmpeg, BT.709), `verify_export`, `audio_check` (loudness, true peak, onsets against the hits), `motion_curves`
-(value and speed graphs, overshoot, settle), `dump_state`, `make_gif`, `captions`, `validate_plan`, `hyperframes`
+(value and speed graphs, overshoot, settle), `loop_check` (pose and speed at a loop's seam), `dump_state`, `make_gif`, `captions`, `validate_plan`, `hyperframes`
 (sync a piece, hand a clip to a film), and for studying references `inspect_video`, `watch_reference` and
 `audio_envelope`.
 
@@ -106,15 +113,19 @@ requirements: `node scripts/kit/runtime.mjs --probe` and `ffmpeg -version`.
 ## Use
 
 Ask your agent in plain words, for example *"make a 6-second kinetic quote for a reel with this sentence"*,
-*"this title feels static, make it more alive"*, *"add a Motionsmith title to my HyperFrames film"* or *"review this
+*"this title feels static, make it more alive"*, *"make a 15-second showreel"* (it writes the full brief first), *"add a Motionsmith title to my HyperFrames film"* or *"review this
 MP4 before I post it"*. The skill picks the mode (recipe, create, improve, edit, review, produce), loads your profiles
 and scales its right-first-time protocol to the request.
 
 Or start by hand:
 
 ```bash
+python -I scripts/brief.py new work/quote/brief.md --template reel-hook --set "concept=the sentence assembles itself"
+python -I scripts/brief.py check work/quote/brief.md
 python -I scripts/new_piece.py work/quote --recipe kinetic-quote --format square --title "the mind is *ready* for"
 node scripts/determinism_check.mjs --root work/quote
+python -I scripts/brief.py plan work/quote/brief.md --plan work/quote/plan.json
+node scripts/sample_frames.mjs --root work/quote --out work/quote/preview/beats --beats
 node scripts/sample_frames.mjs --root work/quote --out work/quote/preview/walk --every 0.5
 MOTION_MAX_SAMPLES=8 node scripts/render_stream.mjs --root work/quote --out final/draft.mp4 --no-audio   # fast draft
 node scripts/render_stream.mjs --root work/quote --out final/quote.mp4 --no-audio
