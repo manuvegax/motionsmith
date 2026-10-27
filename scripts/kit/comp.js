@@ -22,6 +22,32 @@
   const EASES = {easy: [33.33, 33.33], snap: [12, 88], punch: [5, 95], swift: [40, 85], glide: [55, 60], accel: [85, 12], whip: [72, 72]};
   const curve = name => { const e = EASES[name] || name; return M.aeEase({outInfluence: e[0], inInfluence: e[1]}); };
 
+  /* Motion styles: one switch for the feel of a whole piece. drift = the residual life of a layer once its last key has
+     landed (px of wander, degrees of sway, % of growth per second); breathe = the slow push every scene gets (% of
+     scale over the scene, degrees, px of travel); offset = frames between layers; transitions = seconds. */
+  const STYLES = {
+    editorial: {arrive: 'snap', slam: 'punch', exit: 'accel', offset: 3, overshoot: .06,
+      drift: {px: 5, deg: .35, grow: .8}, breathe: {scale: 6, deg: .4, px: 10},
+      transitions: {whip: .32, push: .45, zoom: .5, iris: .42, slice: .5, spin: .5}},
+    punchy: {arrive: 'punch', slam: 'punch', exit: 'accel', offset: 2, overshoot: .1,
+      drift: {px: 7, deg: .5, grow: 1.1}, breathe: {scale: 8, deg: .6, px: 14},
+      transitions: {whip: .26, push: .36, zoom: .4, iris: .34, slice: .4, spin: .4}},
+    calm: {arrive: 'swift', slam: 'snap', exit: 'glide', offset: 5, overshoot: .03,
+      drift: {px: 3.5, deg: .25, grow: .55}, breathe: {scale: 4, deg: .25, px: 7},
+      transitions: {whip: .4, push: .6, zoom: .65, iris: .55, slice: .65, spin: .65}},
+    sober: {arrive: 'swift', slam: 'snap', exit: 'glide', offset: 4, overshoot: 0,
+      drift: {px: 2, deg: .1, grow: .3}, breathe: {scale: 2.5, deg: .1, px: 4},
+      transitions: {whip: .4, push: .6, zoom: .6, iris: .5, slice: .6, spin: .6}},
+  };
+  let STYLE = STYLES.editorial;
+  function style(which) {
+    if (which !== undefined) STYLE = typeof which === 'string' ? (STYLES[which] || STYLE) : {...STYLES.editorial, ...which};
+    return STYLE;
+  }
+  const hashName = name => { let h = 2166136261; for (const ch of String(name)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return (h >>> 0) % 100000; };
+  /* Seconds after which a layer's keys are done (its last key on position, scale or rotation), in layer time. */
+  const settleTime = L => Math.max(0, ...['position', 'scale', 'rotation'].map(p => L[p] && L[p].anim ? L[p].anim.keys[L[p].anim.keys.length - 1].t : 0));
+
   /* ---------- keyframes ---------- */
   function k(...keys) {
     const ks = keys.map(([t, v]) => ({t, v}));
@@ -37,7 +63,7 @@
     return {anim: TL.track(ks)};
   }
   /* The overshoot a designer keys by hand: arrive past the target, settle back. */
-  function overshoot(t0, from, t1, to, {amount = .08, settle = .22, ease = 'swift'} = {}) {
+  function overshoot(t0, from, t1, to, {amount = STYLE.overshoot, settle = .22, ease = 'swift'} = {}) {
     const over = Array.isArray(to) ? to.map((v, i) => v + (v - from[i]) * amount) : to + (to - from) * amount;
     return k([t0, from, ease], [t1, over, 'easy'], [t1 + settle, to]);
   }
@@ -80,7 +106,8 @@
     return {name: o.name || `layer${++unnamed}`, in: o.in ?? 0, out: o.out ?? Infinity, start: o.start ?? (o.in ?? 0),
       parent: o.parent, anchor: o.anchor, position: o.position, scale: o.scale, rotation: o.rotation, opacity: o.opacity,
       blur: o.blur, threeD: !!o.threeD, blend: o.blend, mask: o.mask, matte: o.matte, isMatte: !!o.isMatte,
-      draw: o.draw, comp: o.comp, timeRemap: o.timeRemap, speed: o.speed ?? 1, visible: o.visible ?? true, size: o.size};
+      draw: o.draw, comp: o.comp, timeRemap: o.timeRemap, speed: o.speed ?? 1, visible: o.visible ?? true, size: o.size,
+      drift: o.drift ?? true, effects: o.effects || []};
   }
   const localTime = (L, t) => L.timeRemap !== undefined ? val(L.timeRemap, t - L.start) : (t - L.start) * L.speed;
 
@@ -98,6 +125,18 @@
       let sc = val(L.scale, lt, 100);
       sc = Array.isArray(sc) ? sc : [sc, sc];
       let rot = val(L.rotation, lt, 0), blur = val(L.blur, lt, 0);
+      if (L.drift) {   // a moving hold: once the keys have landed the layer keeps breathing, never at speed zero
+        const d = L.drift === true ? STYLE.drift : {...STYLE.drift, ...L.drift};
+        L._settle ??= settleTime(L);
+        const since = lt - L._settle, r = M.smoothstep(M.clamp(since / .6)), seed = L._seed ??= hashName(L.name);
+        if (r > 0 && (d.px || d.deg || d.grow)) {
+          const w = M.wiggle(lt, {freq: .22, amp: d.px, octaves: 2, seed, dims: 2});
+          pos = [pos[0] + w[0] * r, pos[1] + w[1] * r, ...(pos.length > 2 ? [pos[2]] : [])];
+          rot += M.wiggle(lt, {freq: .17, amp: d.deg, seed: seed + 7}) * r;
+          const g = 1 + d.grow / 100 * Math.max(0, since) * r;
+          sc = [sc[0] * g, sc[1] * g];
+        }
+      }
       if (L.threeD && camera) {   // 2.5D: perspective by depth, depth of field by distance from the focus plane
         const cam = val(camera.position, t, [width / 2, height / 2, -(camera.zoom || width * 1.4)]);
         const zoom = val(camera.zoom, t, width * 1.4), d = Math.max(1, (pos[2] || 0) - cam[2]);
@@ -116,16 +155,17 @@
       return {m, lt, blur};
     }
 
-    function drawLayer(ctx, L, t, base, key) {
+    /* The layer's own pixels: transform, opacity, blur, blend, mask, then its content (a precomp or its draw). */
+    function paintLayer(ctx, L, t, base, key, alpha = 1) {
       const {m, lt, blur} = matrix(L, t);
-      const opacity = val(L.opacity, lt, 100) / 100;
+      const opacity = val(L.opacity, lt, 100) / 100 * alpha;
       if (opacity <= 0) return;
       ctx.save();
       clean(ctx);   // every layer draws from a clean state: nothing a previous frame set can leak into this one
       ctx.setTransform(...mul(base, m));
       ctx.globalAlpha *= opacity;
       if (blur > .3) ctx.filter = `blur(${blur.toFixed(2)}px)`;
-      if (L.blend) ctx.globalCompositeOperation = L.blend;
+      if (L.blend && !L.effects.length) ctx.globalCompositeOperation = L.blend;
       if (L.mask) { ctx.beginPath(); L.mask(ctx, lt, L); ctx.clip(); }   // an AE layer mask, in layer coordinates
       if (L.comp) {   // a precomp: render it at its own time into a canvas, then draw it as this layer's content
         const c = scratch(`${key}/${L.name}`, L.comp.width, L.comp.height);
@@ -136,6 +176,83 @@
         }
       } else if (L.draw) L.draw(ctx, lt, L);
       ctx.restore();
+    }
+
+    /* A layer with its effects. Time effects change when it is drawn: posterize (stepped time) and echo (copies at
+       earlier times, fading, behind it). Pixel effects work on the layer's own pixels in a canvas: glow, shadow,
+       rgbSplit, tint, fill, lightSweep. */
+    function drawLayer(ctx, L, t, base, key) {
+      const fx = L.effects;
+      const post = fx.find(e => e.type === 'posterize');
+      if (post) { const lt = (t - L.start) * L.speed, q = Math.floor(lt * post.fps + 1e-6) / post.fps; t = L.start + q / L.speed; }
+      const echo = fx.find(e => e.type === 'echo');
+      const pixel = fx.filter(e => !['posterize', 'echo'].includes(e.type));
+      const draw = (g, tt, b, a) => paintLayer(g, L, tt, b, key, a);
+      const render = (g, b) => {
+        if (echo) for (let i = echo.count || 4; i >= 1; i--) draw(g, t - i * (echo.step ?? 2 / 30), b, Math.pow(echo.decay ?? .55, i));
+        draw(g, t, b, 1);
+      };
+      if (!pixel.length) { render(ctx, base); return; }
+      const E = scratch(`${key}/${L.name}#fx`, width, height);
+      if (!E) { render(ctx, base); return; }
+      const ge = E.getContext('2d'); ge.setTransform(1, 0, 0, 1, 0, 0); ge.clearRect(0, 0, width, height);
+      render(ge, ID);
+      const lt = localTime(L, t);
+      for (const e of pixel) applyEffect(E, e, lt, key, L.name);
+      ctx.save(); clean(ctx); ctx.setTransform(...base);
+      if (L.blend) ctx.globalCompositeOperation = L.blend;
+      const shadow = pixel.find(e => e.type === 'shadow');
+      if (shadow) {   // a drop shadow from the layer's alpha
+        ctx.shadowColor = shadow.color || 'rgba(0,0,0,.35)'; ctx.shadowBlur = shadow.blur ?? width * .03;
+        ctx.shadowOffsetX = shadow.x ?? 0; ctx.shadowOffsetY = shadow.y ?? width * .015;
+      }
+      const glow = pixel.find(e => e.type === 'glow');
+      if (glow) {   // the glow sits under the layer's pixels, added or screened
+        const G = scratch(`${key}/${L.name}#glow`, width, height), gg = G.getContext('2d');
+        gg.setTransform(1, 0, 0, 1, 0, 0); gg.clearRect(0, 0, width, height);
+        gg.filter = `blur(${(glow.radius ?? width * .025).toFixed(1)}px)`; gg.drawImage(E, 0, 0); gg.filter = 'none';
+        if (glow.color) { gg.globalCompositeOperation = 'source-in'; gg.fillStyle = glow.color; gg.fillRect(0, 0, width, height); gg.globalCompositeOperation = 'source-over'; }
+        ctx.save(); ctx.shadowColor = 'rgba(0,0,0,0)'; ctx.globalCompositeOperation = glow.mode || 'lighter';
+        const strength = glow.strength ?? .8;
+        ctx.globalAlpha = Math.min(1, strength); ctx.drawImage(G, 0, 0);
+        if (strength > 1) { ctx.globalAlpha = strength - 1; ctx.drawImage(G, 0, 0); }
+        ctx.restore();
+      }
+      ctx.drawImage(E, 0, 0);
+      ctx.restore();
+    }
+
+    function applyEffect(E, e, lt, key, name) {
+      const g = E.getContext('2d');
+      g.save(); g.setTransform(1, 0, 0, 1, 0, 0);
+      if (e.type === 'fill') { g.globalCompositeOperation = 'source-in'; g.fillStyle = e.color || '#fff'; g.fillRect(0, 0, width, height); }
+      if (e.type === 'tint') { g.globalCompositeOperation = 'source-atop'; g.globalAlpha = e.amount ?? .5; g.fillStyle = e.color || '#ff3b23'; g.fillRect(0, 0, width, height); }
+      if (e.type === 'lightSweep') {   // a band of light crossing the layer, only where the layer is
+        const at = e.at ?? 0, dur = e.dur ?? .8, u = e.period ? (lt % e.period) / Math.min(dur, e.period) : (lt - at) / dur;
+        if (u > 0 && u < 1) {
+          const a = (e.angle ?? -20) * Math.PI / 180, w = (e.width ?? .18) * width, x = M.mix(-.3, 1.3, curve('swift')(u)) * width;
+          const dx = Math.cos(a) * w, dy = Math.sin(a) * w, grad = g.createLinearGradient(x - dx, height / 2 - dy, x + dx, height / 2 + dy);
+          grad.addColorStop(0, 'rgba(255,255,255,0)'); grad.addColorStop(.5, `rgba(255,255,255,${e.intensity ?? .55})`); grad.addColorStop(1, 'rgba(255,255,255,0)');
+          g.globalCompositeOperation = 'source-atop'; g.fillStyle = grad; g.fillRect(0, 0, width, height);
+        }
+      }
+      if (e.type === 'rgbSplit') {   // chromatic aberration: each channel offset along an angle, added back together
+        const px = typeof e.px === 'function' ? e.px(lt) : (e.px ?? 4), a = (e.angle ?? 0) * Math.PI / 180;
+        if (px > .2) {
+          const X = scratch(`${key}/${name}#rgb`, width, height), C = scratch(`${key}/${name}#ch`, width, height);
+          const gx = X.getContext('2d'), gc = C.getContext('2d');
+          gx.setTransform(1, 0, 0, 1, 0, 0); gx.clearRect(0, 0, width, height); gx.globalCompositeOperation = 'lighter';
+          [['#ff0000', -1], ['#00ff00', 0], ['#0000ff', 1]].forEach(([colour, k]) => {
+            gc.setTransform(1, 0, 0, 1, 0, 0); gc.globalCompositeOperation = 'copy'; gc.drawImage(E, 0, 0);
+            gc.globalCompositeOperation = 'multiply'; gc.fillStyle = colour; gc.fillRect(0, 0, width, height);
+            gc.globalCompositeOperation = 'destination-in'; gc.drawImage(E, 0, 0); gc.globalCompositeOperation = 'source-over';
+            gx.drawImage(C, Math.cos(a) * px * k, Math.sin(a) * px * k);
+          });
+          gx.globalCompositeOperation = 'source-over';
+          g.globalCompositeOperation = 'copy'; g.drawImage(X, 0, 0);
+        }
+      }
+      g.restore();
     }
 
     /* Draw the comp at time t onto ctx (its current transform is the comp's origin). */
@@ -225,7 +342,7 @@
   /* A film from scenes: [{comp, duration?}], transitions between them [{type, dur, flash, ...}]. Each scene becomes a
      precomp layer; a transition overlaps the end of one with the start of the next by `dur` seconds and drives both
      layers' transforms (and the incoming layer's mask). flash: a colour that blinks for two frames on the cut. */
-  function sequence(scenes, transitions = [], {width, height, fps = 30, background = '#000'} = {}) {
+  function sequence(scenes, transitions = [], {width, height, fps = 30, background = '#000', breathe} = {}) {
     const W = width || scenes[0].comp.width, H = height || scenes[0].comp.height;
     const starts = [0];
     scenes.forEach((s, i) => { if (i) starts.push(starts[i - 1] + (scenes[i - 1].duration ?? scenes[i - 1].comp.duration) - ((transitions[i - 1] || {}).dur || 0)); });
@@ -235,16 +352,32 @@
       const len = s.duration ?? s.comp.duration, inT = starts[i];
       const tin = i > 0 ? {fx: fx[i - 1], t0: starts[i], dur: transitions[i - 1].dur || 0} : null;
       const tout = i < scenes.length - 1 ? {fx: fx[i], t0: starts[i + 1], dur: transitions[i].dur || 0} : null;
+      const br = s.breathe === false ? null : {...STYLE.breathe, ...(breathe || {}), ...(s.breathe || {})}, seed = 31 + i * 17;
       const props = t => {   // this scene's transform at comp time t, from the transitions around it
         let p = {};
         if (tin && tin.dur > 0 && t < tin.t0 + tin.dur) p = tin.fx.in(M.clamp((t - tin.t0) / tin.dur));
         if (tout && tout.dur > 0 && t >= tout.t0) p = {...p, ...tout.fx.out(M.clamp((t - tout.t0) / tout.dur))};
         return p;
       };
-      return layer({name: `scene${i}`, in: inT, out: inT + len, start: inT, comp: s.comp,
-        anchor: t => (props(t + inT).anchor || [0, 0]),
-        position: t => { const p = props(t + inT), a = p.anchor || [0, 0]; return [a[0] + (p.dx || 0), a[1] + (p.dy || 0)]; },
-        scale: t => 100 * (props(t + inT).scale ?? 1), rotation: t => props(t + inT).rot || 0,
+      // breathe: every scene pushes in slowly for its whole life and sways a little, so no shot is ever frozen,
+      // including the last one (the slow push editors put on every shot). The push eases in over the first fifth and
+      // then keeps a constant speed to the last frame: an ease-out would bring it to rest exactly where the shot ends.
+      // Overscan: the sway and the tilt would show the comp's edge, so the scene starts just large enough to cover them
+      // (what an editor does with 103-104 % under a handheld move). `breathe: {overscan: false}` turns it off.
+      const over = !br || br.overscan === false ? 1 : 1 + .002 +
+        2 * (br.px * 1.05 + Math.max(W, H) / 2 * Math.sin(br.deg * Math.PI / 180)) / Math.min(W, H);
+      const push = t => {
+        if (!br) return 1;
+        const u = Math.max(0, t / len), a = .2;
+        const f = u < a ? u * u / (2 * a) : u - a / 2;
+        return over * (1 + br.scale / 100 * f / (1 - a / 2));
+      };
+      const sway = t => br ? M.wiggle(t, {freq: .12, amp: br.px, seed, dims: 2}) : [0, 0];
+      return layer({name: `scene${i}`, in: inT, out: inT + len, start: inT, comp: s.comp, drift: false,
+        anchor: t => (props(t + inT).anchor || [W / 2, H / 2]),
+        position: t => { const p = props(t + inT), a = p.anchor || [W / 2, H / 2], w = sway(t); return [a[0] + (p.dx || 0) + w[0], a[1] + (p.dy || 0) + w[1]]; },
+        scale: t => 100 * (props(t + inT).scale ?? 1) * push(t),
+        rotation: t => (props(t + inT).rot || 0) + (br ? M.wiggle(t, {freq: .1, amp: br.deg, seed: seed + 3}) : 0),
         opacity: t => 100 * (props(t + inT).opacity ?? 1), blur: t => props(t + inT).blur || 0,
         mask: tin && tin.fx.mask ? (g, t) => {
           const u = M.clamp((t + inT - tin.t0) / Math.max(tin.dur, 1e-6));
@@ -256,7 +389,7 @@
     transitions.forEach((tr, i) => {
       if (!tr.flash) return;
       const at = starts[i + 1] + (tr.dur || 0) / 2;
-      ordered.unshift(layer({name: `flash${i}`, in: at - .5 / fps, out: at + 2 / fps, draw: g => { g.fillStyle = tr.flash; g.fillRect(0, 0, W, H); },
+      ordered.unshift(layer({name: `flash${i}`, in: at - .5 / fps, out: at + 2 / fps, drift: false, draw: g => { g.fillStyle = tr.flash; g.fillRect(0, 0, W, H); },
         position: [0, 0], opacity: t => 100 * (1 - M.clamp((t - .5 / fps) / (1.5 / fps)))}));
     });
     const film = comp({name: 'film', width: W, height: H, duration, background, layers: ordered});
@@ -265,5 +398,5 @@
     return film;
   }
 
-  root.Comp = {k, overshoot, value: val, layer, comp, sequence, EASES, TRANSITIONS, curve, matrix: {mul, T, S, R, apply}};
+  root.Comp = {k, overshoot, value: val, layer, comp, sequence, style, STYLES, EASES, TRANSITIONS, curve, matrix: {mul, T, S, R, apply}};
 })(typeof globalThis !== 'undefined' ? globalThis : this);

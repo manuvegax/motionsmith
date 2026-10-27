@@ -19,6 +19,9 @@ What Motionsmith uses it for:
 | UI click, key and impact sounds (CC0, Kenney and opengameart) | Its SFX library | `<skill>/companions/motion-architect/studio/public/sfx/` (index: `skills/motion-architect/references/sfx-library.md`) |
 | A piece the person wants built in React and previewed in Remotion Studio | The whole agent: `/motion` in Claude Code | Studio at `~/motion-architect/studio` (`npm run studio`) |
 
+Checked end to end on Windows (2026-10-27): the vision engine extracts frames from a local reference, the design
+engine searches its catalogue, and the studio lists its compositions, renders stills and renders video at 1080×1920.
+
 Run its Python scripts with plain `python` (not `-I`): they import their neighbour modules. The vision engine only
 reaches the internet to download a URL you give it (yt-dlp), or if you configure a key (Gemini, Groq, OpenAI) for its
 optional cloud modes; Motionsmith never sets one.

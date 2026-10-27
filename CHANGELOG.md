@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.9.0 · 2026-10-27
+
+Moving holds, layer effects and motion styles.
+
+- **Moving holds by default** (`kit/comp.js`): every layer keeps a residual drift once its last key lands (a few px of
+  noise, tenths of a degree, a very slow growth, eased in over 0.6 s), and every scene in a sequence breathes (a slow
+  push of a few percent and a sway), so no stretch freezes, the ending included. `drift: false` and
+  `breathe: false` switch them off.
+- **`scripts/hold_check.py`**: finds the dead holds of a video by edge speed (how far the edges move between frames,
+  in px; film grain does not move edges) and draws the curve. On the previous collage it found 3.5 s frozen at 0.00
+  px/frame (the card hold and the last two seconds); the new one has none, its quietest stretch at 0.18.
+- The scene's slow push eases in and then keeps its speed to the last frame (no ease-out that freezes the end), and
+  each scene is overscanned from its sway and tilt so no edge of the frame ever shows.
+- **Layer effects**: glow, shadow, echo, rgbSplit, tint, fill, lightSweep, posterize (`layer({effects})`).
+- **Motion styles**: `Comp.style('editorial' | 'punchy' | 'calm' | 'sober')` sets eases, offsets, overshoot, drift,
+  breathing and transition durations for a whole piece.
+- `editorial-collage`: the keyword splits its channels as the camera accelerates into it, the card's title gets a light
+  sweep, the closing keyword a glow; no frozen stretch.
+- Motion Architect checked end to end on Windows (vision engine, design engine, studio stills and video).
+- Guides: living layer §3b (moving holds), keyframes & cuts §4b (effects) and §4c (styles).
+
 ## 1.8.0 · 2026-10-27
 
 Keyframes and cuts like After Effects.

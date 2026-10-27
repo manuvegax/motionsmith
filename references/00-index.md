@@ -18,6 +18,9 @@ Profiles (project and personal) override every default here: read them first ([S
 | Study a reference video properly (frames at each cut) | [companions/README.md](../companions/README.md): Motion Architect's vision engine | Its report's frame paths, read one by one |
 | A palette or a type pairing for a mood | Motion Architect's design engine (`search.py ... --domain color/typography/style`) | Contrast and the brand profile |
 | "Looks like a template", generic | [Direction §12](craft/direction-choreography.md#12-frequent-errors-and-the-first-fix), [style atlas](create/style-atlas.md) | Compared direction gate |
+| "It goes flat for a few seconds", frozen ending, dead hold | [Living layer §3b](craft/living-layer.md#3b-moving-holds-the-motion-that-never-stops): residual drift, scene breathing | `hold_check.py final/x.mp4 --curve` |
+| An effect: glow, echo, RGB split, light sweep, tint | [Keyframes & cuts §4b](craft/keyframes-and-cuts.md#4b-layer-effects) | A frame where the effect has its reason |
+| The whole feel: snappier, calmer, more sober | [Keyframes & cuts §4c](craft/keyframes-and-cuts.md#4c-motion-styles): `Comp.style()` | One style per piece |
 | "Does not feel like After Effects": keys, offsets, cuts | [Keyframes & cuts](craft/keyframes-and-cuts.md): `kit/comp.js` (named eases, overshoot keys, parenting, precomps, transitions with a swap under the hit) | Speed graphs peak early; no frame with two half-transparent scenes |
 | A transition looks like a dissolve | [Keyframes & cuts §4](craft/keyframes-and-cuts.md#4-cuts-scenes-hand-over): swap on the half under a flash | `sample_frames.mjs --frames` across the cut |
 | Robotic, constant speed | [Curves §2](craft/curves-graph-editor.md#2-influence-and-speed-easy-ease-and-snappy-curves) | `motion_curves.py` (peak/mean ≈ 1 gives linear away) |

@@ -64,6 +64,18 @@ class CompTests(unittest.TestCase):
         self.assertEqual([round(s, 3) for s in o["starts"]], [0, 2.7, 5.2])
         self.assertEqual(len(set(o["lengths"])), 1)
 
+    def test_breathing_never_comes_to_rest(self):
+        # The slow push keeps its speed to the last frame of a scene: an ease-out would freeze the end of every shot.
+        o = run("""
+          const one = () => A.comp({width: 100, height: 100, duration: 4, layers: [A.layer({name: 'x', position: [50, 50]})]});
+          const film = A.sequence([{comp: one()}, {comp: one()}], [{type: 'cut'}]);
+          const L = film.byName.get('scene1'), s = t => A.value(L.scale, t);
+          out.mid = s(2.0 + 1 / 30) - s(2.0); out.end = s(4 - 1 / 30) - s(4 - 2 / 30);
+          out.first = s(0); out.last = s(4);""")
+        self.assertGreater(o["mid"], 0)
+        self.assertGreater(o["end"], o["mid"] * .9)               # still pushing at the last frame
+        self.assertGreater(o["last"] - o["first"], 3)              # a few percent over the scene
+
     def test_no_transition_crossfades(self):
         o = run("""
           out.bad = [];

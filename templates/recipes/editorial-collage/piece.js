@@ -12,6 +12,9 @@
    Transitions: zoom through the keyword with a two-frame red flash, a whip pan, a hard cut on the beat.
    Data: data.json (numeral, phrase, document {kicker, headline, highlight}, card {title, items}, notifications,
    ending). Phrase markup: '|' breaks a line, *word* or *several words* is the keyword, ~word is small.
+   Moving holds: in the 'editorial' style every layer keeps a residual drift once its keys land and every scene breathes
+   (a slow push and sway), so no stretch is frozen; effects: the keyword's channels split as the camera accelerates into
+   it, the card's title gets a light sweep, the closing keyword a glow.
    Kit: kit/comp.js (the AE model), kit/collage.js (the devices). Guide: references/craft/keyframes-and-cuts.md. */
 (() => {
   'use strict';
@@ -37,7 +40,7 @@
 
   /* Each word of a phrase becomes a layer: it rises in with an overshoot key and fades up fast; the keyword lands
      last, from 135 % with a small counter-rotation. Offsets: 3 frames between words, 6 more before the keyword. */
-  function wordLayers(words, t0, {ink = INK, accent = RED, glow = 0, threeD = false, z = 0, tag = 'w'} = {}) {
+  function wordLayers(words, t0, {ink = INK, accent = RED, glow = 0, threeD = false, z = 0, tag = 'w', keyEffects = []} = {}) {
     let t = t0;
     return words.map((w, i) => {
       if (w.kind === 'key') t += 6 * F;
@@ -49,10 +52,10 @@
         scale: w.kind === 'key' ? A.overshoot(at, 135, at + .4, 100, {amount: .05}) : 100,
         rotation: w.kind === 'key' ? k([at, -5, 'snap'], [at + .45, 0]) : 0,
         blur: k([at, 12, 'snap'], [at + .22, 0]),
+        effects: w.kind === 'key' ? keyEffects : [],
         draw: g => {
           g.font = w.font; g.textAlign = 'center'; g.fillStyle = w.kind === 'key' ? accent : ink;
           g.letterSpacing = w.kind === 'key' ? `${(-w.size * .02).toFixed(1)}px` : '0px';
-          if (glow && w.kind === 'key') { g.shadowColor = accent; g.shadowBlur = w.size * .45; }
           g.globalAlpha *= w.kind === 'small' ? .82 : 1;
           g.fillText(w.text, 0, 0);
         }});
@@ -87,7 +90,8 @@
         camera: {zoom: 1500, aperture: 16,
           position: k([0, [W / 2 - 20, H / 2, camZ], 'glide'], [dA, [W / 2 + 25, H / 2 - 10, camZ + 150]]),
           focusDistance: k([0, 2100, 'hold'], [.9, 2100, 'swift'], [1.6, 1440])},   // rack focus: figure → phrase
-        layers: [...wordLayers(phrase, .25, {threeD: true}),
+        // the keyword splits into its channels as the camera accelerates into it (the zoom through starts at dA - tz)
+        layers: [...wordLayers(phrase, .25, {threeD: true, keyEffects: [{type: 'rgbSplit', angle: 0, px: t => 14 * Math.max(0, Math.min(1, (t - (dA - tz - .35)) / .5)) ** 2}]}),
           A.layer({name: 'figure', threeD: true, position: k([0, [W * .58, H * .47, 600], 'glide'], [dA, [W * .55, H * .46, 600]]),
             scale: 210, draw: g => C.numeral(g, data.numeral, {x: 0, y: 0, size: U * .62, alpha: .55, color: '#2a2724'})}),
           A.layer({name: 'grid', opacity: 70, position: [0, 0], draw: g => {
@@ -131,7 +135,7 @@
         A.layer({name: 'rule', parent: 'card', anchor: [0, 0], position: [-cw * .36, -ch * .12], scale: k([.75, [0, 100], 'snap'], [1.15, [100, 100]]),
           draw: g => { g.fillStyle = '#fbfaf6'; g.fillRect(0, 0, cw * .72, Math.max(2, cw * .012)); }}),
         A.layer({name: 'title', parent: 'card', position: [0, -ch * .18], scale: A.overshoot(.55, 70, .9, 100, {amount: .06}),
-          opacity: k([.55, 0, 'snap'], [.7, 100]),
+          opacity: k([.55, 0, 'snap'], [.7, 100]), effects: [{type: 'lightSweep', at: 1.0, dur: .7, angle: -25, intensity: .7}],
           draw: g => { g.fillStyle = '#fbfaf6'; g.font = `800 ${Math.round(cw * .17)}px ${SANS}`; g.textAlign = 'center'; g.fillText(data.card.title, 0, 0, cw * .86); }}),
         A.layer({name: 'card', position: A.overshoot(.15, [W * .52, -H * .35], .62, [W * .52, H * .47], {amount: .05, settle: .25}),
           rotation: k([.15, 14, 'snap'], [.8, -3]), draw: (g, t) => C.card(g, {x: 0, y: 0, w: cw, h: ch, rot: 0, lift: V(lift, t), fill: '#8f8d89', texture: cardSheet})}),
@@ -149,7 +153,7 @@
           draw: g => C.notification(g, 0, 0, sw * .9, {title: n.title, body: n.body, time: 'now', tint: i % 2 ? '#3a8bff' : RED})});
       });
       const sceneD = A.comp({name: 'phone', width: W, height: H, duration: dD, background: NIGHT, layers: [
-        ...wordLayers(ending, 1.25, {ink: '#f2efe8', glow: 1, tag: 'e'}),
+        ...wordLayers(ending, 1.25, {ink: '#f2efe8', tag: 'e', keyEffects: [{type: 'glow', radius: U * .028, strength: .85, color: RED}]}),
         ...notes,
         A.layer({name: 'phone', position: A.overshoot(.05, [W / 2, H * 1.5], .6, [W / 2, H * .72], {amount: .04, settle: .3}),
           rotation: k([.05, 7, 'snap'], [.75, -4]),

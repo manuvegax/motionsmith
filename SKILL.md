@@ -113,7 +113,9 @@ Non-negotiable in every piece. Details live in the guides.
 8. **Camera with a motive**, one family per scene, a world bigger than the frame, text lands when the camera does.
 
 **Editing**
-9. **The first frame moves**, and when the hook is the doubt, test two to four openings over one body as trial reels
+9. **The first frame moves and so does the last**: once things land they keep a moving hold (a residual drift of
+   a few px, a few tenths of a degree, a slow push of 3–8 % over the shot at constant speed), never speed zero; `hold_check.py` finds
+   the frozen stretches. When the hook is the doubt, test two to four openings over one body as trial reels
    (`hook_variants.py`). In short-form social video no stretch longer than ~0.5 s barely changes: a reading
    hold keeps the text still and moves what surrounds it (ambient drift plus an accent every 0.5–1 s: glitch, echo,
    inversion, a sweep). Overlays, data and sober pieces get an ambient budget instead.
@@ -190,7 +192,8 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/kit/timeline.js` · `scripts/kit/kinetic-type.js` | Declarative keyframes with AE eases and hits · kinetic type: cascades, font cycling, glitch, echoes, typewriter, marquee, karaoke captions |
 | `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks, a soft `tap` for accents under a voice…) and a soundtrack built from the plan's hits; an optional recorded music bed (`music` cue: bar-aligned, looped, ducked on the hits) and a recorded voice on top (`voiceover` cue: everything else ducked under it, voice-to-rest level reported) |
 | `scripts/voice_plan.py` | Voice + word timings (ElevenLabs, Whisper, VTT, SRT, or the script alone) → plan: scenes per phrase, cuts in the breaths, one accent per phrase, captions, `voice.json`, the `voiceover` cue; stops on timings from another take |
-| `scripts/kit/comp.js` | The After Effects model: layers (anchor, position, scale, rotation, opacity) on keyframes with named graph-editor eases (`snap`, `punch`, `swift`, `glide`, `accel`, `whip`, `hold`), overshoot keys, parenting, precomps with time remap, masks and track mattes, a 2.5D camera with rack focus, and `sequence()` with transitions that overlap precomps (whip, push, zoom through, iris, slice, spin, cut, flash); `track(t)` feeds the motion blur |
+| `scripts/kit/comp.js` | The After Effects model: layers (anchor, position, scale, rotation, opacity) on keyframes with named graph-editor eases (`snap`, `punch`, `swift`, `glide`, `accel`, `whip`, `hold`), overshoot keys, parenting, precomps with time remap, masks and track mattes, a 2.5D camera with rack focus, and `sequence()` with transitions that overlap precomps (whip, push, zoom through, iris, slice, spin, cut, flash); moving holds by default (each layer drifts after its last key, each scene breathes); layer effects (glow, shadow, echo, rgbSplit, tint, fill, lightSweep, posterize); motion styles (`editorial`, `punchy`, `calm`, `sober`); `track(t)` feeds the motion blur |
+| `scripts/hold_check.py` | Dead holds in a video: how fast the edges move between frames (px/frame; grain does not count); reports every stretch that froze, with a motion curve (`--curve`); measures, does not watch |
 | `scripts/kit/collage.js` | The editorial-collage devices: paper with matter, mixed-weight phrases with a red keyword, monumental out-of-focus figures, printed pages in macro with depth of field and a highlighter, ribbons and trim paths, pinned cards, phones with notifications, cut-out objects with contact shadows |
 | `scripts/broll.py` · `scripts/kit/footage.js` | B-roll: `ingest` (provenance and licence, refuses files without one), `shotlist` (one shot per scene), `assemble` (clips conformed to their scenes, stills, `timeline.json`), `credits`; the kit draws clips and stills (Ken Burns, parallax with a cut-out) under one grade, loading each frame in `prepare(t)` |
 | `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type (`voice` preset and balanced lines for a heard voice) |

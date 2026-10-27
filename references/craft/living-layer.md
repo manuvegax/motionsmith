@@ -56,6 +56,34 @@ const aberration = .011 * MotionMath.impulse(t, hits, 8);           // RGB split
 
 Everything depends only on `t`: the same instant gives the same frame when seeking backwards.
 
+## 3b. Moving holds: the motion that never stops
+
+The best motion graphics never reach speed zero. When a card lands or the last line settles, something keeps moving
+so slowly that nobody sees it move, only that the picture is alive: a push of a few percent over the shot, a drift of
+a few pixels, a sway of tenths of a degree. A frame that repeats exactly reads as frozen, and the ending of a piece is
+where it shows most.
+
+| Device | Amount (1080 px frame) | In `kit/comp.js` |
+|---|---|---|
+| Residual drift of a layer after its last key | 2–7 px of wander, 0.1–0.5°, growth 0.3–1.1 % per second, eased in over 0.6 s | `layer({drift})`: on by default, from the style; `drift: false` for a layer that must not move |
+| Scene breathing (the slow push on every shot) | 2.5–8 % of scale over the scene at a constant speed after an ease-in (never an ease-out), a sway of 4–14 px and 0.1–0.6° | `sequence(…, {breathe})` or per scene `{breathe}`; on by default |
+| Light that wanders | A sweep every 3–6 s, a glow that pulses 5–10 % | `effects: [{type: 'lightSweep', period}]`, a glow strength on keys |
+| Matter | Grain that changes every frame, paper drifting slower than the subject | The stage's finish; a paper layer with its own slow keys |
+
+- **Under the threshold of notice**: if a viewer can say "it is moving", it is too much for a hold. Measured on the
+  edges of a 1080 px frame, 0.15–0.3 px per frame reads as alive and still; under 0.05 reads as frozen.
+- **Overscan the sway**: a scene that sways or tilts must start slightly larger than the frame (103-104 %), or a
+  strip of background shows at an edge. `comp.js` computes it from the sway; `tests/test_holds.py` checks every corner.
+- **No ease-out on the push**: the slow push keeps its speed to the last frame; easing it out freezes the end of every
+  shot.
+- **Never the same speed twice**: the drift is noise (two octaves, 0.1–0.25 Hz), not a constant slide, which reads
+  as a mistake.
+- **The end too**: the last 1–2 s of a piece keep breathing to the last frame; the hit lands, the motion goes on.
+- **Measure it**: `python -I <skill>/scripts/hold_check.py final/piece.mp4 --curve preview/motion.png` reports every
+  stretch whose edges move slower than 0.06 px per frame (grain does not move edges). On the editorial collage the
+  card hold and the last two seconds read 0.00 (frozen); with moving holds the quietest stretch reads 0.18 and the
+  ending 0.29, alive and still unnoticed.
+
 ## 4. Costs and limits
 
 - **Bitrate**: grain, moving grids and halftones raise file size a lot (14 → 39 MB for grids and grain; ~3× more with a

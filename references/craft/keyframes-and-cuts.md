@@ -88,6 +88,44 @@ as mechanical past five items: shorten later offsets slightly, or group them.
 | `spin` | Spins away accelerating | Spins in from the other side | Half |
 | `cut` | — | — | On the frame |
 
+## 4b. Layer effects
+
+`layer({effects: [...]})`, applied in order on the layer's own pixels (or on its time):
+
+| Effect | After Effects | Options | Use |
+|---|---|---|---|
+| `glow` | Glow | `radius`, `strength` (0–2), `color`, `mode` (`lighter`, `screen`) | A keyword on black, a light that emits |
+| `shadow` | Drop Shadow | `x`, `y`, `blur`, `color` | Type or cut-outs over a busy ground |
+| `echo` | Echo | `count`, `step` (s), `decay` | Trails on a fast move, a stutter on a hit |
+| `rgbSplit` | Channel offset / chromatic aberration | `px` (or a function of time), `angle` | Accelerating into a zoom, a glitch on a cut; 0 at rest |
+| `tint`, `fill` | Tint, Fill | `color`, `amount` | Recolour a layer to the accent |
+| `lightSweep` | CC Light Sweep | `at`, `dur` or `period`, `angle`, `width`, `intensity` | A gloss across a title or a logo once it has landed |
+| `posterize` | Posterize Time | `fps` | One layer on twos (12 fps) while the rest stays fluid |
+
+An effect earns its place with a reason in the scene ([motion brief §3](../create/motion-brief.md#3-the-banned-list)):
+the glow because the word emits, the split because the camera accelerates, the sweep because the title has just landed.
+
+## 4c. Motion styles
+
+`Comp.style('editorial' | 'punchy' | 'calm' | 'sober')` sets, for the whole piece, the arrival and exit eases, the
+offset between layers, the overshoot amount, the residual drift, the scene breathing and the transition durations.
+
+| Style | Arrival | Offset | Overshoot | Drift | Breathing | Use |
+|---|---|---|---|---|---|---|
+| `editorial` | `snap` | 3 frames | 6 % | 5 px, 0.35° | 6 %, sway 10 px | Essays, explainers, the default |
+| `punchy` | `punch` | 2 frames | 10 % | 7 px, 0.5° | 8 %, sway 14 px | Promos, hooks, music-led reels |
+| `calm` | `swift` | 5 frames | 3 % | 3.5 px, 0.25° | 4 %, sway 7 px | Reflective pieces, slow voice-overs |
+| `sober` | `swift` | 4 frames | 0 | 2 px, 0.1° | 2.5 %, sway 4 px | Data, overlays, institutional work |
+
+Drift and breathing look large on paper; on screen they are 0.15–0.3 px per frame (5–9 px a second), under the
+threshold of notice. The breathing push eases in over the first fifth of a scene and then keeps a constant speed to
+its last frame: an ease-out would bring it to rest exactly where the shot ends. Each scene is overscanned just enough
+(about 3 % in `editorial`) that its sway and tilt never uncover the edge of the frame; `breathe: {overscan: false}`
+turns that off for a scene whose edges must stay exact.
+
+Set it before building the layers (`Comp.style('punchy')` at the top of `setup`), or pass a partial object to change
+one value (`Comp.style({overshoot: .04})`).
+
 ## 5. Camera
 
 - One family of moves per scene: a slow dolly (`glide`, 5–10 % closer over the scene), a rack focus (`hold`, then
