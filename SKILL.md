@@ -101,7 +101,8 @@ Non-negotiable in every piece. Details live in the guides.
 8. **Camera with a motive**, one family per scene, a world bigger than the frame, text lands when the camera does.
 
 **Editing**
-9. **The first frame moves.** In short-form social video no stretch longer than ~0.5 s barely changes: a reading
+9. **The first frame moves**, and when the hook is the doubt, test two to four openings over one body as trial reels
+   (`hook_variants.py`). In short-form social video no stretch longer than ~0.5 s barely changes: a reading
    hold keeps the text still and moves what surrounds it (ambient drift plus an accent every 0.5–1 s: glitch, echo,
    inversion, a sweep). Overlays, data and sober pieces get an ambient budget instead.
    [living layer](references/craft/living-layer.md), [pacing](references/edit/pacing-retention.md)
@@ -182,6 +183,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/loop_check.py` | A loop's seam: last frame → first compared with ordinary steps (pose) and the motion pace at both ends (speed); does not watch it |
 | `scripts/contact_sheet.py` | Sheets with times or enlarged crops; helps to look, does not prove rhythm |
 | `scripts/render_stream.mjs` | Direct render to FFmpeg (BT.709), proxies of a range (`--start/--end`, exact `--frames a:b`) with audio, size and bitrate reported; never overwrites |
+| `scripts/hook_variants.py` | Trial reels: two to four openings over one body (`hooks:` and `seam:` in the brief); each opening renders alone, the body once, the seam is proved to the pixel, one soundtrack per variant, a results table to fill |
 | `scripts/render_parallel.mjs` | Long pieces: the same frames in chunks, several browsers at once (2.2× faster with 3 workers on a laptop), failed chunks retried, interrupted renders resumed, joined without re-encoding and checked frame for frame |
 | `scripts/make_gif.py` | Light GIF of a range, for previews and READMEs |
 | `scripts/verify_export.py` | Expectations, constant cadence, colour tags and full decode |

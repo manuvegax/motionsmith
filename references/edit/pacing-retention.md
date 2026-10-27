@@ -28,6 +28,9 @@ const scale = MotionMath.tween(t, 0, 0.3, 1.12, 1, 'power3.out');   // 1.12 at t
 
 - The 3-second gate is a craft heuristic, not a platform rule. Platforms publish their own retention curves; compare the drop-off at 0–3 s with them where the platform exposes it (verify per platform).
 - Before 3 s the piece should have changed state at least three times: a cut, a hit, a text change, a layout change or a camera move (practice).
+- **Test the hook, not the piece.** When the first seconds are the doubt, make two to four openings over one body and
+  post them as trial reels ([motion brief §8](../create/motion-brief.md#8-hook-variants-for-trial-reels),
+  `hook_variants.py`). Compare the 3-second skip rate, not views.
 
 ## 3. Re-hooks every 2–4 s
 

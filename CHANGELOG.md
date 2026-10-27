@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0 · 2026-10-26
+
+Hook variants for trial reels.
+
+- **`scripts/hook_variants.py`**: `init` writes `variants.json` from the brief's `hooks:` and `seam:` (the piece itself
+  is the control); `render` makes one folder per variant (its TITLE and hit times), proves to the pixel that every
+  variant matches the piece at the seam (refuses one that does not), renders each opening alone and the body once,
+  builds one soundtrack per variant, joins them without re-encoding and leaves `final/hooks/hooks.md`, a results
+  table for the 3-second skip rate and the average watch time.
+- `brief.py` reads `hooks:` (two to four, all different) and `seam:`.
+- Motion brief §8 and pacing §2 on testing the hook instead of guessing.
+
 ## 1.3.0 · 2026-10-26
 
 Long pieces render in parallel chunks that resume.

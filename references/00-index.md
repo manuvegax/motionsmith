@@ -37,6 +37,7 @@ Profiles (project and personal) override every default here: read them first ([S
 | Glass, lenses, 3D layers in WebGL | [Glass & WebGL](craft/glass-webgl.md) | Full-size crops of the material |
 | React to audio | [Rhythm §4](craft/rhythm-sync.md#4-audio-reactive-motion) | `audio_envelope.py` |
 | Out-of-sync hits | [Rhythm §3](craft/rhythm-sync.md#3-one-list-of-hits), [sound design §5](craft/sound-design.md#5-sync) | `audio_check.py --plan` |
+| "Which hook works?", trial reels, A/B of the opening | [Motion brief §8](create/motion-brief.md#8-hook-variants-for-trial-reels): `hooks:` + `seam:`, `hook_variants.py` | Seam difference < 0.5; `final/hooks/hooks.md` after 24–48 h |
 | Cut to music | [Music editing](edit/music-editing.md) | Beat grid in the plan |
 | A piece told by a voice, narration, "voz en off" | [Voice-over](edit/voiceover.md): two-column script, `voice_plan.py`, `--recipe voice-captions` | `sample_frames.mjs --cuts --hits`, `voice_over_bed_db` ≥ 10 |
 | The voice is buried, music over the words | [Voice-over §5](edit/voiceover.md#5-the-mix): the `voiceover` cue ducks the rest | `build_soundtrack.py` report |

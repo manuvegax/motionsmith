@@ -45,6 +45,8 @@ ALIASES = {
     "kind": "kind", "tipo": "kind",
     "format": "format", "formato": "format",
     "ending": "ending", "final": "ending", "cierre": "ending",
+    "hooks": "hooks", "hook variants": "hooks", "ganchos": "hooks", "variantes": "hooks",
+    "seam": "seam", "empalme": "seam",
 }
 ARROWS = re.compile(r"\s*(?:->|→|=>|—>|\binstead\s*:|\ben su lugar\s*:)\s*", re.IGNORECASE)
 PLACEHOLDER = re.compile(r"\{\{\s*([a-zA-Z_][\w-]*)\s*(?:\|([^}]*))?\}\}")
@@ -74,7 +76,7 @@ def blocks(text: str) -> dict[str, str]:
 
 def fields(text: str) -> dict:
     """Read `key: value` lines (any block) and the banned list. Later lines do not override earlier ones."""
-    out: dict = {"banned": []}
+    out: dict = {"banned": [], "hooks": []}
     lines = text.splitlines()
     i = 0
     while i < len(lines):
@@ -82,7 +84,7 @@ def fields(text: str) -> dict:
         line = raw.strip().lstrip("-*• ").strip()
         match = re.match(r"^\**([A-Za-zÁÉÍÓÚáéíóúñÑ ]{2,24}?)\**\s*:\s*(.*)$", line)
         key = ALIASES.get(match.group(1).strip().lower()) if match else None
-        if key == "banned":
+        if key in ("banned", "hooks"):
             inline = match.group(2).strip()
             items = [s for s in re.split(r"\s*;\s*", inline) if s] if inline else []
             j = i + 1
@@ -92,7 +94,7 @@ def fields(text: str) -> dict:
                 j += 1
             for item in items:
                 if item:
-                    out["banned"].append(_ban(item))
+                    out[key].append(_ban(item) if key == "banned" else item)
             i = j
             continue
         if key and key not in out and match.group(2).strip():
@@ -256,6 +258,15 @@ def check(text: str) -> dict:
     if not data.get("ending"):
         warnings.append("no `ending:`: name what the last frame holds (the reveal, a line, a logo, the loop seam)")
 
+    hooks = data["hooks"]
+    if hooks:
+        if not 2 <= len(hooks) <= 4:
+            warnings.append(f"{len(hooks)} hook variants: two to four can be compared; more splits a small audience")
+        if len({h.lower() for h in hooks}) != len(hooks):
+            errors.append("two hook variants are the same")
+        if not data.get("seam"):
+            warnings.append("hooks without `seam:`: the second from which every variant looks the same "
+                            "(after the hook has left the frame); hook_variants.py needs it")
     kind = (data.get("kind") or "").lower()
     script = script_rows(text)
     spoken = None
@@ -284,6 +295,8 @@ def check(text: str) -> dict:
     summary = {k: data.get(k) for k in ("kind", "concept", "recurring", "duration", "tempo", "meter", "bars", "lead",
                                          "loop", "ending", "audience", "format") if data.get(k)}
     summary["banned"] = banned
+    if hooks:
+        summary["hooks"] = hooks
     if spoken is not None:
         summary["script"] = {"rows": len(script), "words": sum(len(r["voice"].split()) for r in script),
                              "estimated_seconds": spoken}

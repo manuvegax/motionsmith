@@ -129,6 +129,35 @@ break (speed ratio near 1).
 When the person hands over a prompt written for another tool, rewrite it into the six blocks and show the decisions
 it was missing before building; keep their words where they decided something.
 
+## 8. Hook variants for trial reels
+
+The first three seconds decide whether anyone sees the rest, and they are the part a creator is least sure of. Instead
+of guessing, write two to four openings for one body and let trial reels compare them.
+
+```text
+hooks:
+- PARA -> an order
+- ¿CANSADO? -> a question
+- 3 SEGUNDOS -> a number
+seam: 2.6 s
+```
+
+- **Vary one thing.** An order, a question, a number, a confession: the same idea entering three ways. Three different
+  ideas teach nothing about hooks.
+- **The seam** is the second from which every variant looks the same: after the transition that carries the hook
+  away. `hook_variants.py` proves it to the pixel and refuses a variant that still differs there.
+- **One body, rendered once.** Each variant renders only its opening; the body renders once and is joined behind each
+  (with four variants of a 15 s reel and a 2.6 s seam: 25 s of rendering instead of 60).
+- **Each hook keeps its sound**: one soundtrack per variant from its own plan.
+- **Read the results honestly.** Post at the same hour, fill `final/hooks/hooks.md` after 24–48 h, compare the
+  3-second skip rate and the average watch time. With a small account a difference under about ten points is noise;
+  repeat the winner against a new challenger before calling it.
+
+```bash
+python -I <skill>/scripts/hook_variants.py init --piece <piece> --brief <piece>/brief.md   # variants.json
+python -I <skill>/scripts/hook_variants.py render --piece <piece> --workers 3              # final/hooks/*.mp4
+```
+
 ## Sources
 
 Prompt Motion (prompt-motion.com, curated by @p4nthera_): the analyses "AI motion graphics prompts: what 230 real
