@@ -37,6 +37,14 @@ may not be sold on their own.
 | Fraunces (variable) | `Fraunces-VF.ttf`, `Fraunces-Italic-VF.ttf` | `OFL-Fraunces.txt` | [undercasetype/Fraunces](https://github.com/undercasetype/Fraunces) |
 | JetBrains Mono (variable) | `JetBrainsMono-VF.ttf` | `OFL-JetBrainsMono.txt` | [JetBrains/JetBrainsMono](https://github.com/JetBrains/JetBrainsMono) |
 
+## Motion Architect (companion)
+
+`companions/motion-architect/` is a copy of [motion-architect](https://github.com/Hainrixz/motion-architect) by Enrique
+Rocha (@soyenriquerocha, tododeia.com), MIT, unmodified, with its `LICENSE`, `NOTICE` and `third_party/NOTICES.md`
+(its vision engine is based on claude-video by Bradley Bonanno, its design engine on ui-ux-pro-max-skill by Next Level
+Builder, its animation references on Emil Kowalski's skills, all MIT; its sounds are CC0 from Kenney and
+opengameart). Its studio depends on Remotion, which has its own licence.
+
 ## Prompt Motion
 
 The six-block brief (`<inputs>`, `<direction>`, `<structure>`, `<build>`, `<gotchas>`, `<start>`), the common AI

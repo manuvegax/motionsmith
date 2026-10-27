@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.7.0 · 2026-10-27
+
+The editorial-collage language of After Effects, and Motion Architect as a companion.
+
+- **`kit/collage.js`**: the devices of documentary and editorial motion graphics, studied against five reference
+  reels: paper with matter (blotches, grain, fibres, edges, seeded), mixed-weight phrases (`~small`, `*keyword*` or
+  `*several words*` in the accent), monumental figures out of focus, printed pages in macro with real justified text,
+  smooth depth of field (pre-blurred levels faded by distance from the focus line, no bands) and a highlighter that
+  sweeps the one line that matters, ribbons and trim paths, pinned cards, phones with stacking notifications, cut-out
+  objects with contact shadows, type on a curve. Shipped with every piece.
+- **Recipe `editorial-collage`**: a figure behind a mixed phrase, a zoom through the red keyword into a macro page,
+  a pull back to the headline, a whip to a ribbon and a pinned card, a cut to black with a phone and a glowing ending.
+  Every transition has a carrier; deterministic.
+- **`broll-story` redesigned**: clips and photos land as prints (white border, tape, shadow, a slight turn) that stack
+  on paper; the voice's phrase sets itself in mixed weights (function words small, the stressed word red with a stroke).
+- **Companion: Motion Architect** (Enrique Rocha, MIT) in `companions/motion-architect`: its vision engine to study
+  reference videos, its design engine to search palettes and type pairings, its CC0 UI sounds, and the whole Remotion
+  agent when a piece should be built in React (`companions/README.md`).
+- Guide `references/create/editorial-collage.md`: why pieces look generic and the device that fixes each cause.
+
 ## 1.6.0 · 2026-10-26
 
 Recipes for niches.

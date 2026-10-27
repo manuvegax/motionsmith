@@ -14,6 +14,9 @@ Profiles (project and personal) override every default here: read them first ([S
 | Cuts off the music, tempo arithmetic, "how many bars fit" | [Motion brief §4](create/motion-brief.md#4-tempo-bars-and-the-arithmetic) | `brief.py grid`, then `sample_frames.mjs --beats` |
 | The loop jumps or stutters at the seam | [Story structures §6](edit/story-structures.md#6-loop), [motion brief §5](create/motion-brief.md#5-review-per-beat-and-the-loop) | `loop_check.py` |
 | "It looks the same / static / needs more dopamine" | [Pacing & retention](edit/pacing-retention.md), [living layer](craft/living-layer.md) | Walk every 0.5 s: no two samples alike |
+| "Looks generic, not like After Effects", flat, ugly | [Editorial collage](create/editorial-collage.md): matter, depth, mixed type, carriers; `--recipe editorial-collage` | A frame per scene next to the references: matter, depth, one hero |
+| Study a reference video properly (frames at each cut) | [companions/README.md](../companions/README.md): Motion Architect's vision engine | Its report's frame paths, read one by one |
+| A palette or a type pairing for a mood | Motion Architect's design engine (`search.py ... --domain color/typography/style`) | Contrast and the brand profile |
 | "Looks like a template", generic | [Direction §12](craft/direction-choreography.md#12-frequent-errors-and-the-first-fix), [style atlas](create/style-atlas.md) | Compared direction gate |
 | Robotic, constant speed | [Curves §2](craft/curves-graph-editor.md#2-influence-and-speed-easy-ease-and-snappy-curves) | `motion_curves.py` (peak/mean ≈ 1 gives linear away) |
 | Floaty, slow, indecisive | [Principles §1](craft/principles.md#1-starting-durations-at-60-fps), ease-out on entrances | Duration in frames vs the table |

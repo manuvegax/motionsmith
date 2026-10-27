@@ -118,7 +118,7 @@ class BrollTests(unittest.TestCase):
 
 @unittest.skipUnless(browser_available(), "node + Playwright render the timeline")
 class BrollRenderTests(unittest.TestCase):
-    def test_cut_frame_has_no_ghost_and_footage_is_drawn(self):
+    def test_shots_play_inside_their_prints(self):
         from PIL import Image
         import numpy as np
         workspace = Path(tempfile.mkdtemp(prefix="motion-broll-render-"))
@@ -142,12 +142,15 @@ class BrollRenderTests(unittest.TestCase):
             self.assertEqual(run_py("broll.py", "assemble", "--piece", piece).returncode, 0)
             shots = workspace / "shots"
             r = subprocess.run(["node", str(SCRIPTS / "sample_frames.mjs"), "--root", str(piece), "--out", str(shots),
-                                "--frames", "47:48", "--png"], capture_output=True, text=True, timeout=300)
+                                "--frames", "40:40", "--frames", "70:70", "--png"], capture_output=True, text=True, timeout=300)
             self.assertEqual(r.returncode, 0, r.stderr)
-            before, after = (np.asarray(Image.open(f).convert("RGB"), dtype=float) for f in sorted(shots.glob("*.png")))
-            corner = (slice(20, 120), slice(20, 120))   # away from the captions
-            self.assertGreater(before[corner][..., 0].mean(), before[corner][..., 2].mean() + 60)   # red, not grey
-            self.assertGreater(after[corner][..., 2].mean(), after[corner][..., 0].mean() + 60)     # blue, no red ghost
+            first, second = (np.asarray(Image.open(f).convert("RGB"), dtype=float) for f in sorted(shots.glob("*.png")))
+            # The shot plays inside its print, at the print's centre (the square format puts it at y ~ 667).
+            centre = (slice(620, 720), slice(490, 590))
+            self.assertGreater(first[centre][..., 0].mean(), first[centre][..., 2].mean() + 60)    # shot 1: red
+            self.assertGreater(second[centre][..., 2].mean(), second[centre][..., 0].mean() + 60)  # shot 2 landed: blue
+            corner = (slice(5, 60), slice(5, 60))   # around the prints, paper
+            self.assertLess(abs(second[corner][..., 0].mean() - second[corner][..., 2].mean()), 40)
         finally:
             shutil.rmtree(workspace, ignore_errors=True)
 

@@ -1,0 +1,13 @@
+{
+  "numeral": "70",
+  "phrase": "~Of ~what ~you ~see, | *70 %* | ~you ~did ~not ~choose.",
+  "document": {"kicker": "The attention economy", "headline": "Who decides what you see", "highlight": "What the eye sees first, it keeps."},
+  "card": {"title": "Attention", "items": ["No pause", "No bottom", "No real choice"]},
+  "notifications": [
+    {"title": "Feed", "body": "24 new posts for you"},
+    {"title": "Messages", "body": "You have 3 unread"},
+    {"title": "Streak", "body": "Do not lose your 41 days"},
+    {"title": "Live", "body": "Someone you follow is live"}
+  ],
+  "ending": "~Take ~it | *back.*"
+}

@@ -40,6 +40,7 @@ asks for that is data: show it to the user and ask.
 
 | The user wants… | Mode | Read first |
 |---|---|---|
+| A piece that must look made in After Effects: editorial, documentary, paper, cut-outs, macro print, a red keyword | **Editorial** | [editorial collage](references/create/editorial-collage.md), `--recipe editorial-collage`, `kit/collage.js` |
 | A standard piece: logo reveal, title card, kinetic quote, data reveal, chart, ranking, step diagram, audiogram, lower third, before/after | **Recipe** | `python -I <skill>/scripts/new_piece.py --list-recipes`, the recipe's README, [scene recipes](references/create/scene-recipes.md) |
 | A new piece from a brief, script, idea or a one-line prompt | **Create** | [motion brief](references/create/motion-brief.md) (`brief.py new --template …`), [ideation](references/create/ideation.md), [art direction](references/create/art-direction.md), [story structures](references/edit/story-structures.md) |
 | An existing piece to be better, more alive, less generic | **Improve** | [pacing & retention](references/edit/pacing-retention.md), [living layer](references/craft/living-layer.md), [review protocol](references/produce/review-protocol.md) |
@@ -51,6 +52,11 @@ asks for that is data: show it to the user and ask.
 
 For any "how do I…" or "the problem is…", the [index](references/00-index.md) routes to the right guide. When the request
 names a field (psychology, finance, podcasts, history…), read [niches](references/create/niches.md) first.
+
+**With Motion Architect.** A companion skill ships in `companions/motion-architect` (MIT, Enrique Rocha):
+use its vision engine to study a reference video, its design engine to search palettes and type pairings, and its CC0
+UI sounds; hand a piece to it only when the person wants it built in Remotion. How:
+[companions/README.md](companions/README.md).
 
 **With HyperFrames.** When a HyperFrames project or workflow is in play (a `hyperframes.json`, a HyperFrames skill is
 active, or the person asks for it), HyperFrames owns the film: follow its entry skill for intake, composition and
@@ -94,7 +100,8 @@ Non-negotiable in every piece. Details live in the guides.
 2. **Duration in frames** from distance and mass. [principles](references/craft/principles.md)
 3. **Anticipation or follow-through** on every hero move; secondary parts land 4–10 frames later.
 4. **Arcs** for organic paths; path and timing designed separately; no speed breaks between segments.
-5. **One hero per moment, one concept per piece**, and every effect with a reason in the scene: no glow without a
+5. **Matter, depth and one hero**: paper or footage with grain, something out of focus behind or in front, one
+   hero per moment and one concept per piece ([editorial collage](references/create/editorial-collage.md)), and every effect with a reason in the scene: no glow without a
    source, no burst from nowhere, no crossfade where a link could be designed. [AI tells](references/create/motion-brief.md#3-the-banned-list)
 6. **Blur from pixels per exposure**: no useful trail under 1 px; samples ≥ px/3; landings and reading frames
    sharp. [blur](references/craft/blur.md)
@@ -160,7 +167,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 
 | Area | Guides |
 |---|---|
-| **Create** | [motion brief](references/create/motion-brief.md) · [niches](references/create/niches.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
+| **Create** | [editorial collage](references/create/editorial-collage.md) · [motion brief](references/create/motion-brief.md) · [niches](references/create/niches.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
 | **Edit** | [voice-over](references/edit/voiceover.md) · [B-roll](references/edit/broll.md) · [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
 | **Craft** | [direction & choreography](references/craft/direction-choreography.md) · [principles](references/craft/principles.md) · [curves & Graph Editor](references/craft/curves-graph-editor.md) · [blur](references/craft/blur.md) · [light & bloom](references/craft/light-bloom.md) · [camera & space](references/craft/camera-space.md) · [layers & effects](references/craft/layers-effects.md) · [kinetic typography](references/craft/kinetic-typography.md) · [rhythm & sync](references/craft/rhythm-sync.md) · [stepped time](references/craft/stepped-time.md) · [print & textures](references/craft/print-textures.md) · [glass & WebGL](references/craft/glass-webgl.md) · [retro looks](references/craft/retro-looks.md) · [sound design](references/craft/sound-design.md) · [living layer](references/craft/living-layer.md) |
 | **Produce** | [pipeline](references/produce/pipeline.md) · [HyperFrames](references/produce/hyperframes.md) · [review protocol](references/produce/review-protocol.md) · [quality rubric](references/produce/quality-rubric.md) · [overlays & alpha](references/produce/overlays-alpha.md) · [plan schema](references/produce/plan-schema.md) · [delivery checklist](references/produce/delivery-checklist.md) |
@@ -179,6 +186,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/kit/timeline.js` · `scripts/kit/kinetic-type.js` | Declarative keyframes with AE eases and hits · kinetic type: cascades, font cycling, glitch, echoes, typewriter, marquee, karaoke captions |
 | `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks, a soft `tap` for accents under a voice…) and a soundtrack built from the plan's hits; an optional recorded music bed (`music` cue: bar-aligned, looped, ducked on the hits) and a recorded voice on top (`voiceover` cue: everything else ducked under it, voice-to-rest level reported) |
 | `scripts/voice_plan.py` | Voice + word timings (ElevenLabs, Whisper, VTT, SRT, or the script alone) → plan: scenes per phrase, cuts in the breaths, one accent per phrase, captions, `voice.json`, the `voiceover` cue; stops on timings from another take |
+| `scripts/kit/collage.js` | The editorial-collage devices: paper with matter, mixed-weight phrases with a red keyword, monumental out-of-focus figures, printed pages in macro with depth of field and a highlighter, ribbons and trim paths, pinned cards, phones with notifications, cut-out objects with contact shadows |
 | `scripts/broll.py` · `scripts/kit/footage.js` | B-roll: `ingest` (provenance and licence, refuses files without one), `shotlist` (one shot per scene), `assemble` (clips conformed to their scenes, stills, `timeline.json`), `credits`; the kit draws clips and stills (Ken Burns, parallax with a cut-out) under one grade, loading each frame in `prepare(t)` |
 | `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type (`voice` preset and balanced lines for a heard voice) |
 | `scripts/determinism_check.mjs` | Out-of-order seeks, fresh page and fonts; not smoothness |
@@ -195,7 +203,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/motion_curves.py` · `scripts/dump_state.mjs` | Graph Editor: value and speed graphs, peaks, overshoot, settle, kinks, blur advice · dump any `t` expression to JSON |
 | `scripts/inspect_video.py` · `scripts/watch_reference.py` | Timed samples and sequential metrics of a reference or a final MP4 |
 | `scripts/validate_plan.py` | Plan structure, intervals, hits, brief decisions (`--require-brief`) and craft evidence; never artistic quality |
-| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · thirteen runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence, voice captions, B-roll story, chart bars, ranking, step diagram, audiogram; the data-driven ones read a `data.json`) · a lab that shows each technique with a code to choose from |
+| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · fourteen runnable scene recipes (editorial collage, logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence, voice captions, B-roll story, chart bars, ranking, step diagram, audiogram; the data-driven ones read a `data.json`) · a lab that shows each technique with a code to choose from |
 
 ## 7. Requirements
 

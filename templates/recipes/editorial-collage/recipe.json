@@ -1,0 +1,50 @@
+{
+  "what": "Editorial collage: a monumental figure out of focus behind a phrase of mixed weights, a zoom through the red keyword into a macro page with a marker, a whip to a ribbon and a pinned card, a cut to black with a phone stacking notifications",
+  "title": "Who decides what you see",
+  "mode": "editorial",
+  "default_seconds": 12,
+  "min_seconds": 11,
+  "data": "data.json",
+  "intent": "Tell one idea in the documentary motion-graphics language: matter, depth, mixed type, carriers between scenes",
+  "action": "Paper with a blurred monumental 70 behind a mixed-weight phrase, the keyword in red; a zoom through the red word into a macro shot of a printed page where a marker sweeps one line and the camera pulls back to the headline; a whip pan to a grey ribbon drawing on and a pinned card dropping with its list; a cut to black where a phone rises, notifications stack and switch off, and the closing line glows red",
+  "hits": [
+    {
+      "role": "phrase",
+      "time": 0.25,
+      "amplitude": 0.5
+    },
+    {
+      "role": "zoom",
+      "time": 2.35,
+      "amplitude": 0.9
+    },
+    {
+      "role": "marker",
+      "time": 3.5,
+      "amplitude": 0.5
+    },
+    {
+      "role": "whip",
+      "time": 6.1,
+      "amplitude": 0.9
+    },
+    {
+      "role": "card",
+      "time": 6.15,
+      "amplitude": 0.8
+    },
+    {
+      "role": "black",
+      "from_end": 2.9,
+      "amplitude": 1
+    },
+    {
+      "role": "end",
+      "from_end": 1.6,
+      "amplitude": 0.7
+    }
+  ],
+  "make_it_yours": "Edit data.json: the numeral, the phrases (| breaks a line, *word* is the keyword, ~word is small), the page's kicker, headline and the sentence the marker highlights, the card and the notifications. Colours at the top of piece.js.",
+  "craft_note": "Matter, depth and carriers: the paper is never flat, the figure behind is out of focus so the phrase reads first, the red keyword becomes the red that opens the page, the whip carries the energy to the card, the hit cuts to black. One hero per moment.",
+  "look": "Editorial collage: warm paper, ink, one red; print in macro; a grey ribbon; black with a red glow"
+}

@@ -35,7 +35,7 @@ async function check(folder) {
     const sandbox = {console, Intl, Path2D, Math, JSON, Number, String, Array, Object, Error, TypeError, RangeError};
     sandbox.window = sandbox; sandbox.globalThis = sandbox;
     const context = vm.createContext(sandbox);
-    for (const file of ['motion-math.js', 'postfx-glsl.js', 'timeline.js', 'kinetic-type.js', 'stage.js', 'footage.js']) {
+    for (const file of ['motion-math.js', 'postfx-glsl.js', 'timeline.js', 'kinetic-type.js', 'stage.js', 'footage.js', 'collage.js']) {
       const source = fs.readFileSync(path.join(kit, file), 'utf8');
       vm.runInContext(source, context, {filename: file});   // UMD modules see no `module` here: they set globals
     }

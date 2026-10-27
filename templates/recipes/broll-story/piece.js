@@ -1,23 +1,30 @@
-/* Recipe · B-roll story: footage and photos under a voice. The background is the B-roll timeline that
-   scripts/broll.py assemble writes (clips trimmed to their scenes, stills moving in code with Ken Burns and parallax,
-   one grade for every source, see kit/footage.js). Over it, the spoken phrase sits in the lower third: each word lands
-   as it is said, the stressed word gets an accent box, and a soft shadow and a bottom gradient keep the type legible
-   on any picture. A slow push on the whole frame keeps even a held shot alive.
-   Data: plan.broll (timeline.json) and plan.voice (voice.json, scripts/voice_plan.py). Without a timeline the
-   background is a moving code-drawn field; without a voice, TITLE is spread as a demo voice (*word* = stressed).
-   Guides: references/edit/broll.md, references/edit/voiceover.md, references/edit/captions-titles.md. */
+/* Recipe · B-roll story, in the editorial-collage language: footage and photos as prints on paper under a voice.
+   Each shot of the B-roll timeline (scripts/broll.py assemble) lands as a print (a white border, a soft shadow, tape
+   on two corners, a slight turn) on a sheet of paper with matter; the previous print stays underneath, so the story
+   accumulates instead of cutting away. Above the prints, the phrase being said sets itself in mixed weights: function
+   words small, the stressed word large in the accent with a red stroke drawing under it, every word landing the moment
+   it is said. Clips play inside their print (kit/footage.js: trimmed to the scene, one grade for every source);
+   stills move inside theirs (Ken Burns, parallax with a cut-out).
+   Data: plan.broll (timeline.json) and plan.voice (voice.json, scripts/voice_plan.py). Without a timeline the prints
+   are blank paper; without a voice, TITLE is spread as a demo voice (*word* = stressed).
+   Guides: references/create/editorial-collage.md, references/edit/broll.md, references/edit/voiceover.md. */
 (() => {
   'use strict';
-  const M = window.MotionMath, S = window.Stage, F = window.Footage, {SANS} = S.FONTS;
-  const INK = '#101110', PAPER = '#f4f2ec', ACCENT = '#ff422e';
+  const M = window.MotionMath, S = window.Stage, F = window.Footage, Cg = window.Collage, {SANS} = S.FONTS;
+  const PAPER = '#ece8de', INK = '#151412', RED = '#ff3b23', TAPE = 'rgba(232,222,196,.78)';
   const TITLE = 'TITLE';
-  const MAX_WORDS = 24, LEAD_FRAMES = 2, RISE = .12;
-  let footage = null, phrases = [], size = 80;
+  const SMALL = new Set('a al de del el en la las lo los y o que se un una the a an of to in on and or is it you your i we my'.split(' '));
+  const LEAD_FRAMES = 2;
+  let C = null, sheet = null, footage = null, shots = [], phrases = [], film = null, filmCtx = null;
+  let PRINT = {x: 540, y: 1150, w: 760, h: 950};
 
+  async function json(src) {
+    if (!src || typeof fetch !== 'function') return null;
+    try { const r = await fetch(src, {cache: 'no-store'}); return r.ok ? r.json() : null; } catch (e) { return null; }
+  }
   function demo(title, duration) {
-    const tokens = String(title).split(/\s+/).filter(Boolean);
-    const step = Math.min(.42, Math.max(.5, duration - .9) / Math.max(1, tokens.length));
-    let t = .15, current = null;
+    const tokens = String(title).split(/\s+/).filter(Boolean), step = Math.min(.42, Math.max(.5, duration - .9) / Math.max(1, tokens.length));
+    let t = .2, current = null;
     const out = [];
     tokens.forEach((raw, i) => {
       const w = {text: raw.replace(/\*/g, ''), start: t, end: t + step * .85, emphasis: /^\*.+\*[.,;:!?…]*$/u.test(raw)};
@@ -30,94 +37,94 @@
     return out;
   }
 
-  async function json(src) {
-    if (!src || typeof fetch !== 'function') return null;
-    try { const r = await fetch(src, {cache: 'no-store'}); return r.ok ? r.json() : null; } catch (e) { return null; }
-  }
-
   window.Stage.run({
-    fonts: [`800 100px ${SANS}`],
-    background: '#1a1a1c',
+    fonts: [`900 100px ${SANS}`, `750 100px ${SANS}`, `500 100px ${SANS}`],
+    background: PAPER,
     layers: [],
-    finish: {toneMap: 'clip', vignette: .16, grain: .035},
+    shutter: 270,
+    finish: {toneMap: 'clip', vignette: .2, grain: .03},
 
-    async setup({W, H, U, FPS, DURATION, safe, base, plan, ...env}) {
-      footage = F.create({W, H, U, FPS, DURATION, ...env}, await json(plan.broll));
+    async setup(env) {
+      const {W, H, U, FPS, DURATION, safe, plan} = env;
+      C = Cg.create(env);
+      sheet = C.paper({tone: PAPER, seed: 5});
+      footage = F.create(env, await json(plan.broll));
+      if (typeof document !== 'undefined' && document.createElement) {   // the footage is drawn full-frame here, then cropped into a print
+        film = document.createElement('canvas'); film.width = W; film.height = H; filmCtx = film.getContext('2d');
+      }
+      PRINT = {x: W / 2, y: safe.y + safe.height * .64, w: safe.width * .9, h: safe.height * .58};
+      const segs = footage.segments.length ? footage.segments : [{id: 's01', start: 0, end: DURATION, kind: 'gap'}];
+      shots = segs.map((s, i) => ({...s, i, rot: [-.045, .03, -.02, .05, -.035][i % 5], dx: [0, -.03, .025, -.015, .02][i % 5] * W}));
       const voice = await json(plan.voice && plan.voice.words);
       const raw = voice ? (voice.phrases || []).map(p => ({start: +p.start, end: +p.end,
         words: (voice.words || []).filter(w => w.start >= p.start - .01 && w.start <= p.end + .01)
           .map(w => ({text: String(w.text), start: +w.start, end: +w.end, emphasis: !!w.emphasis}))})).filter(p => p.words.length) : [];
       const source = raw.length ? raw : demo(TITLE, DURATION);
-      size = Math.round(.068 * U);
-      const width = safe.width * .92, measure = text => { base.font = S.font({weight: 800, size, family: SANS}); return base.measureText(text).width; };
-      const space = measure(' '), lineHeight = size * 1.18, bottom = safe.y + safe.height * .9;
+      // Each phrase as mixed type: function words small, the stressed word as the keyword, the rest in the body weight.
       phrases = source.map((p, k) => {
-        // Lines that fill the width greedily, at most two; the block sits on the lower third's baseline.
-        const lines = [[]];
-        let x = 0;
-        for (const w of p.words) {
-          const ww = measure(w.text);
-          if (lines[lines.length - 1].length && x + ww > width) { lines.push([]); x = 0; }
-          lines[lines.length - 1].push({...w, width: ww}); x += ww + space;
-        }
-        const placed = [];
-        lines.forEach((line, li) => {
-          const total = line.reduce((a, w) => a + w.width, 0) + space * (line.length - 1);
-          let left = W / 2 - total / 2;
-          const baseline = bottom - (lines.length - 1 - li) * lineHeight;
-          for (const w of line) { placed.push({...w, x: left, baseline}); left += w.width + space; }
+        const markup = p.words.map(w => {
+          const bare = w.text.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+          return w.emphasis ? `*${w.text}*` : SMALL.has(bare) ? `~${w.text}` : w.text;
         });
-        return {from: k === 0 ? 0 : Math.max(0, p.start - LEAD_FRAMES / FPS), words: placed.slice(0, MAX_WORDS), top: bottom - lines.length * lineHeight};
+        const lines = [];   // two or three lines, broken at even word counts
+        const per = Math.ceil(markup.length / Math.min(3, Math.max(1, Math.ceil(markup.length / 4))));
+        for (let i = 0; i < markup.length; i += per) lines.push(markup.slice(i, i + per).join(' '));
+        const laid = C.layoutPhrase(lines.join(' | '), {width: safe.width * .96, size: U * .125, y: safe.y + safe.height * .17});
+        laid.forEach((w, i) => { w.at = p.words[i] ? p.words[i].start - .03 : p.start; });
+        return {from: k === 0 ? 0 : Math.max(0, p.start - LEAD_FRAMES / FPS), words: laid};
       });
-      phrases.forEach((p, k) => { p.to = k + 1 < phrases.length ? phrases[k + 1].from : DURATION + 1; });
     },
 
     prepare: t => footage && footage.prepare(t),
 
-    state(t, {W, H, FPS, DURATION}) {
-      // The scene comes from the frame, not the sub-sample: every motion-blur sample of a cut frame shows the new
-      // phrase (no ghost of the old one). Still a pure function of t.
-      const tf = (Math.floor(t * FPS + 1e-6) + .5) / FPS;
-      let k = 0;
-      while (k + 1 < phrases.length && tf >= phrases[k + 1].from) k++;
-      const phrase = phrases[k] || {words: [], top: H};
-      const push = 1 + .03 * M.clamp(t / Math.max(DURATION, 1e-6));
-      const words = phrase.words.map(w => ({w, rise: M.easing('expo.out')(M.clamp((t - w.start + .03) / RISE)),
-        box: w.emphasis ? M.easing('cubic.out')(M.clamp((t - w.start) / .18)) : 0}));
-      const track = [...(footage ? footage.track(t) : [[0, 0], [W, H]])];
-      for (let i = 0; i < MAX_WORDS; i++) { const v = words[i]; track.push(v ? [v.w.x, v.w.baseline + (1 - v.rise) * size * .4] : [0, 0]); }
-      track.push([push * W / 2, push * H / 2]);
-      return {t, k, push, words, top: phrase.top, track,
-        debug: {phrases: phrases.length, segment: footage && footage.segmentAt(t) ? footage.segmentAt(t).id : null}};
+    state(t, {W, H, FPS}) {
+      const tf = (Math.floor(t * FPS + 1e-6) + .5) / FPS;   // scene and phrase from the frame: no ghost on a cut
+      let k = 0; while (k + 1 < phrases.length && tf >= phrases[k + 1].from) k++;
+      let j = 0; while (j + 1 < shots.length && tf >= shots[j + 1].start) j++;
+      const land = M.easing('back.out')(M.clamp((t - shots[j].start) / .45));
+      const drift = M.wiggle(t, {freq: .25, amp: W * .006, seed: 3, dims: 2});
+      const key = phrases[k] ? phrases[k].words.find(w => w.kind === 'key') : null;
+      const track = [[PRINT.x + drift[0], PRINT.y - (1 - land) * H * .5], [PRINT.x + PRINT.w / 2, PRINT.y + PRINT.h / 2 - (1 - land) * H * .5]];
+      return {t, k, j, land, drift, key, track, debug: {shot: shots[j] && shots[j].id, phrase: k}};
     },
 
-    draw(s, {base}, {W, H, U}) {
-      base.save(); base.translate(W / 2, H / 2); base.scale(s.push, s.push); base.translate(-W / 2, -H / 2);
-      const shown = footage && footage.draw(base, s.t).drawn;
-      if (!shown) {   // no B-roll yet: a moving field, so the piece is never a flat colour
-        const g = base.createLinearGradient(0, 0, W, H);
-        g.addColorStop(0, '#2a2622'); g.addColorStop(.5 + .3 * Math.sin(s.t * .6), '#4a4038'); g.addColorStop(1, '#15151a');
-        base.fillStyle = g; base.fillRect(0, 0, W, H);
-      }
-      base.restore();
-      // A gradient under the lower third: the type reads on a sky or on snow.
-      const shade = base.createLinearGradient(0, s.top - size * 2, 0, H);
-      shade.addColorStop(0, 'rgba(0,0,0,0)'); shade.addColorStop(1, 'rgba(0,0,0,.62)');
-      base.fillStyle = shade; base.fillRect(0, s.top - size * 2, W, H);
-      for (const v of s.words) {
-        if (v.rise <= 0) continue;
-        const {w} = v, y = w.baseline + (1 - v.rise) * size * .4;
-        base.save();
-        base.globalAlpha = Math.min(1, v.rise * 1.5);
-        if (v.box > 0) {   // the stressed word's accent box grows from its left edge
-          base.fillStyle = ACCENT;
-          base.fillRect(w.x - size * .12, y - size * .86, (w.width + size * .24) * v.box, size * 1.08);
+    draw(s, {base: ctx}, {W, H, U}) {
+      const t = s.t;
+      C.drawPaper(ctx, sheet, {x: s.drift[0] * .5, y: s.drift[1] * .5});
+      // The print underneath (the previous shot) stays, a little darker; the new one lands on top.
+      const print = (shot, landing, under) => {
+        const {w, h} = PRINT, b = U * .022;
+        ctx.save();
+        ctx.translate(PRINT.x + shot.dx + s.drift[0], PRINT.y - (1 - landing) * H * .55 + s.drift[1]);
+        ctx.rotate(shot.rot + (1 - landing) * .25);
+        ctx.shadowColor = `rgba(0,0,0,${under ? .2 : .32})`; ctx.shadowBlur = U * (.03 + .05 * (1 - landing)); ctx.shadowOffsetY = U * (.015 + .04 * (1 - landing));
+        ctx.fillStyle = '#f8f6f1'; ctx.fillRect(-w / 2, -h / 2, w, h);
+        ctx.shadowColor = 'transparent';
+        const iw = w - b * 2, ih = h - b * 2;
+        if (!under && film && footage.draw(filmCtx, t).drawn) {   // the shot, cropped to the print's window
+          const k = Math.max(iw / W, ih / H), sw = iw / k, sh = ih / k;
+          ctx.drawImage(film, (W - sw) / 2, (H - sh) / 2, sw, sh, -w / 2 + b, -h / 2 + b, iw, ih);
+        } else {
+          ctx.fillStyle = under ? '#cfcac0' : '#d9d4ca'; ctx.fillRect(-w / 2 + b, -h / 2 + b, iw, ih);
         }
-        base.font = S.font({weight: 800, size, family: SANS}); base.textAlign = 'left';
-        base.shadowColor = 'rgba(0,0,0,.55)'; base.shadowBlur = v.box > 0 ? 0 : size * .25; base.shadowOffsetY = size * .04;
-        base.fillStyle = v.box > .5 ? INK : PAPER;
-        base.fillText(w.text, w.x, y);
-        base.restore();
+        if (under) { ctx.fillStyle = 'rgba(30,25,20,.18)'; ctx.fillRect(-w / 2, -h / 2, w, h); }
+        ctx.fillStyle = TAPE;   // tape across two corners
+        for (const [x, y, r] of [[-w / 2 + b * .5, -h / 2 + b * .5, -.7], [w / 2 - b * .5, -h / 2 + b * .5, .7]]) {
+          ctx.save(); ctx.translate(x, y); ctx.rotate(r); ctx.fillRect(-U * .07, -U * .022, U * .14, U * .044); ctx.restore();
+        }
+        ctx.restore();
+      };
+      if (s.j > 0) print(shots[s.j - 1], 1, true);
+      print(shots[s.j], s.land, false);
+      // The phrase, mixed weights; a red stroke draws under the keyword once it is said.
+      const p = phrases[s.k];
+      if (p) {
+        C.phrase(ctx, p.words, t, {at: p.words.map(w => w.at), ink: INK, accent: RED, dur: .4});
+        if (s.key) {
+          const u = M.clamp((t - s.key.at - .15) / .35);
+          C.trim(ctx, [[s.key.x, s.key.y + s.key.size * .14], [s.key.x + s.key.width * .5, s.key.y + s.key.size * .2], [s.key.x + s.key.width, s.key.y + s.key.size * .12]],
+            {to: M.easing('cubic.out')(u), width: s.key.size * .07, color: RED});
+        }
       }
     },
   });
