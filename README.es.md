@@ -20,7 +20,7 @@ de estilos: póster tipográfico, glow mínimo, infografía, editorial audaz, du
 
 ## Qué le da a tu agente
 
-**40 guías en cuatro áreas** (`references/`):
+**41 guías en cuatro áreas** (`references/`):
 
 | Área | Qué trae |
 |---|---|
@@ -46,6 +46,10 @@ de estilos: póster tipográfico, glow mínimo, infografía, editorial audaz, du
 comprueba que las decisiones estén (un concepto, un elemento recurrente, de cinco a nueve prohibidos con su
 alternativa, un tempo cuyos compases cuadren), imprime la rejilla de beats y la escribe en el plan. Un brief también es
 un prompt: se pega en cualquier agente con Motionsmith instalado.
+
+**El modelo de After Effects** (`scripts/kit/comp.js`): capas con keyframes y curvas del editor de gráficas,
+keyframes de overshoot, parenting, precomps con time remap, máscaras y mates, una cámara 2.5D con rack focus, y
+escenas que se solapan en transiciones que cambian bajo el golpe en vez de fundirse.
 
 **Collage editorial** (`scripts/kit/collage.js`, receta `editorial-collage`): los recursos que hacen que una pieza parezca
 hecha en After Effects: papel con materia, frases con pesos mezclados y una palabra roja, cifras monumentales

@@ -50,7 +50,7 @@
       sheet = C.paper({tone: PAPER, seed: 5});
       footage = F.create(env, await json(plan.broll));
       if (typeof document !== 'undefined' && document.createElement) {   // the footage is drawn full-frame here, then cropped into a print
-        film = document.createElement('canvas'); film.width = W; film.height = H; filmCtx = film.getContext('2d');
+        film = document.createElement('canvas'); film.width = W; film.height = H; filmCtx = film.getContext('2d', {willReadFrequently: true});
       }
       PRINT = {x: W / 2, y: safe.y + safe.height * .64, w: safe.width * .9, h: safe.height * .58};
       const segs = footage.segments.length ? footage.segments : [{id: 's01', start: 0, end: DURATION, kind: 'gap'}];

@@ -19,7 +19,7 @@ atlas: typographic poster, minimal glow, infographic, bold editorial, duotone, S
 
 ## What it gives your agent
 
-**40 guides in four areas** (`references/`):
+**41 guides in four areas** (`references/`):
 
 | Area | What is inside |
 |---|---|
@@ -45,6 +45,10 @@ atlas: typographic poster, minimal glow, infographic, bold editorial, duotone, S
 checks that the decisions are there (one concept, a recurring element, five to nine bans each with its alternative,
 a tempo whose bars add up), prints the beat grid and writes it into the plan. A brief is also a prompt: paste it into
 any agent with Motionsmith installed.
+
+**The After Effects model** (`scripts/kit/comp.js`): layers on keyframes with graph-editor eases and overshoot keys,
+parenting, precomps with time remap, masks and mattes, a 2.5D camera with rack focus, and scenes that overlap at
+transitions which swap under the hit instead of dissolving.
 
 **Editorial collage** (`scripts/kit/collage.js`, recipe `editorial-collage`): the devices that make a piece look made in
 After Effects: paper with matter, phrases in mixed weights with a red keyword, monumental figures out of focus,

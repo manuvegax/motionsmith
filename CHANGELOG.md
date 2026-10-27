@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.8.0 · 2026-10-27
+
+Keyframes and cuts like After Effects.
+
+- **`kit/comp.js`**: the AE composition model in code. Layers with anchor, position, scale, rotation and opacity on
+  keyframes with named graph-editor eases (`snap` 12/88, `punch` 5/95, `swift` 40/85, `glide`, `accel`, `whip`, `hold`,
+  or any influences), overshoot keys, parenting, precomps with time remapping, masks and track mattes, a 2.5D camera
+  with perspective and a keyable rack focus, and `sequence()`: scenes as precomps that overlap at transitions (whip,
+  push, zoom through, iris, slice, spin, cut, flash). Every layer reports its motion, so the stage's motion blur
+  follows it without a hand-written track. Shipped with every piece.
+- **Transitions swap, they do not dissolve**: zoom through accelerates into a point until it fills the frame and hands
+  over under a two-frame flash to a scene that settles from 160 %; spin swaps on the half; push keeps the outgoing
+  scene opaque. A test refuses any transition that shows two half-transparent scenes.
+- **`editorial-collage` rebuilt with it**: four precomps, a 2.5D camera that racks focus from the figure to the phrase,
+  words as layers 3 frames apart landing on overshoot keys, a card whose title, rule and items are its children, a
+  phone whose notifications are its children, a real zoom through the keyword with radial motion blur.
+- Guide `references/craft/keyframes-and-cuts.md`: the model, the eases and their speed graphs, offsets in frames,
+  how scenes hand over, camera, checks.
+- **Determinism kept**: offscreen canvases (precomps, depth-of-field levels, the B-roll film) are CPU-rastered like the
+  stage's layers, and every layer draws from a clean state (letterSpacing and kerning included, which some browsers do
+  not restore): the determinism check had caught the same instant drawing differently after other seeks.
+
 ## 1.7.0 · 2026-10-27
 
 The editorial-collage language of After Effects, and Motion Architect as a companion.

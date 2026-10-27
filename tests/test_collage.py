@@ -53,5 +53,27 @@ class CollageTests(unittest.TestCase):
             shutil.rmtree(workspace, ignore_errors=True)
 
 
+def browser_available() -> bool:
+    if not shutil.which("node"):
+        return False
+    return subprocess.run(["node", str(SKILL / "scripts" / "kit" / "runtime.mjs"), "--probe"], capture_output=True).returncode == 0
+
+
+@unittest.skipUnless(browser_available(), "node + Playwright render the piece")
+class CollageDeterminismTests(unittest.TestCase):
+    def test_editorial_collage_is_deterministic(self):
+        workspace = Path(tempfile.mkdtemp(prefix="motion-collage-det-"))
+        try:
+            piece = workspace / "ec"
+            subprocess.run([sys.executable, "-I", str(SKILL / "scripts" / "new_piece.py"), str(piece), "--recipe", "editorial-collage",
+                            "--format", "square", "--fps", "24"], check=True, capture_output=True)
+            r = subprocess.run(["node", str(SKILL / "scripts" / "determinism_check.mjs"), "--root", str(piece)],
+                               capture_output=True, text=True, timeout=600)
+            report = json.loads(r.stdout[r.stdout.index("{"):])
+            self.assertTrue(report["deterministic"], report.get("captures"))
+        finally:
+            shutil.rmtree(workspace, ignore_errors=True)
+
+
 if __name__ == "__main__":
     unittest.main()

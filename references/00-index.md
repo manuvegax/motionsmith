@@ -18,6 +18,8 @@ Profiles (project and personal) override every default here: read them first ([S
 | Study a reference video properly (frames at each cut) | [companions/README.md](../companions/README.md): Motion Architect's vision engine | Its report's frame paths, read one by one |
 | A palette or a type pairing for a mood | Motion Architect's design engine (`search.py ... --domain color/typography/style`) | Contrast and the brand profile |
 | "Looks like a template", generic | [Direction §12](craft/direction-choreography.md#12-frequent-errors-and-the-first-fix), [style atlas](create/style-atlas.md) | Compared direction gate |
+| "Does not feel like After Effects": keys, offsets, cuts | [Keyframes & cuts](craft/keyframes-and-cuts.md): `kit/comp.js` (named eases, overshoot keys, parenting, precomps, transitions with a swap under the hit) | Speed graphs peak early; no frame with two half-transparent scenes |
+| A transition looks like a dissolve | [Keyframes & cuts §4](craft/keyframes-and-cuts.md#4-cuts-scenes-hand-over): swap on the half under a flash | `sample_frames.mjs --frames` across the cut |
 | Robotic, constant speed | [Curves §2](craft/curves-graph-editor.md#2-influence-and-speed-easy-ease-and-snappy-curves) | `motion_curves.py` (peak/mean ≈ 1 gives linear away) |
 | Floaty, slow, indecisive | [Principles §1](craft/principles.md#1-starting-durations-at-60-fps), ease-out on entrances | Duration in frames vs the table |
 | Dead: correct but lifeless | [Principles §2](craft/principles.md#2-the-twelve-one-by-one): anticipation, follow-through, overshoot | Dense window on arrivals |

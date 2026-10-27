@@ -24,7 +24,7 @@ STARTER = SKILL / "templates" / "starter"
 RECIPES = SKILL / "templates" / "recipes"
 KIT = SKILL / "scripts" / "kit"
 FONT_KIT = SKILL / "templates" / "fonts"    # Archivo, Fraunces, JetBrains Mono (SIL OFL), copied into assets/fonts
-KIT_FILES = ("motion-math.js", "postfx-glsl.js", "timeline.js", "kinetic-type.js", "stage.js", "footage.js", "collage.js", "hyperframes.js")
+KIT_FILES = ("motion-math.js", "postfx-glsl.js", "timeline.js", "kinetic-type.js", "stage.js", "footage.js", "collage.js", "comp.js", "hyperframes.js")
 # Frame size and working safe area per format (references/edit/formats-platforms.md; verify with real screenshots).
 # "reel" is the union of the vertical short-form interfaces (Reels, TikTok, Shorts): right column and bottom captions.
 FORMATS = {

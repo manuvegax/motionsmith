@@ -29,6 +29,7 @@
     const canvas = (w, h) => {   // an offscreen canvas in the browser; a stand-in in the headless checks
       if (typeof root.document === 'undefined' || !root.document.createElement) return null;
       const c = root.document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h));
+      c.getContext('2d', {willReadFrequently: true});   // CPU-rastered: the same t, the same pixels
       return c;
     };
 
@@ -245,6 +246,7 @@
         ctx.fillStyle = w.kind === 'key' ? accent : ink;
         ctx.globalAlpha *= w.kind === 'small' ? .82 : 1;
         ctx.fillText(w.text, 0, 0);
+        ctx.letterSpacing = '0px';
         ctx.restore();
       }
     }
@@ -271,6 +273,7 @@
       ctx.save(); ctx.globalAlpha = alpha; if (blur > .3) ctx.filter = `blur(${blur.toFixed(1)}px)`;
       ctx.font = `${italic ? 'italic ' : ''}${weight} ${Math.round(size)}px ${family}`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.letterSpacing = `${(-size * .04).toFixed(1)}px`; ctx.fillStyle = color; ctx.fillText(text, x, y);
+      ctx.letterSpacing = '0px';   // not every browser restores it with the rest of the state
       ctx.restore();
     }
 
