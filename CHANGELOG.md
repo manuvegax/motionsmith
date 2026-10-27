@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.6.0 · 2026-10-26
+
+Recipes for niches.
+
+- **Four data-driven recipes**: `chart-bars` (data, finance: bars from zero, values counting, the highlight in the
+  accent, the source on screen, numbers read from the frame so they stay sharp under motion blur), `ranking` (lists:
+  a countdown with outline numbers that fill, a vertical whip with real blur, countdown dots), `step-diagram`
+  (education, psychology: a process that builds and never resets, a loop laid out as a circle with labels outward),
+  `audiogram` (podcasts, yapping: a waveform from the voice's level, karaoke captions, a live dot).
+- `new_piece.py` copies a recipe's sample `data.json` and links it as `plan.data`; `voice_plan.py` writes the voice's
+  level per frame into `voice.json` (`levels`).
+- Guide `references/create/niches.md`: hook, structure, proof, banned list and the recipe to start from, per niche.
+- Thirteen recipes in all.
+
 ## 1.5.0 · 2026-10-26
 
 B-roll: real pictures with their licence, under one grade.

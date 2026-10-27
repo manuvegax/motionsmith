@@ -1,0 +1,13 @@
+{
+  "what": "Audiogram: a waveform that scrolls with the real level of the voice, speaker and show on a card, the phrase karaoke-style with the stressed word in the accent",
+  "title": "Your Name | Your Show",
+  "mode": "editorial",
+  "default_seconds": 10,
+  "min_seconds": 4,
+  "intent": "Turn a voice clip into something people watch with the sound off and listen to with it on",
+  "action": "A waveform scrolls with the voice's level; a live dot pulses with it; the phrase being said fills the middle, said words in full colour, coming words dim, the stressed one in red; a progress line runs along the bottom",
+  "hits": [{"role": "emphasis: demo", "time": 1.2, "amplitude": 0.5}],
+  "make_it_yours": "Title is \"Speaker | Show\". Put the clip in assets/, get word timings, run voice_plan.py: voice.json brings the words, the phrases, the stressed words and the voice's level per frame.",
+  "craft_note": "Everything that moves comes from the voice: the frame rests when the person pauses. Coming words at a third let the eye read ahead without spoiling the phrase.",
+  "look": "Podcast card: near-black, warm white, one red accent, mono for the show name"
+}

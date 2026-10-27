@@ -1,0 +1,18 @@
+{
+  "what": "Step diagram: a process builds one step at a time and never resets; arrows draw, the active node in the accent with its explanation below; a loop closes into a circle; ends on the takeaway",
+  "title": "The loop that keeps you scrolling",
+  "mode": "diagram",
+  "default_seconds": 9,
+  "min_seconds": 5,
+  "data": "data.json",
+  "intent": "Explain a mechanism as a sequence with a start and an end, so the viewer can see it, not only hear it",
+  "action": "The title sits on top; for each step an arrow draws from the previous node, the node lands in red with its number and label, its explanation appears in the lower band for its reading time, then it settles into ink; a loop closes back to the first node; the takeaway replaces the explanations",
+  "hits": [
+    {"role": "first step", "time": 0.4, "amplitude": 0.6},
+    {"role": "takeaway", "from_end": 2.3, "amplitude": 1},
+    {"role": "exit", "from_end": 0.5, "amplitude": 0.3}
+  ],
+  "make_it_yours": "Edit data.json: title, loop (true lays the steps on a circle and closes it), takeaway, and two to seven steps with a label and a short note. Give each step its reading time: about 1.5 s plus 0.3 s per word of its note.",
+  "craft_note": "A sequence, not a topic: each step is caused by the one before, the diagram never resets, and the accent marks only the step being explained. Facts in the notes are checked, never invented.",
+  "look": "Diagram on paper: ink nodes, one red active node, italic serif for the explanations"
+}

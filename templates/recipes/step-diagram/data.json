@@ -1,0 +1,11 @@
+{
+  "title": "The loop that keeps you scrolling",
+  "loop": true,
+  "takeaway": "Break one link and the loop loosens.",
+  "steps": [
+    {"label": "Trigger", "note": "a notification, a pause, a moment of boredom"},
+    {"label": "Craving", "note": "the urge to check, before you have thought"},
+    {"label": "Scroll", "note": "the thumb moves; something new appears"},
+    {"label": "Reward", "note": "a small hit of novelty, never quite enough"}
+  ]
+}

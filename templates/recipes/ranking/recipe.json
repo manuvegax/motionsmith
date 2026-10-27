@@ -1,0 +1,18 @@
+{
+  "what": "Ranking: a top N counting down; each number slams in as an outline that fills, label and note follow, a vertical whip with real blur carries to the next; number one in the accent",
+  "title": "Five tricks that keep you scrolling",
+  "mode": "kinetic",
+  "default_seconds": 10,
+  "min_seconds": 5,
+  "data": "data.json",
+  "intent": "Hold the viewer to the end with an open loop: what is number one?",
+  "action": "Each place gets the same share of time: the number slams in huge, outline first then filled, the label rises, a short note follows; a vertical whip with real motion blur carries to the next place; countdown dots on the side; number one lands in red and holds",
+  "hits": [
+    {"role": "first place", "time": 0.2, "amplitude": 0.8},
+    {"role": "number one", "from_end": 2.9, "amplitude": 1.3},
+    {"role": "exit", "from_end": 0.5, "amplitude": 0.3}
+  ],
+  "make_it_yours": "Edit data.json: the title and up to ten items from the last place to number one (rank, label, note). Give it about 1.5–2 s per place plus 2.5 s for number one.",
+  "craft_note": "The countdown is an open loop: the dots show what is left so the viewer stays for number one. Put the strongest item last and a surprising one first.",
+  "look": "Bold editorial on paper: black numbers, one red number one"
+}

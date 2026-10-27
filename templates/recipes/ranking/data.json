@@ -1,0 +1,10 @@
+{
+  "title": "Five tricks that keep you scrolling",
+  "items": [
+    {"rank": 5, "label": "Autoplay", "note": "the next video starts before you decide"},
+    {"rank": 4, "label": "Red badges", "note": "a number that asks to be zero"},
+    {"rank": 3, "label": "Pull to refresh", "note": "a slot machine in your thumb"},
+    {"rank": 2, "label": "Streaks", "note": "losing feels worse than winning feels good"},
+    {"rank": 1, "label": "Infinite scroll", "note": "no bottom, no moment to stop"}
+  ]
+}

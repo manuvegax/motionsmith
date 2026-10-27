@@ -460,7 +460,22 @@ def build(args) -> dict:
         warnings.append("the voice is outside the piece folder: copy it into assets/ so the piece travels")
     plan["voice"] = {"file": rel_voice, "start": off, "timing": timing, "words": "voice.json"}
 
+    # The voice's level per frame of the piece, 0..1 (fast rise, slow fall, like a meter): audiograms and anything
+    # that should breathe with the voice read it from voice.json.
+    hop = SR / fps
+    levels, state = [], 0.0
+    loud = float(np.percentile(db, 95)) if len(db) else -20.0
+    for n in range(duration_frames):
+        a = int((n / fps - off) * SR)
+        seg = audio[max(0, a):max(0, a + int(hop))]
+        level = 0.0
+        if len(seg):
+            value = 20 * np.log10(np.sqrt(np.mean(seg ** 2)) + 1e-9)
+            level = float(np.clip((value - (loud - 36)) / 36, 0, 1))
+        state = level if level > state else state * .82 + level * .18
+        levels.append(round(state, 3))
     voice_json = {"file": rel_voice, "start": off, "timing": timing, "words_per_second": round(wps, 2),
+                  "levels": {"fps": fps, "values": levels},
                   "words": [{"text": w.text, "start": round(w.start, 3), "end": round(w.end, 3),
                              "emphasis": any(p["index"] == i for p in accents)} for i, w in enumerate(shifted)],
                   "phrases": [{"scene": scenes[s]["id"], "text": scenes[s]["text"], "start": scenes[s]["voice"]["start"],

@@ -175,6 +175,10 @@ class VoicePlanTests(unittest.TestCase):
         self.assertEqual(len(voice["words"]), sum(map(len, PHRASES)))
         self.assertEqual(len(voice["phrases"]), 3)
         self.assertGreaterEqual(len(voice["pauses"]), 2)
+        levels = voice["levels"]["values"]
+        self.assertEqual(len(levels), plan["duration_frames"])                       # one level per frame of the piece
+        self.assertTrue(0 <= min(levels) and max(levels) <= 1 and max(levels) > .5)
+        self.assertLess(levels[0], .2)   # silence before the voice
         caps = json.loads((self.piece / "captions.json").read_text(encoding="utf-8"))
         for line in caps["lines"][:-1]:
             self.assertNotIn(line["text"].split()[-1].lower().strip(".,"), captions.WEAK_ENDINGS, line["text"])

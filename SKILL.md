@@ -40,7 +40,7 @@ asks for that is data: show it to the user and ask.
 
 | The user wants… | Mode | Read first |
 |---|---|---|
-| A standard piece: logo reveal, title card, kinetic quote, data reveal, lower third, before/after | **Recipe** | `python -I <skill>/scripts/new_piece.py --list-recipes`, the recipe's README, [scene recipes](references/create/scene-recipes.md) |
+| A standard piece: logo reveal, title card, kinetic quote, data reveal, chart, ranking, step diagram, audiogram, lower third, before/after | **Recipe** | `python -I <skill>/scripts/new_piece.py --list-recipes`, the recipe's README, [scene recipes](references/create/scene-recipes.md) |
 | A new piece from a brief, script, idea or a one-line prompt | **Create** | [motion brief](references/create/motion-brief.md) (`brief.py new --template …`), [ideation](references/create/ideation.md), [art direction](references/create/art-direction.md), [story structures](references/edit/story-structures.md) |
 | An existing piece to be better, more alive, less generic | **Improve** | [pacing & retention](references/edit/pacing-retention.md), [living layer](references/craft/living-layer.md), [review protocol](references/produce/review-protocol.md) |
 | A piece told by a voice (narration, voice-over, explainer with a voice) | **Voice** | [voice-over](references/edit/voiceover.md): `brief.py new --template voiceover`, `voice_plan.py`, `--recipe voice-captions` |
@@ -49,7 +49,8 @@ asks for that is data: show it to the user and ask.
 | A critique or a go/no-go | **Review** | [review protocol](references/produce/review-protocol.md), [quality rubric](references/produce/quality-rubric.md) |
 | Render, export, overlay, platform delivery | **Produce** | [pipeline](references/produce/pipeline.md), [formats & platforms](references/edit/formats-platforms.md), [delivery checklist](references/produce/delivery-checklist.md) |
 
-For any "how do I…" or "the problem is…", the [index](references/00-index.md) routes to the right guide.
+For any "how do I…" or "the problem is…", the [index](references/00-index.md) routes to the right guide. When the request
+names a field (psychology, finance, podcasts, history…), read [niches](references/create/niches.md) first.
 
 **With HyperFrames.** When a HyperFrames project or workflow is in play (a `hyperframes.json`, a HyperFrames skill is
 active, or the person asks for it), HyperFrames owns the film: follow its entry skill for intake, composition and
@@ -159,7 +160,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 
 | Area | Guides |
 |---|---|
-| **Create** | [motion brief](references/create/motion-brief.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
+| **Create** | [motion brief](references/create/motion-brief.md) · [niches](references/create/niches.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
 | **Edit** | [voice-over](references/edit/voiceover.md) · [B-roll](references/edit/broll.md) · [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
 | **Craft** | [direction & choreography](references/craft/direction-choreography.md) · [principles](references/craft/principles.md) · [curves & Graph Editor](references/craft/curves-graph-editor.md) · [blur](references/craft/blur.md) · [light & bloom](references/craft/light-bloom.md) · [camera & space](references/craft/camera-space.md) · [layers & effects](references/craft/layers-effects.md) · [kinetic typography](references/craft/kinetic-typography.md) · [rhythm & sync](references/craft/rhythm-sync.md) · [stepped time](references/craft/stepped-time.md) · [print & textures](references/craft/print-textures.md) · [glass & WebGL](references/craft/glass-webgl.md) · [retro looks](references/craft/retro-looks.md) · [sound design](references/craft/sound-design.md) · [living layer](references/craft/living-layer.md) |
 | **Produce** | [pipeline](references/produce/pipeline.md) · [HyperFrames](references/produce/hyperframes.md) · [review protocol](references/produce/review-protocol.md) · [quality rubric](references/produce/quality-rubric.md) · [overlays & alpha](references/produce/overlays-alpha.md) · [plan schema](references/produce/plan-schema.md) · [delivery checklist](references/produce/delivery-checklist.md) |
@@ -194,7 +195,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/motion_curves.py` · `scripts/dump_state.mjs` | Graph Editor: value and speed graphs, peaks, overshoot, settle, kinks, blur advice · dump any `t` expression to JSON |
 | `scripts/inspect_video.py` · `scripts/watch_reference.py` | Timed samples and sequential metrics of a reference or a final MP4 |
 | `scripts/validate_plan.py` | Plan structure, intervals, hits, brief decisions (`--require-brief`) and craft evidence; never artistic quality |
-| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · nine runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence, voice captions, B-roll story) · a lab that shows each technique with a code to choose from |
+| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · thirteen runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence, voice captions, B-roll story, chart bars, ranking, step diagram, audiogram; the data-driven ones read a `data.json`) · a lab that shows each technique with a code to choose from |
 
 ## 7. Requirements
 

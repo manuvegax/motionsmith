@@ -138,6 +138,9 @@ def main() -> int:
     if FONT_KIT.is_dir():
         shutil.copytree(FONT_KIT, dest / "assets" / "fonts", dirs_exist_ok=True)
     plan = build_plan(args.format, args.fps, seconds, title, mode, args.audio, recipe)
+    if recipe and recipe.get("data"):   # the recipe's sample data (data.json): edit it, the piece reads it at setup
+        shutil.copy2(recipe["folder"] / recipe["data"], dest / recipe["data"])
+        plan["data"] = recipe["data"]
     (dest / "plan.json").write_text(json.dumps(plan, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     sys.path.insert(0, str(Path(__file__).resolve().parent))
     import hyperframes   # index.html's root carries the plan's size and duration (the HyperFrames contract)

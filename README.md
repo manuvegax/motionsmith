@@ -10,19 +10,20 @@ web pages that render to MP4 frame by frame, and it works **with HyperFrames** a
 | | | | |
 |---|---|---|---|
 | ![Kinetic quote](examples/kinetic-quote.gif) | ![Logo reveal](examples/logo-reveal.gif) | ![Data reveal](examples/data-reveal.gif) | ![Promo sequence](examples/promo-sequence.gif) |
-| ![Split compare](examples/split-compare.gif) | ![Title card](examples/title-card.gif) | ![Lower third](examples/lower-third.gif) | |
+| ![Split compare](examples/split-compare.gif) | ![Title card](examples/title-card.gif) | ![Lower third](examples/lower-third.gif) | ![Voice captions](examples/voice-captions.gif) |
+| ![Chart bars](examples/chart-bars.gif) | ![Ranking](examples/ranking.gif) | ![Step diagram](examples/step-diagram.gif) | ![Audiogram](examples/audiogram.gif) |
 
-*The seven recipes in the square format, rendered by the kit and shrunk to small GIFs (12 fps; the MP4s run at
+*Twelve of the thirteen recipes in the square format (the B-roll story needs your footage), rendered by the kit and shrunk to small GIFs (10–12 fps; the MP4s run at
 24–60 fps). Everything you see (real motion blur, bloom, variable type, timing) is code. Seven looks from the style
 atlas: typographic poster, minimal glow, infographic, bold editorial, duotone, Swiss, broadcast.*
 
 ## What it gives your agent
 
-**38 guides in four areas** (`references/`):
+**39 guides in four areas** (`references/`):
 
 | Area | What is inside |
 |---|---|
-| **Create** | The motion brief (six tagged blocks that decide a piece before the code, a banned list of AI tells with their alternatives, tempo arithmetic), ideation (ten concepts and a rubric to pick one), a style atlas of 24 looks with palette, type, texture and motion grammar, 15 scene blueprints with frame timings, art direction, studying references without copying them |
+| **Create** | Niches (what psychology, education, data, lists, podcasts, documentary, tutorials and product each need, and the recipe to start from), the motion brief (six tagged blocks that decide a piece before the code, a banned list of AI tells with their alternatives, tempo arithmetic), ideation (ten concepts and a rubric to pick one), a style atlas of 24 looks with palette, type, texture and motion grammar, 15 scene blueprints with frame timings, art direction, studying references without copying them |
 | **Edit** | B-roll (clips and photos with their licence, one grade, Ken Burns and parallax), voice-over (the voice as the clock: two-column scripts, cuts in the breaths, accents on stressed words, the mix), cutting (Murch's rule of six, match cuts, J/L cuts, Kuleshov, Eisenstein), pacing and retention for short-form, an atlas of 46 transitions, story structures, music editing, colour grade, captions and titles, formats and platforms (with the platform re-encode, 60/30 fps and the cover crop) |
 | **Craft** | Principles, curves and the Graph Editor (AE influence and speed), real motion blur, light and bloom in linear HDR, camera and space, layers and effects, kinetic typography (one size table, phrase breaks, leading, tracking), rhythm and sync, stepped time, screen print and textures, glass in WebGL, retro looks, sound design, the living layer |
 | **Produce** | Pipeline, HyperFrames, a dense review protocol with three critics, a quality rubric, overlays with alpha, the plan schema, a delivery checklist |
@@ -49,9 +50,9 @@ any agent with Motionsmith installed.
 (62–125 %), Fraunces, JetBrains Mono. Every piece carries it, so every machine draws the same letters, and type can
 animate its weight and width like an After Effects text animator.
 
-**Nine runnable recipes** (`templates/recipes/`) in five formats (reel, story, portrait 4:5, square, landscape):
+**Thirteen runnable recipes** (`templates/recipes/`) in five formats (reel, story, portrait 4:5, square, landscape):
 logo reveal, kinetic quote, title card, data reveal, lower third, split compare, a three-scene promo sequence
-(whip pan with real motion blur, iris, end card) voice captions (a narrated piece timed by its voice) and a B-roll story (clips and photos with their licence under a voice). Each one validates, is deterministic, keeps text at 48 px or more,
+(whip pan with real motion blur, iris, end card) voice captions (a narrated piece timed by its voice), a B-roll story (clips and photos with their licence under a voice), and four for niches: chart bars, ranking, step diagram and audiogram, each reading its own `data.json`. Each one validates, is deterministic, keeps text at 48 px or more,
 never holds a dead frame, and reads its key times from the plan's `hits`, the same list the soundtrack uses.
 
 **Sound by synthesis** (`scripts/sfx/`, `scripts/build_soundtrack.py`): hits, booms, risers, whooshes, glass, ticks,

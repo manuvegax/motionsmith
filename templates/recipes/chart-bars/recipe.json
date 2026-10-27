@@ -1,0 +1,18 @@
+{
+  "what": "Chart bars: horizontal bars grow from zero one after another, values counting; the highlighted bar lands last in the accent; the source stays on screen",
+  "title": "Hours a day on the phone",
+  "mode": "diagram",
+  "default_seconds": 6,
+  "min_seconds": 4,
+  "data": "data.json",
+  "intent": "Make one comparison land honestly: the highlighted value against the rest",
+  "action": "Bars grow from a zero baseline in a cascade while their values count up; the highlighted bar lands last in red with a punch, the others step back; a sheen crosses it and the grid drifts while it holds; the source sits at the bottom",
+  "hits": [
+    {"role": "first bar", "time": 0.35, "amplitude": 0.5},
+    {"role": "highlight", "from_end": 3.3, "amplitude": 1},
+    {"role": "exit", "from_end": 0.5, "amplitude": 0.3}
+  ],
+  "make_it_yours": "Edit data.json: title, unit, decimals, source, highlight (a label) and up to eight bars. The title from --title is used only when data.json has none.",
+  "craft_note": "One comparison per chart: the highlight is the payoff. Bars start at zero and stay proportional; the count never overshoots. The source is part of the picture.",
+  "look": "Editorial data: near-black, warm white, one red bar"
+}

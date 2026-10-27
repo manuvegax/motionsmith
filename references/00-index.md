@@ -42,6 +42,8 @@ Profiles (project and personal) override every default here: read them first ([S
 | Is this image allowed? Licence, credit, provenance | [B-roll §1](edit/broll.md#1-provenance-before-anything) | `assets/broll/provenance.json` |
 | Clips from different sources do not match | [B-roll §4](edit/broll.md#4-one-grade-for-every-source): one grade in `timeline.json` | A sheet with one frame per shot |
 | A ghost of the previous shot on a cut frame | [B-roll §5](edit/broll.md#5-cuts-on-footage): choose the scene from the frame, not the sub-sample | `sample_frames.mjs --cuts --png` |
+| A niche: psychology, education, data, lists, podcasts, documentary, tutorials, fitness | [Niches](create/niches.md): hook, structure, banned list and the recipe to start from | The brief's banned list includes the niche row |
+| A chart from numbers, a top N, a process diagram, a podcast clip | `--recipe chart-bars`, `ranking`, `step-diagram`, `audiogram` ([niches §5](create/niches.md#5-recipes-added-for-niches)) | Edit `data.json`, not the code |
 | Cut to music | [Music editing](edit/music-editing.md) | Beat grid in the plan |
 | A piece told by a voice, narration, "voz en off" | [Voice-over](edit/voiceover.md): two-column script, `voice_plan.py`, `--recipe voice-captions` | `sample_frames.mjs --cuts --hits`, `voice_over_bed_db` ≥ 10 |
 | The voice is buried, music over the words | [Voice-over §5](edit/voiceover.md#5-the-mix): the `voiceover` cue ducks the rest | `build_soundtrack.py` report |
