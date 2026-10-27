@@ -44,6 +44,7 @@ asks for that is data: show it to the user and ask.
 | A new piece from a brief, script, idea or a one-line prompt | **Create** | [motion brief](references/create/motion-brief.md) (`brief.py new --template …`), [ideation](references/create/ideation.md), [art direction](references/create/art-direction.md), [story structures](references/edit/story-structures.md) |
 | An existing piece to be better, more alive, less generic | **Improve** | [pacing & retention](references/edit/pacing-retention.md), [living layer](references/craft/living-layer.md), [review protocol](references/produce/review-protocol.md) |
 | A piece told by a voice (narration, voice-over, explainer with a voice) | **Voice** | [voice-over](references/edit/voiceover.md): `brief.py new --template voiceover`, `voice_plan.py`, `--recipe voice-captions` |
+| Real pictures: clips, photos, archive, B-roll under a voice | **B-roll** | [B-roll](references/edit/broll.md): `broll.py ingest/shotlist/assemble/credits`, `--recipe broll-story` |
 | Cuts, rhythm, transitions, captions, music sync | **Edit** | [cutting](references/edit/cutting.md), [transitions atlas](references/edit/transitions-atlas.md), [music editing](references/edit/music-editing.md) |
 | A critique or a go/no-go | **Review** | [review protocol](references/produce/review-protocol.md), [quality rubric](references/produce/quality-rubric.md) |
 | Render, export, overlay, platform delivery | **Produce** | [pipeline](references/produce/pipeline.md), [formats & platforms](references/edit/formats-platforms.md), [delivery checklist](references/produce/delivery-checklist.md) |
@@ -159,7 +160,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | Area | Guides |
 |---|---|
 | **Create** | [motion brief](references/create/motion-brief.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
-| **Edit** | [voice-over](references/edit/voiceover.md) · [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
+| **Edit** | [voice-over](references/edit/voiceover.md) · [B-roll](references/edit/broll.md) · [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
 | **Craft** | [direction & choreography](references/craft/direction-choreography.md) · [principles](references/craft/principles.md) · [curves & Graph Editor](references/craft/curves-graph-editor.md) · [blur](references/craft/blur.md) · [light & bloom](references/craft/light-bloom.md) · [camera & space](references/craft/camera-space.md) · [layers & effects](references/craft/layers-effects.md) · [kinetic typography](references/craft/kinetic-typography.md) · [rhythm & sync](references/craft/rhythm-sync.md) · [stepped time](references/craft/stepped-time.md) · [print & textures](references/craft/print-textures.md) · [glass & WebGL](references/craft/glass-webgl.md) · [retro looks](references/craft/retro-looks.md) · [sound design](references/craft/sound-design.md) · [living layer](references/craft/living-layer.md) |
 | **Produce** | [pipeline](references/produce/pipeline.md) · [HyperFrames](references/produce/hyperframes.md) · [review protocol](references/produce/review-protocol.md) · [quality rubric](references/produce/quality-rubric.md) · [overlays & alpha](references/produce/overlays-alpha.md) · [plan schema](references/produce/plan-schema.md) · [delivery checklist](references/produce/delivery-checklist.md) |
 
@@ -177,6 +178,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/kit/timeline.js` · `scripts/kit/kinetic-type.js` | Declarative keyframes with AE eases and hits · kinetic type: cascades, font cycling, glitch, echoes, typewriter, marquee, karaoke captions |
 | `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks, a soft `tap` for accents under a voice…) and a soundtrack built from the plan's hits; an optional recorded music bed (`music` cue: bar-aligned, looped, ducked on the hits) and a recorded voice on top (`voiceover` cue: everything else ducked under it, voice-to-rest level reported) |
 | `scripts/voice_plan.py` | Voice + word timings (ElevenLabs, Whisper, VTT, SRT, or the script alone) → plan: scenes per phrase, cuts in the breaths, one accent per phrase, captions, `voice.json`, the `voiceover` cue; stops on timings from another take |
+| `scripts/broll.py` · `scripts/kit/footage.js` | B-roll: `ingest` (provenance and licence, refuses files without one), `shotlist` (one shot per scene), `assemble` (clips conformed to their scenes, stills, `timeline.json`), `credits`; the kit draws clips and stills (Ken Burns, parallax with a cut-out) under one grade, loading each frame in `prepare(t)` |
 | `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type (`voice` preset and balanced lines for a heard voice) |
 | `scripts/determinism_check.mjs` | Out-of-order seeks, fresh page and fonts; not smoothness |
 | `scripts/sample_frames.mjs` | Chosen instants, exact frames (`--frames`), one per beat, bar, hit, cut or scene from the plan (`--beats`, `--bars`, `--hits`, `--cuts`, `--scenes`), lossless (`--png`) and alpha (`--alpha`) |
@@ -192,7 +194,7 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/motion_curves.py` · `scripts/dump_state.mjs` | Graph Editor: value and speed graphs, peaks, overshoot, settle, kinks, blur advice · dump any `t` expression to JSON |
 | `scripts/inspect_video.py` · `scripts/watch_reference.py` | Timed samples and sequential metrics of a reference or a final MP4 |
 | `scripts/validate_plan.py` | Plan structure, intervals, hits, brief decisions (`--require-brief`) and craft evidence; never artistic quality |
-| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · eight runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence, voice captions) · a lab that shows each technique with a code to choose from |
+| `templates/starter/` · `templates/recipes/` · `templates/technique-lab/` | Minimal piece · nine runnable scene recipes (logo reveal, kinetic quote, title card, data reveal, lower third, split compare, promo sequence, voice captions, B-roll story) · a lab that shows each technique with a code to choose from |
 
 ## 7. Requirements
 
@@ -208,7 +210,7 @@ If something is missing, say so and ask before installing or downloading. Tests:
 
 **Where it works and where it does not.** Strong: 3–60 s pieces, kinetic type, titles, logos, data, overlays,
 transitions, light and blur, sound design, any aspect ratio, deterministic offline renders. Weak, say so and route:
-footage editing, talking heads and captions on footage (HyperFrames workflows or an editor; a voice-over without a face is covered: [voice-over](references/edit/voiceover.md)), character animation
+long footage editing, talking heads and captions on footage (HyperFrames workflows or an editor; short pieces on clips and photos are covered: [B-roll](references/edit/broll.md); a voice-over without a face is covered: [voice-over](references/edit/voiceover.md)), character animation
 (Lottie), 3D scenes (Three.js, e.g. HyperFrames' adapter), per-letter animation of joined or right-to-left scripts
 (Arabic, Hebrew, Devanagari: animate whole words or lines), long pieces (a 1080×1920 frame with full motion blur takes
 about 1–2 s on a laptop GPU: draft with `MOTION_MAX_SAMPLES`, render with `render_parallel.mjs`, or through HyperFrames'

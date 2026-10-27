@@ -13,6 +13,7 @@
        fonts: ['800 200px "Segoe UI"'],              // loaded before setup (declare real fonts with @font-face)
        background: '#121214',                        // base is filled with it before every draw
        setup(env) { ... },                           // once, after plan.json and fonts; may be async; lay text out here
+       prepare(t, env) { ... },                      // optional, async: load what time t needs (footage frames)
        state(t, env) { return {..., track: [[x, y], ...]}; },   // pure function of t; track = the points that move
        draw(s, layers, env) { layers.base.fillText(...); },     // layers: base, light, top (Canvas 2D contexts)
      });
@@ -328,7 +329,12 @@
         shutter_degrees: shutter, samples: ldr ? '1 (8-bit fallback)' : `≥ px/3 per frame, 1–${maxSamples}`, hdr: !ldr,
         draft: maxSamples < (cfg.maxSamples ?? 64), fonts: fontReport};
       root.motionState = t => cfg.state(t, env);
-      root.seek = (t, blur = true) => paint(t, blur);
+      // prepare(t, env) (optional, may be async): load what frame t needs before it is drawn, e.g. the footage frame
+      // (kit/footage.js). seek then returns a promise, which the capture scripts await.
+      root.seek = (t, blur = true) => cfg.prepare
+        ? Promise.resolve(cfg.prepare(M.clamp(t, 0, env.DURATION - 1e-6), env)).then(() => paint(t, blur))
+        : paint(t, blur);
+      if (cfg.prepare) await cfg.prepare(0, env);
       paint(0);
       root.motionInitialized = true;
       return true;

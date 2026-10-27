@@ -5,10 +5,10 @@
 
    The frames are split into chunks (by default about three per worker, at least 2 s); --workers chunks render at once, each in its own
    browser (render_stream.mjs --frames a:b). A chunk that fails is retried twice (a browser can die in a long capture).
-   Finished chunks are kept in preview/chunks/<name>-<fingerprint>/ until the end, so an interrupted render resumes
+   Finished chunks are kept in preview/chunks/<fingerprint>/ until the end, so an interrupted render resumes
    where it stopped; the fingerprint covers every file of the piece and the encoder settings, so a changed piece never
-   reuses old chunks. The chunks are joined without re-encoding (they share the encoder settings and each starts on a
-   keyframe), the audio is muxed over the whole, and the frame count of the result is checked against the plan.
+   reuses old chunks. The chunks are joined without re-encoding (they share the encoder settings and each starts on a keyframe), re-stamped at
+   exactly 1/fps, the audio is muxed over the whole, and the frame count of the result is checked against the plan.
    Every frame is a function of t, so a chunk boundary changes nothing in the picture.
    More workers is not always faster: they share one GPU. 2–4 is the useful range on a laptop; measure with --workers. */
 import fs from 'node:fs/promises';
@@ -85,7 +85,7 @@ function run(cmd, argv) {
 const began = Date.now();
 const key = await fingerprint();
 const name = path.basename(output, path.extname(output));
-const work = path.join(root, 'preview', 'chunks', `${name}-${key}`);
+const work = path.join(root, 'preview', 'chunks', key);   // the frames depend on the piece and the settings, not the name
 await fs.mkdir(work, {recursive: true});
 const disk = await fs.statfs(work).catch(() => null);
 const minFree = Number(args['min-free-gb'] ?? 2) * 2 ** 30;
@@ -138,16 +138,26 @@ if (failures.length) {
   process.exit(1);
 }
 
-// Join without re-encoding; the audio goes over the whole piece.
+// Join without re-encoding. The MP4 concat demuxer rounds each chunk's last frame duration (30.001 fps, a cadence
+// that wobbles), so the joined stream is re-stamped with the setts filter: decode time N/fps for packet N, the
+// B-frame offset (PTS-DTS) kept. Every frame then lasts exactly 1/fps. The audio goes over the whole piece.
 const list = path.join(work, 'list.txt');
-await fs.writeFile(list, chunks.map(c => `file '${c.file.replace(/\\/g, '/').replace(/'/g, "'\\''")}'`).join('\n') + '\n');
+const quoted = file => file.split(path.sep).join('/').split("'").join("'\\''");   // the concat list's quoting
+await fs.writeFile(list, chunks.map(c => `file '${quoted(c.file)}'`).join('\n') + '\n');
+const concat = path.join(work, 'joined.mp4');
+await fs.rm(concat, {force: true});
+const glued = await run('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'concat', '-safe', '0', '-i', list, '-map', '0:v:0', '-c', 'copy', concat]);
+if (glued.code !== 0) { console.error(`Concat failed: ${glued.log}`); process.exit(1); }
 await fs.mkdir(path.dirname(output), {recursive: true});
 const seconds = frames / fps;
-const join = ['-hide_banner', '-loglevel', 'error', '-n', '-f', 'concat', '-safe', '0', '-i', list];
+const rate = typeof plan.fps === 'string' ? plan.fps : String(plan.fps);
+const grid = `N/((${rate})*TB)`;
+const join = ['-hide_banner', '-loglevel', 'error', '-n', '-i', concat];
 if (audio) join.push('-i', audio);
 join.push('-map', '0:v:0');
 if (audio) join.push('-map', '1:a:0', '-c:a', 'aac', '-b:a', '192k', '-ar', '48000');
-join.push('-c:v', 'copy', '-t', String(seconds), '-movflags', '+faststart', output);
+join.push('-c:v', 'copy', '-bsf:v', `setts=dts=${grid}:pts=PTS-DTS+${grid}`, '-t', String(seconds),
+  '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-color_range', 'tv', '-movflags', '+faststart', output);
 const joined = await run('ffmpeg', join);
 const total = existsSync(output) ? probeFrames(output) : 0;
 if (joined.code !== 0 || total !== frames) {

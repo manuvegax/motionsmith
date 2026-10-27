@@ -101,6 +101,9 @@ class RenderTests(unittest.TestCase):
                 frames = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=nb_frames",
                                          "-of", "csv=p=0", v["file"]], capture_output=True, text=True).stdout.strip()
                 self.assertEqual(int(frames), 72)
+                verify = subprocess.run([sys.executable, "-I", str(SCRIPTS / "verify_export.py"), v["file"], "--fps", "12",
+                                         "--audio", "forbidden", "--require-cfr", "--require-bt709"], capture_output=True, text=True)
+                self.assertEqual(json.loads(verify.stdout)["errors"], [], verify.stdout)
             self.assertTrue((piece / "final" / "hooks" / "hooks.md").exists())
             # A statement that differs too is still on screen after the seam: refused, nothing rendered.
             spec["variants"][1]["title"] = "STOP | a different body"

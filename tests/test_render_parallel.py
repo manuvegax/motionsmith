@@ -58,23 +58,25 @@ class RenderParallelTests(unittest.TestCase):
         report = self.render("final/par.mp4")
         self.assertEqual(report["chunks"], 4)
         self.assertEqual(frames_of(self.piece / "final" / "par.mp4"), 96)
+        # Exactly constant cadence across the joins (the MP4 concat demuxer used to leave 24.0005 fps).
+        verify = subprocess.run([sys.executable, "-I", str(SCRIPTS / "verify_export.py"), str(self.piece / "final" / "par.mp4"),
+                                 "--fps", "24", "--audio", "forbidden", "--require-cfr", "--require-bt709"], capture_output=True, text=True)
+        self.assertEqual(json.loads(verify.stdout)["errors"], [], verify.stdout)
         one = subprocess.run(["node", str(SCRIPTS / "render_stream.mjs"), "--root", str(self.piece), "--out", "final/one.mp4",
                               "--no-audio", "--preset", "ultrafast"], capture_output=True, text=True, timeout=900)
         self.assertEqual(one.returncode, 0, one.stderr)
         # Same frames, different keyframe placement: the encodes differ only by compression noise.
         self.assertGreater(psnr(self.piece / "final" / "par.mp4", self.piece / "final" / "one.mp4"), 40)
-        self.assertEqual(list((self.piece / "preview" / "chunks").glob("par-*")), [])   # cleaned up
+        self.assertEqual(list((self.piece / "preview" / "chunks").glob("*")), [])   # cleaned up
 
     def test_resume_reuses_chunks_and_a_changed_piece_does_not(self):
         first = self.render("final/a.mp4", "--keep-chunks")
         self.assertEqual(first["reused_chunks"], 0)
-        (self.piece / "final" / "a.mp4").unlink()
-        again = self.render("final/a.mp4", "--keep-chunks")
+        again = self.render("final/b.mp4", "--keep-chunks")   # another name, the same frames
         self.assertEqual(again["reused_chunks"], 4)
         script = self.piece / "piece.js"
         script.write_text(script.read_text(encoding="utf-8") + "\n// changed\n", encoding="utf-8")
-        (self.piece / "final" / "a.mp4").unlink()
-        changed = self.render("final/a.mp4")
+        changed = self.render("final/c.mp4")
         self.assertEqual(changed["reused_chunks"], 0)
 
     def test_refuses_to_overwrite(self):

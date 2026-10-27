@@ -38,6 +38,10 @@ Profiles (project and personal) override every default here: read them first ([S
 | React to audio | [Rhythm §4](craft/rhythm-sync.md#4-audio-reactive-motion) | `audio_envelope.py` |
 | Out-of-sync hits | [Rhythm §3](craft/rhythm-sync.md#3-one-list-of-hits), [sound design §5](craft/sound-design.md#5-sync) | `audio_check.py --plan` |
 | "Which hook works?", trial reels, A/B of the opening | [Motion brief §8](create/motion-brief.md#8-hook-variants-for-trial-reels): `hooks:` + `seam:`, `hook_variants.py` | Seam difference < 0.5; `final/hooks/hooks.md` after 24–48 h |
+| Clips or photos under a voice, B-roll, archive, Ken Burns, parallax | [B-roll](edit/broll.md): `broll.py`, `--recipe broll-story` | `sample_frames.mjs --cuts`; `broll.py credits` |
+| Is this image allowed? Licence, credit, provenance | [B-roll §1](edit/broll.md#1-provenance-before-anything) | `assets/broll/provenance.json` |
+| Clips from different sources do not match | [B-roll §4](edit/broll.md#4-one-grade-for-every-source): one grade in `timeline.json` | A sheet with one frame per shot |
+| A ghost of the previous shot on a cut frame | [B-roll §5](edit/broll.md#5-cuts-on-footage): choose the scene from the frame, not the sub-sample | `sample_frames.mjs --cuts --png` |
 | Cut to music | [Music editing](edit/music-editing.md) | Beat grid in the plan |
 | A piece told by a voice, narration, "voz en off" | [Voice-over](edit/voiceover.md): two-column script, `voice_plan.py`, `--recipe voice-captions` | `sample_frames.mjs --cuts --hits`, `voice_over_bed_db` ≥ 10 |
 | The voice is buried, music over the words | [Voice-over §5](edit/voiceover.md#5-the-mix): the `voiceover` cue ducks the rest | `build_soundtrack.py` report |

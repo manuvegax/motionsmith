@@ -130,10 +130,11 @@ node <skill>/scripts/render_parallel.mjs --root <piece> --out final/piece.mp4 --
 - Chunks default to about three per worker (at least 2 s), so no browser idles at the end. More workers share one
   GPU: 2–4 is the useful range; measure on the machine.
 - A chunk that fails (a browser dying in a long capture) is retried twice. An interrupted render resumes: run the same
-  command again. Finished chunks live in `preview/chunks/<name>-<fingerprint>/`; the fingerprint covers every file
+  command again. Finished chunks live in `preview/chunks/<fingerprint>/` (another output name reuses them too); the fingerprint covers every file
   of the piece and the encoder settings, so a changed piece never reuses an old chunk.
-- The frames are the same as one pass (every frame is a function of t); only keyframe placement differs. The result
-  is checked frame for frame against `duration_frames`.
+- The frames are the same as one pass (every frame is a function of t); only keyframe placement differs. The join
+  re-stamps every frame at exactly 1/fps (the MP4 concat demuxer alone leaves 30.001 fps) and the result is checked
+  frame for frame against `duration_frames`.
 - For HyperFrames projects, `hyperframes render` has its own parallel workers ([HyperFrames](hyperframes.md)).
 
 ## 4. The capture kit

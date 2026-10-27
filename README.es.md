@@ -19,12 +19,12 @@ de estilos: póster tipográfico, glow mínimo, infografía, editorial audaz, du
 
 ## Qué le da a tu agente
 
-**37 guías en cuatro áreas** (`references/`):
+**38 guías en cuatro áreas** (`references/`):
 
 | Área | Qué trae |
 |---|---|
 | **Crear** | El brief de motion (seis bloques etiquetados que deciden la pieza antes del código, una lista de prohibidos con las señales de IA y su alternativa, la aritmética del tempo), ideación (diez conceptos y una rúbrica para elegir uno), un atlas de 24 estilos con paleta, letra, textura y gramática de movimiento, 15 planos de escena con tiempos en cuadros, dirección de arte, estudiar referencias sin copiarlas |
-| **Editar** | Voz en off (la voz como reloj: guion a dos columnas, cortes en las respiraciones, acentos en las palabras que pesan, la mezcla), corte (la regla de seis de Murch, match cuts, cortes J/L, Kuleshov, Eisenstein), ritmo y retención en video corto, un atlas de 46 transiciones, estructuras de historia, edición con música, gradación de color, subtítulos y títulos, formatos y plataformas (con la recompresión de la plataforma, 60/30 fps y el recorte de la portada) |
+| **Editar** | B-roll (clips y fotos con su licencia, una sola gradación, Ken Burns y parallax), voz en off (la voz como reloj: guion a dos columnas, cortes en las respiraciones, acentos en las palabras que pesan, la mezcla), corte (la regla de seis de Murch, match cuts, cortes J/L, Kuleshov, Eisenstein), ritmo y retención en video corto, un atlas de 46 transiciones, estructuras de historia, edición con música, gradación de color, subtítulos y títulos, formatos y plataformas (con la recompresión de la plataforma, 60/30 fps y el recorte de la portada) |
 | **Oficio** | Principios, curvas y Graph Editor (influencia y velocidad de AE), motion blur real, luz y bloom en HDR lineal, cámara y espacio, capas y efectos, tipografía cinética (una sola tabla de tamaños, cortes por frase, interlineado, tracking), ritmo y sincronía, tiempo escalonado, serigrafía y texturas, cristal en WebGL, looks retro, diseño de sonido, la capa viva |
 | **Producir** | Pipeline, HyperFrames, un protocolo de revisión densa con tres críticos, una rúbrica de calidad, overlays con alfa, el esquema del plan, una lista de entrega |
 
@@ -50,9 +50,9 @@ un prompt: se pega en cualquier agente con Motionsmith instalado.
 variable** (62–125 %), Fraunces y JetBrains Mono. Cada pieza las lleva consigo, así que todas las máquinas dibujan las
 mismas letras, y la tipografía puede animar su peso y su ancho como un animador de texto de After Effects.
 
-**Ocho recetas que se ejecutan** (`templates/recipes/`) en cinco formatos (reel, historia, vertical 4:5, cuadrado,
+**Nueve recetas que se ejecutan** (`templates/recipes/`) en cinco formatos (reel, historia, vertical 4:5, cuadrado,
 horizontal): revelación de logo, frase cinética, cartón de título, revelación de datos, rótulo de nombre, comparación
-dividida, una secuencia promocional de tres escenas (barrido de cámara con motion blur real, iris, cierre) y subtítulos de voz (una pieza narrada que sigue el tiempo de su voz). Cada una
+dividida, una secuencia promocional de tres escenas (barrido de cámara con motion blur real, iris, cierre) subtítulos de voz (una pieza narrada que sigue el tiempo de su voz) y una historia con B-roll (clips y fotos con su licencia bajo una voz). Cada una
 valida, es determinista, mantiene el texto en 48 px o más, nunca deja un cuadro muerto y lee sus tiempos clave de los
 `hits` del plan, la misma lista que usa el sonido.
 

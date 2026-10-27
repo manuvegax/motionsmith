@@ -118,9 +118,12 @@
       marqueeFont = `${BLACK} ${Math.round(.34 * U)}px ${SANS}`;
     },
 
-    state(t, {W, H, U, DURATION}) {
+    state(t, {W, H, U, FPS, DURATION}) {
+      // The scene comes from the frame, not the sub-sample: every motion-blur sample of a cut frame shows the new
+      // phrase and ground (no ghost of the old one). Still a pure function of t.
+      const tf = (Math.floor(t * FPS + 1e-6) + .5) / FPS;
       let k = 0;
-      while (k + 1 < scenes.length && t >= scenes[k + 1].from) k++;
+      while (k + 1 < scenes.length && tf >= scenes[k + 1].from) k++;
       const scene = scenes[k] || {words: [], from: 0, size: 100, stressed: ''};
       const since = t - scene.from;
       const punch = k > 0 ? .045 * (1 - M.easing('expo.out')(M.clamp(since / .35))) : 0;

@@ -1,0 +1,13 @@
+{
+  "what": "B-roll story: footage and photos under a voice; clips trimmed to their scenes, stills with Ken Burns and parallax, one grade; the phrase in the lower third, the stressed word in an accent box",
+  "title": "Every notification is a *small* alarm.",
+  "mode": "editorial",
+  "default_seconds": 8,
+  "min_seconds": 4,
+  "intent": "Let real pictures carry what the voice does not say, under captions that read on any image",
+  "action": "Each scene shows its clip or photo (stills push, pan or tilt in code, with parallax when a cut-out is given), all under one grade; the phrase being said sits in the lower third, words landing as they are spoken, the stressed one in a red box",
+  "hits": [{"role": "emphasis: demo", "time": 1.2, "amplitude": 0.6}],
+  "make_it_yours": "Ingest your clips and photos with their licence (`broll.py ingest`), run `voice_plan.py` for the voice, then `broll.py shotlist`, fill shots.json with a file per scene, and `broll.py assemble`. The grade lives in assets/broll/timeline.json (contrast, saturate, warmth, lift).",
+  "craft_note": "The picture adds what the voice does not say. Video carries its own blur; stills move in code so they are sub-pixel smooth. One grade for every source makes three origins read as one film. The gradient and shadow under the lower third are what keep captions readable on bright footage.",
+  "look": "Documentary: real footage, one warm grade, white type with a red accent box"
+}

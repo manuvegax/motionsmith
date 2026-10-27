@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.5.0 · 2026-10-26
+
+B-roll: real pictures with their licence, under one grade.
+
+- **`scripts/broll.py`**: `ingest` copies clips and photos into the piece and records source, licence, author, sha256
+  and AI origin in `provenance.json` (no licence, no entry; CC BY needs an author); `shotlist` writes one shot per
+  scene, alternating still moves; `assemble` conforms each clip to its scene (fps, cover crop around a focus point,
+  one JPEG per frame, a short clip holds and says so), prepares stills and cut-outs, writes `timeline.json` and links
+  it from the plan; `credits` writes the attribution lines.
+- **`kit/footage.js`**: clips and stills drawn inside a piece: Ken Burns in code (sub-pixel, real motion blur),
+  parallax with a cut-out, one grade for every source (contrast, saturation, warmth, lift). Shipped with every piece.
+- **Stage**: an optional async `prepare(t)` hook loads what a frame needs before it is drawn; `seek` awaits it.
+- **Recipe `broll-story`**: footage under a voice, lower-third captions with a gradient, a shadow and an accent box.
+- **Cut frames**: `voice-captions` and `broll-story` choose the scene from the frame, not the motion-blur sub-sample,
+  so no ghost of the previous phrase shows on a cut frame (found in the dense review of the test piece).
+- **Exact cadence on joins**: `render_parallel.mjs` and `hook_variants.py` re-stamp the joined stream with `setts`
+  (decode time N/fps, B-frame offsets kept): the MP4 concat demuxer alone left 30.001 fps and a wobbling cadence that
+  `verify_export.py --require-cfr` caught on a 10-chunk render. Chunks are keyed by fingerprint only, so another
+  output name reuses them.
+- Guide `references/edit/broll.md`.
+
 ## 1.4.0 · 2026-10-26
 
 Hook variants for trial reels.

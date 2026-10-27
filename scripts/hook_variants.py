@@ -239,13 +239,27 @@ def cmd_render(args) -> int:
             audio = sound
         elif args.audio != "none":
             audio = Path(args.audio).resolve()
+        # Join hook + body without re-encoding, then re-stamp: the MP4 concat demuxer rounds the hook's last frame,
+        # so decode time becomes N/fps for packet N (B-frame offsets kept) and every frame lasts exactly 1/fps.
         listing = work / f"list-{vid}.txt"
-        listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in (work / f"hook-{vid}.mp4", work / "body.mp4")), encoding="utf-8")
+        parts = (work / f"hook-{vid}.mp4", work / "body.mp4")
+        listing.write_text("".join(f"file '{p.as_posix()}'\n" for p in parts), encoding="utf-8")
+        glued = work / f"joined-{vid}.mp4"
+        r = run(["ffmpeg", "-hide_banner", "-loglevel", "error", "-y", "-f", "concat", "-safe", "0", "-i", str(listing),
+                 "-map", "0:v:0", "-c", "copy", str(glued)])
+        if r.returncode:
+            print(json.dumps({"errors": [f"join {vid}: {r.stderr[-400:]}"]}, indent=2))
+            return 1
+        grid = f"N/(({plan.get('fps', 60)})*TB)"
         out = out_dir / f"{name}-{vid}.mp4"
-        argv = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-n", "-f", "concat", "-safe", "0", "-i", str(listing)]
+        argv = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-n", "-i", str(glued)]
         if audio:
             argv += ["-i", str(audio), "-map", "0:v:0", "-map", "1:a:0", "-c:a", "aac", "-b:a", "192k", "-ar", "48000"]
-        argv += ["-c:v", "copy", "-t", str(total / fps), "-movflags", "+faststart", str(out)]
+        else:
+            argv += ["-map", "0:v:0"]
+        argv += ["-c:v", "copy", "-bsf:v", f"setts=dts={grid}:pts=PTS-DTS+{grid}", "-t", str(total / fps),
+                 "-colorspace", "bt709", "-color_primaries", "bt709", "-color_trc", "bt709", "-color_range", "tv",
+                 "-movflags", "+faststart", str(out)]
         r = run(argv)
         if r.returncode != 0 or frames_of(out) != total:
             out.unlink(missing_ok=True)
