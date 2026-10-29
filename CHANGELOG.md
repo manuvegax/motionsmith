@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.10.0 · 2026-10-29
+
+Talking-head edits, right in version one.
+
+- **`references/edit/talking-head.md`**: editing a recording of someone talking to camera into a short with inserts.
+  Load the whole HyperFrames toolchain at once, ask once, a twelve-step pipeline with its check per step (breath
+  around sentences, mono voice, gaze on every frame, eyes open at the seams, the last word measured in the waveform,
+  one render, the mix from stems, the final file verified), the first three seconds, one finish for every B-roll
+  insert with twelve methods, and what makes a dense edit feel robotic. Written from a reel that took ten versions.
+- **`scripts/gaze_check.py`**: eyes down, blinks and sideways looks on every frame with the MediaPipe Face Landmarker
+  (optional dependency; the model file is never downloaded by the script), runs of blinks told apart from looking
+  down, head pitch relative to each take, and a summary with the down runs and any blink in the first second.
+- **`scripts/print_footage.py`**: a two-ink screen print with frame-rate lag for clips and photos (halftone fixed to
+  the screen, misregistration that boils on twos and jumps on keywords, paper, footage on twos), numpy and FFmpeg only,
+  one print per step written twice.
+- Two speed-change traps documented: a per-channel stretch of a mixed stereo file decorrelates the voice; `-ac 1`
+  sums the channels and clips.
+- Routing: a **Talking head** mode in the SKILL, four index rows, the tools table.
+
 ## 1.9.0 · 2026-10-27
 
 Moving holds, layer effects and motion styles.

@@ -46,6 +46,10 @@ Profiles (project and personal) override every default here: read them first ([S
 | React to audio | [Rhythm §4](craft/rhythm-sync.md#4-audio-reactive-motion) | `audio_envelope.py` |
 | Out-of-sync hits | [Rhythm §3](craft/rhythm-sync.md#3-one-list-of-hits), [sound design §5](craft/sound-design.md#5-sync) | `audio_check.py --plan` |
 | "Which hook works?", trial reels, A/B of the opening | [Motion brief §8](create/motion-brief.md#8-hook-variants-for-trial-reels): `hooks:` + `seam:`, `hook_variants.py` | Seam difference < 0.5; `final/hooks/hooks.md` after 24–48 h |
+| A talking-head recording to edit (a person to camera + inserts), "people leave in the first 3 seconds" | [Talking-head edits](edit/talking-head.md): load the toolchain at once, ask once, the pipeline, the opening | `gaze_check.py` on the take and the final file; `verify_export.py`; `audio_check.py` (mono, phase) |
+| The speaker looks down, blinks on a seam, or the last word is cut | [Talking-head edits §3](edit/talking-head.md#3-the-pipeline) | `gaze_check.py`; the last word measured in the waveform |
+| B-roll from different sources looks pasted on; "needs the same finish", frame-rate lag on footage | [Talking-head edits §5](edit/talking-head.md#5-b-roll-that-belongs-one-finish-many-methods) | `print_footage.py` |
+| A dense edit feels robotic | [Talking-head edits §6](edit/talking-head.md#6-pace-without-sounding-robotic) | Cuts listed with their reason |
 | Clips or photos under a voice, B-roll, archive, Ken Burns, parallax | [B-roll](edit/broll.md): `broll.py`, `--recipe broll-story` | `sample_frames.mjs --cuts`; `broll.py credits` |
 | Is this image allowed? Licence, credit, provenance | [B-roll §1](edit/broll.md#1-provenance-before-anything) | `assets/broll/provenance.json` |
 | Clips from different sources do not match | [B-roll §4](edit/broll.md#4-one-grade-for-every-source): one grade in `timeline.json` | A sheet with one frame per shot |

@@ -71,7 +71,7 @@ heartbeats and a mastering chain, built from the plan's hits. No samples, same s
 
 **Tools that measure instead of guessing**: `determinism_check`, `sample_frames` (also one frame per beat), `contact_sheet`, `render_stream`
 (FFmpeg, BT.709), `render_parallel` (long pieces in parallel chunks that resume), `verify_export`, `audio_check` (loudness, true peak, onsets against the hits), `motion_curves`
-(value and speed graphs, overshoot, settle), `loop_check` (pose and speed at a loop's seam), `dump_state`, `make_gif`, `captions`, `validate_plan`, `hyperframes`
+(value and speed graphs, overshoot, settle), `loop_check` (pose and speed at a loop's seam), `gaze_check` (a speaker's eyes down and blinks on every frame), `print_footage` (one screen-print finish on twos for every B-roll insert), `dump_state`, `make_gif`, `captions`, `validate_plan`, `hyperframes`
 (sync a piece, hand a clip to a film), and for studying references `inspect_video`, `watch_reference` and
 `audio_envelope`.
 
@@ -147,7 +147,7 @@ node scripts/render_stream.mjs --root work/quote --out final/quote.mp4 --no-audi
 
 | Strong | Weak (the skill says so and routes) |
 |---|---|
-| 3–60 s pieces: kinetic type, titles, logos, data, overlays, transitions, end cards | Editing footage and talking heads: HyperFrames workflows or an editor |
+| 3–60 s pieces: kinetic type, titles, logos, data, overlays, transitions, end cards | Long footage edits: HyperFrames hosts the film (talking-head reels have a guide, `references/edit/talking-head.md`, and checks for gaze, blinks and the last word) |
 | Real motion blur, HDR light, bloom, print and retro textures | Character animation (Lottie) and 3D scenes (Three.js, e.g. through HyperFrames) |
 | Variable-font type animation, per-letter choreography | Per-letter animation of joined or right-to-left scripts: animate whole words or lines |
 | Any aspect ratio, deterministic, offline renders, measured sound | Long pieces render slowly (about 1–2 s per 1080×1920 frame with full blur): draft first, or render through HyperFrames' parallel workers |
