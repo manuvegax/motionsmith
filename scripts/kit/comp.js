@@ -20,7 +20,11 @@
   'use strict';
   const M = root.MotionMath, TL = root.Timeline;
   const EASES = {easy: [33.33, 33.33], snap: [12, 88], punch: [5, 95], swift: [40, 85], glide: [55, 60], accel: [85, 12], whip: [72, 72]};
-  const curve = name => { const e = EASES[name] || name; return M.aeEase({outInfluence: e[0], inInfluence: e[1]}); };
+  /* An AE influence pair by name, or any MotionMath easing by name (the measured ones are 'm.softLand', 'm.accelExit'…). */
+  const curve = name => {
+    if (typeof name === 'string' && !EASES[name] && M.EASINGS[name]) return M.EASINGS[name];
+    const e = EASES[name] || name; return M.aeEase({outInfluence: e[0], inInfluence: e[1]});
+  };
 
   /* Motion styles: one switch for the feel of a whole piece. drift = the residual life of a layer once its last key has
      landed (px of wander, degrees of sway, % of growth per second); breathe = the slow push every scene gets (% of
@@ -35,6 +39,11 @@
     calm: {arrive: 'swift', slam: 'snap', exit: 'glide', offset: 5, overshoot: .03,
       drift: {px: 3.5, deg: .25, grow: .55}, breathe: {scale: 4, deg: .25, px: 7},
       transitions: {whip: .4, push: .6, zoom: .65, iris: .55, slice: .65, spin: .65}},
+    // From the measured study: lands on softLand, slams on snapSettle, leaves accelerating, no overshoot by default
+    // (under 9 % of professional moves overshoot, late and small), siblings 2 frames apart, a living drift.
+    measured: {arrive: 'm.softLand', slam: 'm.snapSettle', exit: 'm.accelExit', offset: 2, overshoot: 0,
+      drift: {px: 3, deg: .2, grow: .5}, breathe: {scale: 3.5, deg: .2, px: 6},
+      transitions: {whip: .3, push: .45, zoom: .5, iris: .45, slice: .5, spin: .5}},
     sober: {arrive: 'swift', slam: 'snap', exit: 'glide', offset: 4, overshoot: 0,
       drift: {px: 2, deg: .1, grow: .3}, breathe: {scale: 2.5, deg: .1, px: 4},
       transitions: {whip: .4, push: .6, zoom: .6, iris: .5, slice: .6, spin: .6}},
@@ -55,6 +64,7 @@
       if (i === keys.length - 1 || ease === undefined) return;
       if (ease === 'hold') { ks[i].hold = true; return; }
       if (ease === 'linear') { ks[i].ease = 'linear'; return; }
+      if (typeof ease === 'string' && !EASES[ease] && M.EASINGS[ease]) { ks[i].ease = ease; return; }   // 'm.softLand'…
       const e = typeof ease === 'string' ? EASES[ease] : [ease.out, ease.in];
       if (!e) throw new RangeError(`unknown ease ${ease}`);
       ks[i].ae = {...(ks[i].ae || {}), outInfluence: e[0]};

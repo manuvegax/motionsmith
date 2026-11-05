@@ -15,6 +15,14 @@ open skills and public references; no code or text is copied verbatim unless sta
 
 Each of these is distributed under the MIT license; see their repositories for the full text.
 
+## Measurements and methods (Apache-2.0 and public breakdowns)
+
+| Source | Licence | What informed Motionsmith |
+|---|---|---|
+| [Tejashmakwana/motionmaxxing](https://github.com/Tejashmakwana/motionmaxxing) (Tejash Makwana), read 2026-11-05 | Apache-2.0 | The frame-sampled measurements of ~4,300 professional moves (durations, eases, stagger, overshoot, holds) summarised in `references/craft/measured-timing.md` and fitted as the `m.*` eases; the "never ship" items and the honest-look review (one sentence per frame, cover tests, never self-certify). No code or text is copied; the ease curves are this skill's fits through the published points |
+| Shaan Johari (@viashaan), "How I edited my captions reel with AI" (public Notion page, read 2026-11-05) | public breakdown | The depth-caption stack and its numbers (word width, 60 % head overlap, 15 % cover, the 6-frame pop, the caption band, snapping word starts to the voice); `scripts/depth_captions.py` is this skill's own implementation |
+| [yihui-dev/awesome-opus5-5-videos](https://github.com/yihui-dev/awesome-opus5-5-videos), read 2026-11-05 | MIT | The counts of what 496 complete prompts ask for, in `references/create/motion-brief.md` §1 |
+
 ## Algorithms and public references
 
 - Bloom pyramid and Karis average: J. Jimenez, *Next Generation Post Processing in Call of Duty: Advanced Warfare*

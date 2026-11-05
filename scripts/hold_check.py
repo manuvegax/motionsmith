@@ -14,6 +14,10 @@ but does not move edges) and does not need a grain floor. Measured on 1080 px pi
 moving hold (a slow push and drift) 0.15-0.3 px per frame, under the threshold of notice; above ~1 something is
 plainly moving. A frame with no edges (black, a flat colour) counts as still. It measures pixels; it does not watch
 the piece.
+
+Also reported: the still ending (`end_hold_seconds`, fails over --end-hold, 1.4 s by default: a resolved end card holds
+0.6-1.4 s, longer reads as "the film gave up") and runs of more than 3 empty frames (`empty_runs`: flat colour, black or
+white; a dip of up to 3 frames inside a dive is allowed). Exit 1 when any of the three fails.
 """
 from __future__ import annotations
 
@@ -41,6 +45,23 @@ def frames(path: Path, width: int) -> tuple[np.ndarray, float, float]:
     data = np.frombuffer(raw, np.uint8)
     n = data.size // (width * h)
     return data[: n * width * h].reshape(n, h, width).astype(np.float32), fps, int(s["width"]) / width
+
+
+def flat_frames(stack: np.ndarray) -> np.ndarray:
+    """True for frames with almost no picture: a flat colour, black or white (under 2 grey levels of spread)."""
+    return np.array([float(np.percentile(f, 98) - np.percentile(f, 2)) < 2.0 for f in stack], bool)
+
+
+def runs(flags: np.ndarray, fps: float, longer_than: int) -> list[dict]:
+    out, start = [], None
+    for i, f in enumerate(list(flags) + [False]):
+        if f and start is None:
+            start = i
+        elif not f and start is not None:
+            if i - start > longer_than:
+                out.append({"start": round(start / fps, 3), "frames": i - start})
+            start = None
+    return out
 
 
 def edge_speed(stack: np.ndarray, scale: float) -> np.ndarray:
@@ -81,6 +102,8 @@ def main() -> int:
     parser.add_argument("--min", type=float, default=.4, help="report holds at least this long (s)")
     parser.add_argument("--floor", type=float, default=.06, help="edges moving slower than this (px/frame) are a hold")
     parser.add_argument("--width", type=int, default=540, help="analysis width (px); results are in the video's pixels")
+    parser.add_argument("--end-hold", type=float, default=1.4,
+                        help="longest acceptable still ending (s); a resolved end card holds 0.6-1.4 s")
     parser.add_argument("--report", type=Path)
     parser.add_argument("--curve", type=Path, help="a PNG of the edge speed over time")
     args = parser.parse_args()
@@ -91,11 +114,22 @@ def main() -> int:
     motion = edge_speed(stack, scale)
     found = holds(motion, fps, args.floor, args.min)
     total = sum(h["seconds"] for h in found)
+    still = motion < args.floor
+    tail = 0
+    for v in still[::-1]:
+        if not v:
+            break
+        tail += 1
+    end_hold = round(tail / fps, 2)
+    empty = runs(flat_frames(stack), fps, 3)
     report = {"video": str(args.video), "fps": round(fps, 3), "frames": int(len(stack)), "holds": found,
               "held_seconds": round(total, 2), "held_share": round(total / max(len(stack) / fps, 1e-6), 3),
               "median_edge_speed": round(float(np.median(motion)), 3) if len(motion) else 0.0,
               "p10_edge_speed": round(float(np.percentile(motion, 10)), 3) if len(motion) else 0.0,
               "floor": args.floor,
+              "end_hold_seconds": end_hold,
+              "end_hold_ok": end_hold <= args.end_hold,
+              "empty_runs": empty,
               "verdict": "alive" if not found else f"{len(found)} dead hold(s): add a moving hold (slow push, drift, breathing)",
               "note": "Edge speed in px/frame; watch it at real speed on the phone."}
     if args.curve:
@@ -117,7 +151,7 @@ def main() -> int:
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True); args.report.write_text(text + "\n", encoding="utf-8")
     print(text)
-    return 0 if not found else 1
+    return 0 if not found and not empty and end_hold <= args.end_hold else 1
 
 
 if __name__ == "__main__":

@@ -59,6 +59,26 @@ Rules: **look at every sheet** (open it; generating it is not reviewing). After 
 and neighbouring links. Delete frame folders after looking (they fill disks); keep cited evidence in `preview/`. A
 sheet finds defects; it does not prove smoothness, rhythm or sound.
 
+## 2b. Look like a stranger, then quote numbers
+
+A checklist ticked by the builder once certified a 15-second black render as "verified" (motionmaxxing's log). So,
+before the critics:
+
+1. **Is there a piece in the file?** `verify_export.py` (it decodes, its length is the plan's, audio when planned)
+   and `hold_check.py` (no dead hold, no run of more than 3 empty frames, the still ending ≤ 1.4 s).
+2. **Describe every frame of the walk sheet in one sentence**: what is on screen, what the hero is, and whether it
+   would pass as a slide or a web page. A frame with no hero cannot be described in one sentence; a sentence that
+   starts "a card on a flat colour" is a slide. The sentences go in the learning log.
+3. **Name the frame someone would screenshot.** If there is none, the hero moment is missing: spend the work there.
+4. **Four looks at the same footage.** *Thumbnail*: the sheet small; does the claim read at all? *Cover the text*:
+   does each frame still show a picture? *Mid-change*: the frames two before each cut and mid-transition; two
+   half-states blended, a blank frame, a beat that settled before the cut? *Real speed*: reading time, the breath before
+   the payoff, where it drags.
+5. **Fix in this order**: anything untrue or broken; the idea; the links between beats; hierarchy and scale; timing;
+   surface and finish; sound. Do not tune curves while the idea is unclear. Two honest passes, then show.
+6. **Never certify a piece as good.** The delivery says what was checked and quotes the numbers the scripts printed;
+   it never says "verified" about taste.
+
 ## 3. The three critics
 
 After the dense review and before showing anything, run three independent critiques, each as if it were a different

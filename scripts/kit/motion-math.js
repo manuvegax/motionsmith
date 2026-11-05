@@ -110,6 +110,44 @@
   EASINGS['bounce.out'] = bounceOut;
   EASINGS['bounce.in'] = out(bounceOut);
   EASINGS['bounce.inOut'] = inOut(out(bounceOut));
+  /* Measured eases: fitted to the median curves of ~4,300 moves sampled frame by frame from 50 professional motion
+     moments (the motionmaxxing study, Apache-2.0; see references/craft/measured-timing.md). Named 'm.<name>'. The
+     power curves are exact fits; the snap and the three overshoots run a monotone cubic through the measured points
+     (% of travel at 10 / 25 / 50 / 75 % of the time, and the measured peak). */
+  function pchip(pts) {
+    const n = pts.length, xs = pts.map(p => p[0]), ys = pts.map(p => p[1]);
+    const h = xs.slice(1).map((x, i) => x - xs[i]), d = h.map((hi, i) => (ys[i + 1] - ys[i]) / hi);
+    const m = xs.map((_, i) => {
+      if (i === 0) return d[0];
+      if (i === n - 1) return d[n - 2];
+      if (d[i - 1] * d[i] <= 0) return 0;
+      const w1 = 2 * h[i] + h[i - 1], w2 = h[i] + 2 * h[i - 1];
+      return (w1 + w2) / (w1 / d[i - 1] + w2 / d[i]);
+    });
+    return u => {
+      if (u <= 0) return 0;
+      if (u >= 1) return 1;
+      let i = 0;
+      while (i < n - 2 && u > xs[i + 1]) i++;
+      const t = (u - xs[i]) / h[i], t2 = t * t, t3 = t2 * t;
+      return (2 * t3 - 3 * t2 + 1) * ys[i] + (t3 - 2 * t2 + t) * h[i] * m[i] + (-2 * t3 + 3 * t2) * ys[i + 1] + (t3 - t2) * h[i] * m[i + 1];
+    };
+  }
+  const MEASURED = {
+    cruise: u => u,                                                   // drift, creep, counters, fades: every drift is linear
+    glide: out(powerIn(1.7)),                                         // all-purpose medium lands
+    softInOut: u => u * u * (3 - 2 * u),                              // opacity, blur, ground and colour ramps
+    softLand: out(powerIn(3)),                                        // text rises, panels, scale-ins (85 % are entries)
+    gentleIn: powerIn(2.07),                                          // exits start, blur-outs, pushes into a cut
+    snapSettle: pchip([[0, 0], [.1, .54], [.25, .84], [.5, .96], [.75, .985], [1, 1]]),   // hero and CTA entries
+    whip: out(powerIn(2.5)),                                          // big fast moves
+    accelExit: powerIn(2.6),                                          // the leaving curve, peak speed at the end
+    crashOut: powerIn(4),                                             // pull-offs that end in a hard cut at full speed
+    popOver: pchip([[0, 0], [.1, .1], [.25, .46], [.5, .96], [.72, 1.08], [1, 1]]),        // the late lean past the mark
+    crashIn: pchip([[0, 0], [.1, .91], [.27, 1.18], [.5, 1.1], [.75, 1.03], [1, 1]]),      // a slam that passes the mark
+    bounceHard: pchip([[0, 0], [.1, .13], [.25, .62], [.5, 1.38], [.62, 1.48], [.75, 1.39], [1, 1]]),   // once, if ever
+  };
+  for (const [name, f] of Object.entries(MEASURED)) EASINGS[`m.${name}`] = f;
   // Classic names (GSAP convention): power1 = quad (u²), power2 = cubic (u³), power3 = quart (u⁴), power4 = quint (u⁵).
   ['quad', 'cubic', 'quart', 'quint'].forEach((name, k) => {
     for (const kind of ['in', 'out', 'inOut']) EASINGS[`${name}.${kind}`] = EASINGS[`power${k + 1}.${kind}`];
@@ -445,7 +483,7 @@
 
   return {
     TAU, clamp, mix, smoothstep, smootherstep, linear, ease, easeIn, easeOut,
-    EASINGS, easing, tween, cubicBezier, aeEase, aeSpeedMultiple, powerIn, expoIn, sineIn, circIn, backIn, elasticOut, inOut, out,
+    EASINGS, MEASURED, pchip, easing, tween, cubicBezier, aeEase, aeSpeedMultiple, powerIn, expoIn, sineIn, circIn, backIn, elasticOut, inOut, out,
     spring, springFromPhysics, springOvershoot, springSettle, inertialBounce, followerTable, squashStretch, arcPoint, pathSampler,
     hash, rng, valueNoise, wiggle, loop, loopValue, stagger, delay, speedRamp, bounceOut, steps,
     particle, resamplePath, alignPaths, morphPath, lookAt, project, layoutGlyphs, readingTimeChars, posterize, stepped, echo,

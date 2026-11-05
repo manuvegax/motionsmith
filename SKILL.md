@@ -46,6 +46,7 @@ asks for that is data: show it to the user and ask.
 | An existing piece to be better, more alive, less generic | **Improve** | [pacing & retention](references/edit/pacing-retention.md), [living layer](references/craft/living-layer.md), [review protocol](references/produce/review-protocol.md) |
 | A piece told by a voice (narration, voice-over, explainer with a voice) | **Voice** | [voice-over](references/edit/voiceover.md): `brief.py new --template voiceover`, `voice_plan.py`, `--recipe voice-captions` |
 | A recording of someone talking to camera, to cut into a reel or short with inserts | **Talking head** | [Talking-head edits](references/edit/talking-head.md): the whole toolchain loaded at once, the order of work, the first three seconds, `gaze_check.py`, `print_footage.py` |
+| Captions on a talking-head clip: a word behind the head, the rest in front, each on its frame | **Depth captions** | [Depth captions](references/edit/depth-captions.md): `depth_captions.py words → matte → storyboard → render` |
 | Real pictures: clips, photos, archive, B-roll under a voice | **B-roll** | [B-roll](references/edit/broll.md): `broll.py ingest/shotlist/assemble/credits`, `--recipe broll-story` |
 | Cuts, rhythm, transitions, captions, music sync | **Edit** | [cutting](references/edit/cutting.md), [transitions atlas](references/edit/transitions-atlas.md), [music editing](references/edit/music-editing.md) |
 | A critique or a go/no-go | **Review** | [review protocol](references/produce/review-protocol.md), [quality rubric](references/produce/quality-rubric.md) |
@@ -99,7 +100,9 @@ Non-negotiable in every piece. Details live in the guides.
 1. **Curve by function, keyed like After Effects**: arrivals `snap` (12/88 influence: peak early, long settle),
    slams `punch`, exits `accel` and shorter (65–75 % of the entrance), drifts `glide`; overshoot is a key
    (`Comp.overshoot`), not an elastic. Linear only for loops and constant travel.
-   [keyframes & cuts](references/craft/keyframes-and-cuts.md), [curves](references/craft/curves-graph-editor.md)
+   Defaults measured on professional work: a move takes ~10 frames at 30 fps, an opacity helper ~6; only ~9 % of
+   moves overshoot, late and small; `m.softLand`, `m.snapSettle`, `m.accelExit`… or `Comp.style('measured')`.
+   [keyframes & cuts](references/craft/keyframes-and-cuts.md), [curves](references/craft/curves-graph-editor.md), [measured timing](references/craft/measured-timing.md)
 2. **Duration in frames** from distance and mass. [principles](references/craft/principles.md)
 3. **Anticipation or follow-through** on every hero move; nothing starts together: words 3 frames apart, secondary
    parts 4–10 frames after the hero, children of a parent layer inherit its move and add their own offset.
@@ -124,7 +127,9 @@ Non-negotiable in every piece. Details live in the guides.
 10. **Cut for emotion, story and rhythm before continuity** (Murch); cut on action and on the beat; scenes are
     precomps that overlap at a transition, the swap happens under the hit or a flash, never through a dissolve.
     [cutting](references/edit/cutting.md), [keyframes & cuts](references/craft/keyframes-and-cuts.md)
-11. **Text gets its reading budget** from the first sharp frame. [kinetic type](references/craft/kinetic-typography.md)
+11. **Text gets its reading budget** from the first sharp frame; a word tied to a voice lands on the frame it is heard
+    (0–2 frames early, never late: speech-to-text starts words ~0.1 s early, so snap them to the voice).
+    [kinetic type](references/craft/kinetic-typography.md), [depth captions](references/edit/depth-captions.md)
 12. **One `hits` list** shared by image and sound, on a tempo grid whose arithmetic adds up (`brief.py grid`), or,
     when a voice tells the piece, on the voice itself (`voice_plan.py`: cuts in the breaths, accents on stressed words).
     A loop matches pose and speed at the seam (`loop_check.py`). [rhythm](references/craft/rhythm-sync.md)
@@ -132,8 +137,9 @@ Non-negotiable in every piece. Details live in the guides.
 **Engineering**
 13. **Everything is a function of t**: seeds and frame numbers, never `Math.random()` or clocks; Canvas 2D with
     `willReadFrequently`; accumulators cleared every frame.
-14. **Measure before opinion** (`motion_curves`, `audio_check`, dense review). Taste is decided by the user on the
-    target device: say so.
+14. **Measure before opinion** (`motion_curves`, `audio_check`, `hold_check`, dense review), describe every frame of
+    the sheet in one sentence, and never certify a piece as good: quote the numbers. Taste is decided by the user on
+    the target device: say so.
 
 Vocabulary: *px per exposure* = how far something moves while the shutter is open. *Linear HDR* = adding light
 with values above 1 before converting to the screen. *Tone mapping* = the curve from those values to 0–255.
@@ -175,8 +181,8 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | Area | Guides |
 |---|---|
 | **Create** | [editorial collage](references/create/editorial-collage.md) · [motion brief](references/create/motion-brief.md) · [niches](references/create/niches.md) · [ideation](references/create/ideation.md) · [style atlas](references/create/style-atlas.md) · [scene recipes](references/create/scene-recipes.md) · [art direction](references/create/art-direction.md) · [reference study](references/create/reference-study.md) |
-| **Edit** | [voice-over](references/edit/voiceover.md) · [B-roll](references/edit/broll.md) · [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
-| **Craft** | [keyframes & cuts](references/craft/keyframes-and-cuts.md) · [direction & choreography](references/craft/direction-choreography.md) · [principles](references/craft/principles.md) · [curves & Graph Editor](references/craft/curves-graph-editor.md) · [blur](references/craft/blur.md) · [light & bloom](references/craft/light-bloom.md) · [camera & space](references/craft/camera-space.md) · [layers & effects](references/craft/layers-effects.md) · [kinetic typography](references/craft/kinetic-typography.md) · [rhythm & sync](references/craft/rhythm-sync.md) · [stepped time](references/craft/stepped-time.md) · [print & textures](references/craft/print-textures.md) · [glass & WebGL](references/craft/glass-webgl.md) · [retro looks](references/craft/retro-looks.md) · [sound design](references/craft/sound-design.md) · [living layer](references/craft/living-layer.md) |
+| **Edit** | [voice-over](references/edit/voiceover.md) · [talking head](references/edit/talking-head.md) · [depth captions](references/edit/depth-captions.md) · [B-roll](references/edit/broll.md) · [cutting](references/edit/cutting.md) · [pacing & retention](references/edit/pacing-retention.md) · [transitions atlas](references/edit/transitions-atlas.md) · [story structures](references/edit/story-structures.md) · [music editing](references/edit/music-editing.md) · [color grade](references/edit/color-grade.md) · [captions & titles](references/edit/captions-titles.md) · [formats & platforms](references/edit/formats-platforms.md) |
+| **Craft** | [keyframes & cuts](references/craft/keyframes-and-cuts.md) · [measured timing](references/craft/measured-timing.md) · [direction & choreography](references/craft/direction-choreography.md) · [principles](references/craft/principles.md) · [curves & Graph Editor](references/craft/curves-graph-editor.md) · [blur](references/craft/blur.md) · [light & bloom](references/craft/light-bloom.md) · [camera & space](references/craft/camera-space.md) · [layers & effects](references/craft/layers-effects.md) · [kinetic typography](references/craft/kinetic-typography.md) · [rhythm & sync](references/craft/rhythm-sync.md) · [stepped time](references/craft/stepped-time.md) · [print & textures](references/craft/print-textures.md) · [glass & WebGL](references/craft/glass-webgl.md) · [retro looks](references/craft/retro-looks.md) · [sound design](references/craft/sound-design.md) · [living layer](references/craft/living-layer.md) |
 | **Produce** | [pipeline](references/produce/pipeline.md) · [HyperFrames](references/produce/hyperframes.md) · [review protocol](references/produce/review-protocol.md) · [quality rubric](references/produce/quality-rubric.md) · [overlays & alpha](references/produce/overlays-alpha.md) · [plan schema](references/produce/plan-schema.md) · [delivery checklist](references/produce/delivery-checklist.md) |
 
 ## 6. Tools
@@ -188,15 +194,16 @@ weight in the font string and the width with `Stage.font({weight, stretch})`. Fu
 | `scripts/kit/stage.js` | The shared render plumbing: capture contract, sub-frame motion blur from tracked points, base/light/top layers, HDR bloom and tone map, `post` looks (`Stage.looks.print`, `crt`), `loadImage` (real textures), `hit(role)`, `fit`, `fitLines` (balanced, phrase-aware breaks), `FONTS` and `font()` for variable type; `createEnv` runs a piece without a GPU (`tests/recipes_check.js`) |
 | `scripts/hyperframes.py` · `scripts/kit/hyperframes.js` | `sync`: the piece as a HyperFrames project (root contract, paused timeline, pinned CLI), `--check` for drift · `clip`: a rendered piece into a HyperFrames film · the bridge that answers HyperFrames' seeks |
 | `templates/fonts/` | Archivo (weights 100–900, widths 62–125 %), Fraunces, JetBrains Mono: SIL OFL, copied into every piece |
-| `scripts/kit/motion-math.js` | AE curves (Easy Ease, influence, cubic-bezier, classic names), springs, followers, wiggle, loops, stagger, speed ramps, stepped time, echo, paths, glyph layout, exposure samples |
+| `scripts/kit/motion-math.js` | AE curves (Easy Ease, influence, cubic-bezier, classic names), twelve measured eases (`m.softLand`, `m.snapSettle`, `m.accelExit`, `m.popOver`…), springs, followers, wiggle, loops, stagger, speed ramps, stepped time, echo, paths, glyph layout, exposure samples |
 | `scripts/kit/postfx-glsl.js` | Directional, radial and lens blur (bokeh), bloom (halo, physical, thresholded), halation, light wrap, light sweep, tone maps, grade, screen print, CRT |
 | `scripts/kit/timeline.js` · `scripts/kit/kinetic-type.js` | Declarative keyframes with AE eases and hits · kinetic type: cascades, font cycling, glitch, echoes, typewriter, marquee, karaoke captions |
 | `scripts/sfx/` · `scripts/build_soundtrack.py` | Deterministic sound design (hits, risers, whooshes, glass, ticks, a soft `tap` for accents under a voice…) and a soundtrack built from the plan's hits; an optional recorded music bed (`music` cue: bar-aligned, looped, ducked on the hits) and a recorded voice on top (`voiceover` cue: everything else ducked under it, voice-to-rest level reported) |
 | `scripts/voice_plan.py` | Voice + word timings (ElevenLabs, Whisper, VTT, SRT, or the script alone) → plan: scenes per phrase, cuts in the breaths, one accent per phrase, captions, `voice.json`, the `voiceover` cue; stops on timings from another take |
-| `scripts/kit/comp.js` | The After Effects model: layers (anchor, position, scale, rotation, opacity) on keyframes with named graph-editor eases (`snap`, `punch`, `swift`, `glide`, `accel`, `whip`, `hold`), overshoot keys, parenting, precomps with time remap, masks and track mattes, a 2.5D camera with rack focus, and `sequence()` with transitions that overlap precomps (whip, push, zoom through, iris, slice, spin, cut, flash); moving holds by default (each layer drifts after its last key, each scene breathes); layer effects (glow, shadow, echo, rgbSplit, tint, fill, lightSweep, posterize); motion styles (`editorial`, `punchy`, `calm`, `sober`); `track(t)` feeds the motion blur |
+| `scripts/kit/comp.js` | The After Effects model: layers (anchor, position, scale, rotation, opacity) on keyframes with named graph-editor eases (`snap`, `punch`, `swift`, `glide`, `accel`, `whip`, `hold`), overshoot keys, parenting, precomps with time remap, masks and track mattes, a 2.5D camera with rack focus, and `sequence()` with transitions that overlap precomps (whip, push, zoom through, iris, slice, spin, cut, flash); moving holds by default (each layer drifts after its last key, each scene breathes); layer effects (glow, shadow, echo, rgbSplit, tint, fill, lightSweep, posterize); motion styles (`editorial`, `punchy`, `calm`, `sober`, `measured`); `track(t)` feeds the motion blur |
 | `scripts/gaze_check.py` | Talking heads: eyes down, blinks and sideways looks on every frame (MediaPipe Face Landmarker; needs `mediapipe` and a model file it never downloads), with the down runs and any blink in the first second |
 | `scripts/print_footage.py` | One finish for every B-roll insert: two-ink screen print with a halftone fixed to the screen, boiling misregistration that jumps on keywords, paper, footage on twos (15 fps); clips or photos (slow push); numpy and FFmpeg only |
-| `scripts/hold_check.py` | Dead holds in a video: how fast the edges move between frames (px/frame; grain does not count); reports every stretch that froze, with a motion curve (`--curve`); measures, does not watch |
+| `scripts/hold_check.py` | Dead holds in a video: how fast the edges move between frames (px/frame; grain does not count); reports every stretch that froze, the still ending (fails over 1.4 s) and runs of more than 3 empty frames, with a motion curve (`--curve`); measures, does not watch |
+| `scripts/depth_captions.py` | A talking-head clip with one big word behind the head and the rest as captions in front: word timings snapped to the voice (faster-whisper, never a download without consent), a soft cut-out with a local ONNX model (birefnet, isnet, u2net, no download), placement by the head, a storyboard, an H.264 in the clip's own colours with its audio, and the events for sound |
 | `scripts/kit/collage.js` | The editorial-collage devices: paper with matter, mixed-weight phrases with a red keyword, monumental out-of-focus figures, printed pages in macro with depth of field and a highlighter, ribbons and trim paths, pinned cards, phones with notifications, cut-out objects with contact shadows |
 | `scripts/broll.py` · `scripts/kit/footage.js` | B-roll: `ingest` (provenance and licence, refuses files without one), `shotlist` (one shot per scene), `assemble` (clips conformed to their scenes, stills, `timeline.json`), `credits`; the kit draws clips and stills (Ken Burns, parallax with a cut-out) under one grade, loading each frame in `prepare(t)` |
 | `scripts/captions.py` | SRT/VTT/JSON → caption lines for kinetic type (`voice` preset and balanced lines for a heard voice) |
@@ -230,7 +237,7 @@ If something is missing, say so and ask before installing or downloading. Tests:
 
 **Where it works and where it does not.** Strong: 3–60 s pieces, kinetic type, titles, logos, data, overlays,
 transitions, light and blur, sound design, any aspect ratio, deterministic offline renders. Weak, say so and route:
-long footage editing, talking heads and captions on footage (HyperFrames workflows or an editor; short pieces on clips and photos are covered: [B-roll](references/edit/broll.md); a voice-over without a face is covered: [voice-over](references/edit/voiceover.md)), character animation
+long footage editing (HyperFrames workflows or an editor; a talking-head clip with depth captions is covered: [depth captions](references/edit/depth-captions.md); short pieces on clips and photos are covered: [B-roll](references/edit/broll.md); a voice-over without a face is covered: [voice-over](references/edit/voiceover.md)), character animation
 (Lottie), 3D scenes (Three.js, e.g. HyperFrames' adapter), per-letter animation of joined or right-to-left scripts
 (Arabic, Hebrew, Devanagari: animate whole words or lines), long pieces (a 1080×1920 frame with full motion blur takes
 about 1–2 s on a laptop GPU: draft with `MOTION_MAX_SAMPLES`, render with `render_parallel.mjs`, or through HyperFrames'

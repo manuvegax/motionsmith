@@ -24,6 +24,30 @@ rough signal, not proof) found:
 
 The strongest long prompts share one shape: tagged blocks. Motionsmith adopts it, with its own engine in the build.
 
+A second, larger collection points the same way. [Awesome Opus 5.5 Videos](https://github.com/yihui-dev/awesome-opus5-5-videos)
+gathers 703 prompts behind viral videos made with Claude Opus 5.5 (September–October 2026; 496 complete prompts,
+no view or like counts, so it says what people asked for, not what worked). Counted on the complete prompts:
+
+| In the prompt | Share | What it says |
+|---|---|---|
+| Median length | 35 words | Most viral pieces came from short prompts: the bar is low, and every decision you add sets you apart |
+| A duration in seconds | 34 % | The most common decision, and the cheapest |
+| Sound or music asked for | 24 % | Three in four pieces were planned silent |
+| What to avoid ("banned", "avoid", "never", "do not") | 14 % | The cheapest quality gain is still rare |
+| A frame rate | 13 % | — |
+| A tempo or BPM | 8 % | Pieces with a grid are a minority |
+| Vertical 9:16 | 5 % | Most were made for a 16:9 feed, not for reels |
+| "Render, then inspect and refine" | 2 % | Almost nobody asked the model to look at its own render |
+| "Must work muted" | 1 % | — |
+
+The detailed ones add lines worth stealing: *one shape, never cut* (a recurring element that becomes every scene), *an
+empty border* (nothing at rest within ~150 px of the sides), *the ending returns exactly to the opening* for a loop,
+*the story must also work muted*, *do not stop at a storyboard: build, render, inspect, refine*. Motionsmith's brief
+already asks for most of them; `<start>` and the review are where the last one lives.
+
+**Every beat buys one belief.** Write it in the beat grid: "beat 3 buys: the viewer believes ___". A beat that buys
+nothing is cut (motionmaxxing's director rule; at most a quarter of the beats are "the point").
+
 ## 2. The six blocks
 
 ```
@@ -66,8 +90,16 @@ to build. Start from the common tells below, then add what went wrong in the las
 | A slowly spinning object as the whole idea | A demo, not a piece | One action with a consequence ([direction](../craft/direction-choreography.md)) |
 | Camera shake, RGB split, lens flares | Energy pasted on top | A motivated camera move; misregistered print if a glitch is needed |
 | `Math.random()` and clocks | A frame you approved changes on the next render | Seeded values and frame numbers: everything is a function of t |
+| Page chrome: a name in a corner, tracked-caps labels, "02 / SPEAK" counters, timecodes, progress bars, scene labels | The look of a design tool mistaken for design; it has no condition under which it works | Nothing: the frame is the claim, the object, the name once |
+| A deck layout: a held left headline with a grey sub-line, a kicker above a headline, headline left and device right | The frame stays put and content is swapped into slots: time becomes pagination | One staged picture per beat; a centred line only when it is paced to a voice |
+| A stat slide or invented proof: a big centred number over a small label, "12,000+", a made-up name in a UI | Credibility faked; the eye knows it is a template | A real number tied to the thing that causes it, or no number |
+| Slogan copy: one-word triplets, "Not just X. It's Y.", "Unlock", "Meet X", "the future of" | Stock phrasing no person says | The person's own phrasing, read aloud before it goes on screen |
+| A web-footer ending: logo + tagline + button + address, or any end card held past 1.4 s | Conversion furniture, "the piece gave up" | The ending as the last beat of the story, 0.6–1.4 s, still alive |
+| The second-order default: a giant cropped word, a colour flood or circle wipe between every beat, a dot that becomes the logo, a chain of "X becomes Y becomes the logo" in every piece | What a model does when told "be bold": eight brands made this way read as one reel in eight colours | Each of these only when it is this piece's idea, once |
 
-The banned list is taste, not law: a profile that approves glows (a neon mode, a light that does emit) overrides it.
+The banned list is taste, not law: a profile that approves glows (a neon mode, a light that does emit) overrides it,
+and so does a brand whose own voice uses a move: a serif-italic accent word inside a sans line reads as a template
+*unless* it is the brand's voice, used in that role everywhere.
 The rule is that every effect has a reason in the scene.
 
 ## 4. Tempo, bars and the arithmetic

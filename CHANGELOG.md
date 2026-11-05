@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.11.0 · 2026-11-05
+
+Depth captions, measured timing and an honest look.
+
+- **`scripts/depth_captions.py`** and **`references/edit/depth-captions.md`**: a talking-head clip with one big word
+  behind the speaker's head and the rest of what they say as captions in front, through a slow camera push at three
+  depths. `words` (faster-whisper with word timestamps and no initial prompt, read from the local cache; every start
+  snapped to where the voice gets loud: on a Spanish test 7 of 16 starts moved, median 0.12 s), `matte` (a soft cut-out
+  with a local birefnet / isnet / u2net ONNX model run by onnxruntime; nothing is ever downloaded), `storyboard` (one
+  still per caption group) and `render` (H.264 converted with the clip's own matrix and tagged with it, iPhone HLG
+  tone-mapped to BT.709, the audio kept, a still and the sound events). The word is placed from the head: 60 % overlap,
+  at least 15 % of its ink covered; captions above it, or just under it when the head leaves no room, never on it;
+  a warning when the ink and the wall are too close. Tested on an iPhone HDR take at 60 fps.
+- **Twelve measured eases** (`m.cruise`, `m.glide`, `m.softInOut`, `m.softLand`, `m.gentleIn`, `m.snapSettle`,
+  `m.whip`, `m.accelExit`, `m.crashOut`, `m.popOver`, `m.crashIn`, `m.bounceHard`) in `kit/motion-math.js`, fitted to
+  the median curves of ~4,300 professional moves; usable in `Comp.k` keys and `Comp.curve`, and a `measured` motion
+  style. Guide `references/craft/measured-timing.md`: durations, landing vs leaving, stagger, overshoot, holds, camera.
+- **`hold_check.py`** also reports the still ending (fails over 1.4 s) and runs of more than 3 empty frames.
+- **Review §2b, "look like a stranger"**: one sentence per sheet frame, the screenshot frame, thumbnail / cover /
+  mid-change / real-speed looks, a fixed order of fixes, never self-certify.
+- **Banned list**: page chrome, deck layouts, stat slides and invented proof, slogan copy, web-footer endings and the
+  second-order "be bold" default, each with what to do instead; a brand's own voice overrides a tell.
+- **Motion brief §1**: what 496 complete prompts behind viral Opus 5.5 videos ask for (median 35 words; 14 % name
+  what to avoid; 2 % ask for the render to be inspected), and "every beat buys one belief".
+- Credits for motionmaxxing (Apache-2.0), the depth-caption breakdown by Shaan Johari and awesome-opus5-5-videos.
+
 ## 1.10.0 · 2026-10-29
 
 Talking-head edits, right in version one.

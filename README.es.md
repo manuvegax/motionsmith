@@ -73,7 +73,7 @@ valida, es determinista, mantiene el texto en 48 px o más, nunca deja un cuadro
 **Sonido por síntesis** (`scripts/sfx/`, `scripts/build_soundtrack.py`): golpes, booms, risers, whooshes, cristal,
 ticks, latidos y una cadena de máster, armados desde los golpes del plan. Sin samples: misma semilla, mismo WAV.
 
-**Herramientas que miden en vez de adivinar**: `determinism_check`, `sample_frames` (también un fotograma por beat), `contact_sheet`, `loop_check` (pose y velocidad en la costura de un bucle), `gaze_check` (la mirada abajo y los parpadeos de quien habla, fotograma a fotograma), `print_footage` (un mismo acabado de serigrafía con retraso de fotogramas para todo el B-roll),
+**Herramientas que miden en vez de adivinar**: `determinism_check`, `sample_frames` (también un fotograma por beat), `contact_sheet`, `loop_check` (pose y velocidad en la costura de un bucle), `gaze_check` (la mirada abajo y los parpadeos de quien habla, fotograma a fotograma), `print_footage` (un mismo acabado de serigrafía con retraso de fotogramas para todo el B-roll), `depth_captions` (una palabra detrás de la cabeza de quien habla y los subtítulos delante, cada palabra en el fotograma en que se oye),
 `render_stream` (FFmpeg, BT.709), `render_parallel` (piezas largas en tramos paralelos que se reanudan), `verify_export`, `audio_check` (sonoridad, pico real, ataques alineados con los
 golpes), `motion_curves` (gráficas de valor y velocidad, rebote, asentamiento), `dump_state`, `make_gif`, `captions`,
 `validate_plan`, `hyperframes` (sincronizar una pieza, pasar un clip a una película) y para estudiar referencias
